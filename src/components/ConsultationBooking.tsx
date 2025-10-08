@@ -44,20 +44,29 @@ export default function ConsultationBooking({ open, onOpenChange }: Consultation
       return;
     }
 
-    // In production, this would send to backend/CRM
-    toast({
-      title: 'Consultation Booked!',
-      description: `Your consultation is scheduled for ${format(date, 'PPP')} at ${selectedTime}. We'll send a confirmation to ${email}.`,
+    // Mock API call - simulate booking
+    console.log('Booking consultation:', {
+      date: format(date, 'yyyy-MM-dd'),
+      time: selectedTime,
+      name,
+      email,
+      phone
     });
 
-    onOpenChange(false);
-    
-    // Reset form
-    setDate(undefined);
-    setSelectedTime(undefined);
-    setName('');
-    setEmail('');
-    setPhone('');
+    toast({
+      title: 'Consultation Booked! ✓',
+      description: `Your consultation is scheduled for ${format(date, 'EEEE, MMMM d, yyyy')} at ${selectedTime}. Confirmation email sent to ${email}.`,
+    });
+
+    // Close dialog and reset
+    setTimeout(() => {
+      onOpenChange(false);
+      setDate(undefined);
+      setSelectedTime(undefined);
+      setName('');
+      setEmail('');
+      setPhone('');
+    }, 500);
   };
 
   return (

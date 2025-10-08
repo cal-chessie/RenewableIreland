@@ -10,6 +10,7 @@ import {
   ArrowDown
 } from 'lucide-react';
 import { toast } from '@/components/ui/use-toast';
+import { Button } from '@/components/ui/button';
 
 interface StatCardProps {
   icon: React.ReactNode;
@@ -205,51 +206,172 @@ export default function PremiumDashboard({ onBackToClient }: { onBackToClient?: 
 }
 
 // Placeholder components for each tab
-const LeadsPanel = ({ onLeadSelect }: { onLeadSelect: (id: string) => void }) => (
-  <div>
-    <h2 className="text-2xl font-bold text-slate-900 mb-6">Active Leads</h2>
-    <div className="space-y-4">
-      {[1, 2, 3].map(i => (
-        <div 
-          key={i}
-          className="p-4 bg-slate-50 rounded-xl hover:bg-slate-100 cursor-pointer transition-colors border border-slate-200"
-          onClick={() => onLeadSelect(`lead-${i}`)}
-        >
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="font-semibold text-slate-900">John Smith {i}</h3>
-              <p className="text-sm text-slate-600">Dublin • €800/month bill</p>
+const LeadsPanel = ({ onLeadSelect }: { onLeadSelect: (id: string) => void }) => {
+  const mockLeads = [
+    { id: '1', name: 'John Smith', location: 'Dublin 4', bill: '€145/month', status: 'New', priority: 'High' },
+    { id: '2', name: 'Mary O\'Brien', location: 'Cork City', bill: '€189/month', status: 'Contacted', priority: 'Medium' },
+    { id: '3', name: 'Patrick Murphy', location: 'Galway', bill: '€127/month', status: 'Proposal Sent', priority: 'High' },
+    { id: '4', name: 'Sarah Kelly', location: 'Limerick', bill: '€156/month', status: 'New', priority: 'Low' },
+  ];
+
+  return (
+    <div>
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-2xl font-bold text-slate-900">Active Leads</h2>
+        <span className="text-sm text-slate-600">{mockLeads.length} total leads</span>
+      </div>
+      <div className="space-y-4">
+        {mockLeads.map((lead) => (
+          <div 
+            key={lead.id}
+            className="p-5 bg-slate-50 rounded-xl hover:bg-slate-100 cursor-pointer transition-all border border-slate-200 hover:shadow-md"
+            onClick={() => {
+              onLeadSelect(lead.id);
+              console.log('Selected lead:', lead);
+            }}
+          >
+            <div className="flex items-center justify-between">
+              <div className="flex-1">
+                <div className="flex items-center gap-3 mb-2">
+                  <h3 className="font-semibold text-slate-900 text-lg">{lead.name}</h3>
+                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                    lead.priority === 'High' ? 'bg-red-100 text-red-700' :
+                    lead.priority === 'Medium' ? 'bg-orange-100 text-orange-700' :
+                    'bg-blue-100 text-blue-700'
+                  }`}>
+                    {lead.priority}
+                  </span>
+                </div>
+                <p className="text-sm text-slate-600">{lead.location} • {lead.bill}</p>
+              </div>
+              <span className={`px-4 py-2 rounded-full text-xs font-medium ${
+                lead.status === 'New' ? 'bg-primary text-white' :
+                lead.status === 'Contacted' ? 'bg-blue-100 text-blue-700' :
+                'bg-green-100 text-green-700'
+              }`}>
+                {lead.status}
+              </span>
             </div>
-            <span className="px-3 py-1 bg-primary text-primary-foreground rounded-full text-xs font-medium">
-              New
-            </span>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
-const ProposalsPanel = () => (
-  <div>
-    <h2 className="text-2xl font-bold text-slate-900 mb-6">Recent Proposals</h2>
-    <p className="text-slate-600">Proposal management coming soon...</p>
-  </div>
-);
+const ProposalsPanel = () => {
+  const mockProposals = [
+    { id: '1', client: 'John Smith', systemSize: '6.5 kW', value: '€12,500', status: 'Pending', date: '2024-01-15' },
+    { id: '2', client: 'Mary O\'Brien', systemSize: '8.2 kW', value: '€15,800', status: 'Accepted', date: '2024-01-12' },
+    { id: '3', client: 'Patrick Murphy', systemSize: '5.8 kW', value: '€11,200', status: 'Under Review', date: '2024-01-10' },
+  ];
 
-const InstallationsPanel = () => (
-  <div>
-    <h2 className="text-2xl font-bold text-slate-900 mb-6">Scheduled Installations</h2>
-    <p className="text-slate-600">Installation calendar coming soon...</p>
-  </div>
-);
+  return (
+    <div>
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-2xl font-bold text-slate-900">Recent Proposals</h2>
+        <Button className="gradient-primary text-white">Generate New</Button>
+      </div>
+      <div className="space-y-4">
+        {mockProposals.map((proposal) => (
+          <div key={proposal.id} className="p-5 bg-slate-50 rounded-xl border border-slate-200 hover:shadow-md transition-all">
+            <div className="flex justify-between items-start mb-3">
+              <div>
+                <h3 className="font-semibold text-slate-900 text-lg">{proposal.client}</h3>
+                <p className="text-sm text-slate-600">{proposal.systemSize} system</p>
+              </div>
+              <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                proposal.status === 'Accepted' ? 'bg-green-100 text-green-700' :
+                proposal.status === 'Pending' ? 'bg-orange-100 text-orange-700' :
+                'bg-blue-100 text-blue-700'
+              }`}>
+                {proposal.status}
+              </span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-2xl font-bold text-primary">{proposal.value}</span>
+              <span className="text-sm text-slate-500">{proposal.date}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
 
-const AnalyticsPanel = () => (
-  <div>
-    <h2 className="text-2xl font-bold text-slate-900 mb-6">Performance Analytics</h2>
-    <p className="text-slate-600">Analytics dashboard coming soon...</p>
-  </div>
-);
+const InstallationsPanel = () => {
+  const mockInstallations = [
+    { id: '1', client: 'Sarah Kelly', date: '2024-01-22', time: '09:00', crew: 'Team A', status: 'Scheduled' },
+    { id: '2', client: 'John Smith', date: '2024-01-24', time: '14:00', crew: 'Team B', status: 'Confirmed' },
+    { id: '3', client: 'Mary O\'Brien', date: '2024-01-20', time: '10:00', crew: 'Team A', status: 'Completed' },
+  ];
+
+  return (
+    <div>
+      <h2 className="text-2xl font-bold text-slate-900 mb-6">Scheduled Installations</h2>
+      <div className="space-y-4">
+        {mockInstallations.map((install) => (
+          <div key={install.id} className="p-5 bg-slate-50 rounded-xl border border-slate-200">
+            <div className="flex justify-between items-start">
+              <div>
+                <h3 className="font-semibold text-slate-900 text-lg mb-2">{install.client}</h3>
+                <div className="space-y-1 text-sm text-slate-600">
+                  <p>📅 {install.date} at {install.time}</p>
+                  <p>👥 {install.crew}</p>
+                </div>
+              </div>
+              <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                install.status === 'Completed' ? 'bg-green-100 text-green-700' :
+                install.status === 'Confirmed' ? 'bg-blue-100 text-blue-700' :
+                'bg-orange-100 text-orange-700'
+              }`}>
+                {install.status}
+              </span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+const AnalyticsPanel = () => {
+  const metrics = [
+    { label: 'Total Revenue', value: '€287,450', change: '+23%', positive: true },
+    { label: 'Conversion Rate', value: '23.5%', change: '+5.2%', positive: true },
+    { label: 'Avg. Response Time', value: '2.4 hours', change: '-18%', positive: true },
+    { label: 'Customer Satisfaction', value: '4.8/5', change: '+0.3', positive: true },
+  ];
+
+  return (
+    <div>
+      <h2 className="text-2xl font-bold text-slate-900 mb-6">Performance Analytics</h2>
+      <div className="grid md:grid-cols-2 gap-4 mb-6">
+        {metrics.map((metric, idx) => (
+          <div key={idx} className="p-6 bg-gradient-to-br from-slate-50 to-white rounded-xl border border-slate-200 shadow-sm">
+            <div className="flex justify-between items-start mb-2">
+              <span className="text-sm text-slate-600">{metric.label}</span>
+              <span className={`text-xs font-medium ${metric.positive ? 'text-green-600' : 'text-red-600'}`}>
+                {metric.change}
+              </span>
+            </div>
+            <div className="text-3xl font-bold text-slate-900">{metric.value}</div>
+          </div>
+        ))}
+      </div>
+      <div className="p-6 bg-primary-50 rounded-xl border border-primary-100">
+        <h3 className="font-semibold text-slate-900 mb-2">Monthly Goal Progress</h3>
+        <div className="flex items-center gap-4">
+          <div className="flex-1 h-3 bg-white rounded-full overflow-hidden">
+            <div className="h-full gradient-primary" style={{ width: '68%' }}></div>
+          </div>
+          <span className="font-semibold text-primary">68%</span>
+        </div>
+        <p className="text-sm text-slate-600 mt-2">€287k of €420k monthly target</p>
+      </div>
+    </div>
+  );
+};
 
 const AISalesCoachPanel = ({ leadId }: { leadId: string }) => (
   <div>

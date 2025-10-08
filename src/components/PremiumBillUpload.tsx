@@ -235,7 +235,13 @@ export default function PremiumBillUpload({ onUploadComplete }: PremiumBillUploa
                   Your personalized solar proposal is ready
                 </p>
               </div>
-              <button className="gradient-primary text-white px-8 py-4 rounded-xl font-semibold text-lg hover:shadow-lg hover:-translate-y-0.5 transition-all">
+              <button 
+                onClick={() => {
+                  console.log('Viewing proposal...');
+                  // This is already handled by onUploadComplete in parent
+                }}
+                className="gradient-primary text-white px-8 py-4 rounded-xl font-semibold text-lg hover:shadow-lg hover:-translate-y-0.5 transition-all"
+              >
                 View Your Proposal
               </button>
             </div>
