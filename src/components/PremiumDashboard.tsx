@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Users, 
@@ -7,10 +7,14 @@ import {
   Calendar,
   Zap,
   ArrowUp,
-  ArrowDown
+  ArrowDown,
+  Star,
+  LogOut
 } from 'lucide-react';
 import { toast } from '@/components/ui/use-toast';
 import { Button } from '@/components/ui/button';
+import { supabase } from '@/integrations/supabase/client';
+import { useNavigate } from 'react-router-dom';
 
 interface StatCardProps {
   icon: React.ReactNode;
@@ -47,8 +51,18 @@ const StatCard = ({ icon, value, label, trend, color }: StatCardProps) => (
 type TabType = 'leads' | 'proposals' | 'installations' | 'analytics';
 
 export default function PremiumDashboard({ onBackToClient }: { onBackToClient?: () => void }) {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<TabType>('leads');
   const [selectedLead, setSelectedLead] = useState<string | null>(null);
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    navigate('/auth');
+    toast({
+      title: 'Logged out successfully',
+      description: 'You have been signed out.',
+    });
+  };
 
   const stats = [
     {
@@ -113,6 +127,14 @@ export default function PremiumDashboard({ onBackToClient }: { onBackToClient?: 
                 <Zap size={20} />
                 New Proposal
               </button>
+              <Button
+                variant="outline"
+                onClick={handleLogout}
+                className="flex items-center gap-2"
+              >
+                <LogOut size={18} />
+                Logout
+              </Button>
               <div className="w-12 h-12 rounded-full gradient-primary flex items-center justify-center text-white font-semibold text-lg cursor-pointer hover:shadow-lg transition-all">
                 JD
               </div>
@@ -207,54 +229,136 @@ export default function PremiumDashboard({ onBackToClient }: { onBackToClient?: 
 
 // Placeholder components for each tab
 const LeadsPanel = ({ onLeadSelect }: { onLeadSelect: (id: string) => void }) => {
-  const mockLeads = [
-    { id: '1', name: 'John Smith', location: 'Dublin 4', bill: '€145/month', status: 'New', priority: 'High' },
-    { id: '2', name: 'Mary O\'Brien', location: 'Cork City', bill: '€189/month', status: 'Contacted', priority: 'Medium' },
-    { id: '3', name: 'Patrick Murphy', location: 'Galway', bill: '€127/month', status: 'Proposal Sent', priority: 'High' },
-    { id: '4', name: 'Sarah Kelly', location: 'Limerick', bill: '€156/month', status: 'New', priority: 'Low' },
-  ];
+  const [leads, setLeads] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchLeads();
+  }, []);
+
+  const fetchLeads = async () => {
+    const { data, error } = await supabase
+      .from('leads')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Error fetching leads:', error);
+      toast({
+        title: 'Error loading leads',
+        description: error.message,
+        variant: 'destructive',
+      });
+    } else {
+      setLeads(data || []);
+    }
+    setLoading(false);
+  };
+
+  const updateLeadScore = async (leadId: string, newScore: number) => {
+    const { error } = await supabase
+      .from('leads')
+      .update({ score: newScore })
+      .eq('id', leadId);
+
+    if (error) {
+      toast({
+        title: 'Error updating score',
+        description: error.message,
+        variant: 'destructive',
+      });
+    } else {
+      setLeads(leads.map(lead => 
+        lead.id === leadId ? { ...lead, score: newScore } : lead
+      ));
+      toast({
+        title: 'Score updated',
+        description: `Lead score set to ${newScore} stars`,
+      });
+    }
+  };
+
+  const StarRating = ({ score, leadId }: { score: number; leadId: string }) => (
+    <div className="flex gap-1" onClick={(e) => e.stopPropagation()}>
+      {[1, 2, 3, 4, 5].map((star) => (
+        <Star
+          key={star}
+          size={18}
+          className={`cursor-pointer transition-all ${
+            star <= score
+              ? 'fill-yellow-400 text-yellow-400'
+              : 'text-slate-300 hover:text-yellow-300'
+          }`}
+          onClick={() => updateLeadScore(leadId, star)}
+        />
+      ))}
+    </div>
+  );
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
 
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold text-slate-900">Active Leads</h2>
-        <span className="text-sm text-slate-600">{mockLeads.length} total leads</span>
+        <span className="text-sm text-slate-600">{leads.length} total leads</span>
       </div>
-      <div className="space-y-4">
-        {mockLeads.map((lead) => (
-          <div 
-            key={lead.id}
-            className="p-5 bg-slate-50 rounded-xl hover:bg-slate-100 cursor-pointer transition-all border border-slate-200 hover:shadow-md"
-            onClick={() => {
-              onLeadSelect(lead.id);
-              console.log('Selected lead:', lead);
-            }}
-          >
-            <div className="flex items-center justify-between">
-              <div className="flex-1">
-                <div className="flex items-center gap-3 mb-2">
-                  <h3 className="font-semibold text-slate-900 text-lg">{lead.name}</h3>
-                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                    lead.priority === 'High' ? 'bg-red-100 text-red-700' :
-                    lead.priority === 'Medium' ? 'bg-orange-100 text-orange-700' :
-                    'bg-blue-100 text-blue-700'
-                  }`}>
-                    {lead.priority}
-                  </span>
+      {leads.length === 0 ? (
+        <div className="text-center py-12">
+          <Users className="mx-auto text-slate-300 mb-4" size={48} />
+          <h3 className="text-lg font-semibold text-slate-900 mb-2">No leads yet</h3>
+          <p className="text-slate-600 text-sm">
+            Leads will appear here as clients submit their information
+          </p>
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {leads.map((lead) => (
+            <div 
+              key={lead.id}
+              className="p-5 bg-slate-50 rounded-xl hover:bg-slate-100 cursor-pointer transition-all border border-slate-200 hover:shadow-md"
+              onClick={() => {
+                onLeadSelect(lead.id);
+                console.log('Selected lead:', lead);
+              }}
+            >
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex-1">
+                  <div className="flex items-center gap-3 mb-2">
+                    <h3 className="font-semibold text-slate-900 text-lg">{lead.name}</h3>
+                    <StarRating score={lead.score || 0} leadId={lead.id} />
+                  </div>
+                  <p className="text-sm text-slate-600">
+                    {lead.address || 'No address'} • €{lead.monthly_bill || 0}/month
+                  </p>
+                  <p className="text-xs text-slate-500 mt-1">{lead.email}</p>
                 </div>
-                <p className="text-sm text-slate-600">{lead.location} • {lead.bill}</p>
+                <span className={`px-4 py-2 rounded-full text-xs font-medium ${
+                  lead.status === 'new' ? 'bg-primary text-white' :
+                  lead.status === 'contacted' ? 'bg-blue-100 text-blue-700' :
+                  lead.status === 'qualified' ? 'bg-purple-100 text-purple-700' :
+                  lead.status === 'proposal_sent' ? 'bg-orange-100 text-orange-700' :
+                  lead.status === 'closed_won' ? 'bg-green-100 text-green-700' :
+                  'bg-red-100 text-red-700'
+                }`}>
+                  {lead.status.replace('_', ' ').toUpperCase()}
+                </span>
               </div>
-              <span className={`px-4 py-2 rounded-full text-xs font-medium ${
-                lead.status === 'New' ? 'bg-primary text-white' :
-                lead.status === 'Contacted' ? 'bg-blue-100 text-blue-700' :
-                'bg-green-100 text-green-700'
-              }`}>
-                {lead.status}
-              </span>
+              {lead.notes && (
+                <p className="text-sm text-slate-600 mt-2 italic">
+                  Note: {lead.notes}
+                </p>
+              )}
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

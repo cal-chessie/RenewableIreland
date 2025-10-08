@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Check, Zap, Shield, TrendingUp, ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import SEOHead from '@/components/SEOHead';
 
 export default function ValueUpsell() {
   const navigate = useNavigate();
@@ -36,7 +37,13 @@ export default function ValueUpsell() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-slate-100 to-slate-200 py-12">
+    <>
+      <SEOHead
+        title="Premium Solar Packages - Enhance Your Solar Installation"
+        description="Maximize your solar investment with priority installation, extended warranty, and smart monitoring systems."
+        keywords="solar premium packages, solar warranty, smart monitoring, priority installation"
+      />
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-slate-100 to-slate-200 py-12">
       <div className="container mx-auto max-w-6xl px-4">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-slate-900 mb-4">
@@ -103,5 +110,6 @@ export default function ValueUpsell() {
         </div>
       </div>
     </div>
+    </>
   );
 }
