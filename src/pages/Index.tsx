@@ -2,9 +2,12 @@ import { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import PremiumBillUpload from '@/components/PremiumBillUpload';
 import PremiumDashboard from '@/components/PremiumDashboard';
+import ProposalResults from '@/components/ProposalResults';
+import { toast } from '@/components/ui/use-toast';
 
 const Index = () => {
   const [view, setView] = useState<'client' | 'consultant'>('client');
+  const [showResults, setShowResults] = useState(false);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-slate-100 to-slate-200">
@@ -20,13 +23,24 @@ const Index = () => {
             </Tabs>
           </div>
 
-          <div className="max-w-4xl mx-auto">
+          {!showResults ? (
             <PremiumBillUpload 
               onUploadComplete={(data) => {
                 console.log('Upload complete:', data);
+                setShowResults(true);
               }}
             />
-          </div>
+          ) : (
+            <ProposalResults 
+              onRequestConsultation={() => {
+                toast({
+                  title: 'Consultation Requested',
+                  description: 'Our team will contact you within 24 hours to schedule your free site survey.',
+                });
+              }}
+              onStartOver={() => setShowResults(false)}
+            />
+          )}
         </div>
       ) : (
         <PremiumDashboard onBackToClient={() => setView('client')} />
