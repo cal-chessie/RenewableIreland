@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from 'react-helmet-async';
 import Index from "./pages/Index";
+import PremiumIndex from "./pages/PremiumIndex";
 import NotFound from "./pages/NotFound";
 import ValueUpsell from "./pages/ValueUpsell";
 import Auth from "./pages/Auth";
@@ -20,7 +21,8 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Index />} />
+            <Route path="/" element={<PremiumIndex />} />
+            <Route path="/upload" element={<Index />} />
             <Route path="/upsell" element={<ValueUpsell />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/consultant" element={<ConsultantDashboard />} />
