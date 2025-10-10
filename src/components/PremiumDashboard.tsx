@@ -9,12 +9,14 @@ import {
   ArrowUp,
   ArrowDown,
   Star,
-  LogOut
+  LogOut,
+  Eye
 } from 'lucide-react';
 import { toast } from '@/components/ui/use-toast';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
+import LeadDetailView from './LeadDetailView';
 
 interface StatCardProps {
   icon: React.ReactNode;
@@ -53,7 +55,8 @@ type TabType = 'leads' | 'proposals' | 'installations' | 'analytics';
 export default function PremiumDashboard({ onBackToClient }: { onBackToClient?: () => void }) {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<TabType>('leads');
-  const [selectedLead, setSelectedLead] = useState<string | null>(null);
+  const [selectedLeadId, setSelectedLeadId] = useState<string | null>(null);
+  const [selectedLeadData, setSelectedLeadData] = useState<any | null>(null);
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -184,7 +187,7 @@ export default function PremiumDashboard({ onBackToClient }: { onBackToClient?: 
                 transition={{ duration: 0.2 }}
                 className="bg-card rounded-2xl border border-border shadow-lg p-6 min-h-[600px]"
               >
-                {activeTab === 'leads' && <LeadsPanel onLeadSelect={setSelectedLead} />}
+                {activeTab === 'leads' && <LeadsPanel onLeadSelect={(lead) => setSelectedLeadData(lead)} />}
                 {activeTab === 'proposals' && <ProposalsPanel />}
                 {activeTab === 'installations' && <InstallationsPanel />}
                 {activeTab === 'analytics' && <AnalyticsPanel />}
@@ -195,14 +198,14 @@ export default function PremiumDashboard({ onBackToClient }: { onBackToClient?: 
           {/* Right Panel - AI Coach */}
           <div className="lg:col-span-1">
             <AnimatePresence>
-              {selectedLead ? (
+              {selectedLeadId ? (
                 <motion.div
                   initial={{ opacity: 0, x: 300 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: 300 }}
                   className="bg-card rounded-2xl border border-border shadow-lg p-6 sticky top-8"
                 >
-                  <AISalesCoachPanel leadId={selectedLead} />
+                  <AISalesCoachPanel leadId={selectedLeadId} />
                 </motion.div>
               ) : (
                 <motion.div
@@ -223,12 +226,20 @@ export default function PremiumDashboard({ onBackToClient }: { onBackToClient?: 
           </div>
         </div>
       </div>
+
+      {/* Lead Detail Modal */}
+      {selectedLeadData && (
+        <LeadDetailView 
+          lead={selectedLeadData} 
+          onClose={() => setSelectedLeadData(null)} 
+        />
+      )}
     </div>
   );
 }
 
 // Placeholder components for each tab
-const LeadsPanel = ({ onLeadSelect }: { onLeadSelect: (id: string) => void }) => {
+const LeadsPanel = ({ onLeadSelect }: { onLeadSelect: (lead: any) => void }) => {
   const [leads, setLeads] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -322,11 +333,7 @@ const LeadsPanel = ({ onLeadSelect }: { onLeadSelect: (id: string) => void }) =>
           {leads.map((lead) => (
             <div 
               key={lead.id}
-              className="p-5 bg-slate-50 rounded-xl hover:bg-slate-100 cursor-pointer transition-all border border-slate-200 hover:shadow-md"
-              onClick={() => {
-                onLeadSelect(lead.id);
-                console.log('Selected lead:', lead);
-              }}
+              className="p-5 bg-slate-50 rounded-xl border border-slate-200 hover:shadow-md transition-all"
             >
               <div className="flex items-center justify-between mb-3">
                 <div className="flex-1">
@@ -339,16 +346,27 @@ const LeadsPanel = ({ onLeadSelect }: { onLeadSelect: (id: string) => void }) =>
                   </p>
                   <p className="text-xs text-slate-500 mt-1">{lead.email}</p>
                 </div>
-                <span className={`px-4 py-2 rounded-full text-xs font-medium ${
-                  lead.status === 'new' ? 'bg-primary text-white' :
-                  lead.status === 'contacted' ? 'bg-blue-100 text-blue-700' :
-                  lead.status === 'qualified' ? 'bg-purple-100 text-purple-700' :
-                  lead.status === 'proposal_sent' ? 'bg-orange-100 text-orange-700' :
-                  lead.status === 'closed_won' ? 'bg-green-100 text-green-700' :
-                  'bg-red-100 text-red-700'
-                }`}>
-                  {lead.status.replace('_', ' ').toUpperCase()}
-                </span>
+                <div className="flex items-center gap-3">
+                  <span className={`px-4 py-2 rounded-full text-xs font-medium ${
+                    lead.status === 'new' ? 'bg-primary text-white' :
+                    lead.status === 'contacted' ? 'bg-blue-100 text-blue-700' :
+                    lead.status === 'qualified' ? 'bg-purple-100 text-purple-700' :
+                    lead.status === 'proposal_sent' ? 'bg-orange-100 text-orange-700' :
+                    lead.status === 'closed_won' ? 'bg-green-100 text-green-700' :
+                    'bg-red-100 text-red-700'
+                  }`}>
+                    {lead.status.replace('_', ' ').toUpperCase()}
+                  </span>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => onLeadSelect(lead)}
+                    className="gap-2"
+                  >
+                    <Eye size={16} />
+                    View
+                  </Button>
+                </div>
               </div>
               {lead.notes && (
                 <p className="text-sm text-slate-600 mt-2 italic">

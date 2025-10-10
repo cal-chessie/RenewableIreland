@@ -14,6 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
+      installers: {
+        Row: {
+          availability_status: string | null
+          certification_level: string | null
+          created_at: string
+          id: string
+          specialization: string | null
+          updated_at: string
+          user_id: string
+          years_experience: number | null
+        }
+        Insert: {
+          availability_status?: string | null
+          certification_level?: string | null
+          created_at?: string
+          id?: string
+          specialization?: string | null
+          updated_at?: string
+          user_id: string
+          years_experience?: number | null
+        }
+        Update: {
+          availability_status?: string | null
+          certification_level?: string | null
+          created_at?: string
+          id?: string
+          specialization?: string | null
+          updated_at?: string
+          user_id?: string
+          years_experience?: number | null
+        }
+        Relationships: []
+      }
       leads: {
         Row: {
           address: string | null
@@ -56,15 +89,196 @@ export type Database = {
         }
         Relationships: []
       }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          full_name: string | null
+          id: string
+          phone: string | null
+          role: Database["public"]["Enums"]["app_role"] | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          phone?: string | null
+          role?: Database["public"]["Enums"]["app_role"] | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          phone?: string | null
+          role?: Database["public"]["Enums"]["app_role"] | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      site_surveys: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          electrical_panel_capacity: string | null
+          electrical_panel_condition: string | null
+          estimated_installation_cost: number | null
+          grid_connection_type: string | null
+          id: string
+          installation_notes: string | null
+          lead_id: string
+          meter_location: string | null
+          nearby_obstructions: string | null
+          recommended_panel_count: number | null
+          recommended_system_size: number | null
+          roof_condition: string | null
+          roof_material: string | null
+          roof_orientation: string | null
+          roof_pitch: number | null
+          roof_type: string | null
+          shading_analysis: string | null
+          special_requirements: string | null
+          status: string | null
+          survey_date: string | null
+          surveyor_id: string
+          updated_at: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          electrical_panel_capacity?: string | null
+          electrical_panel_condition?: string | null
+          estimated_installation_cost?: number | null
+          grid_connection_type?: string | null
+          id?: string
+          installation_notes?: string | null
+          lead_id: string
+          meter_location?: string | null
+          nearby_obstructions?: string | null
+          recommended_panel_count?: number | null
+          recommended_system_size?: number | null
+          roof_condition?: string | null
+          roof_material?: string | null
+          roof_orientation?: string | null
+          roof_pitch?: number | null
+          roof_type?: string | null
+          shading_analysis?: string | null
+          special_requirements?: string | null
+          status?: string | null
+          survey_date?: string | null
+          surveyor_id: string
+          updated_at?: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          electrical_panel_capacity?: string | null
+          electrical_panel_condition?: string | null
+          estimated_installation_cost?: number | null
+          grid_connection_type?: string | null
+          id?: string
+          installation_notes?: string | null
+          lead_id?: string
+          meter_location?: string | null
+          nearby_obstructions?: string | null
+          recommended_panel_count?: number | null
+          recommended_system_size?: number | null
+          roof_condition?: string | null
+          roof_material?: string | null
+          roof_orientation?: string | null
+          roof_pitch?: number | null
+          roof_type?: string | null
+          shading_analysis?: string | null
+          special_requirements?: string | null
+          status?: string | null
+          survey_date?: string | null
+          surveyor_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "site_surveys_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      survey_photos: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          photo_type: string | null
+          photo_url: string
+          survey_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          photo_type?: string | null
+          photo_url: string
+          survey_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          photo_type?: string | null
+          photo_url?: string
+          survey_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "survey_photos_survey_id_fkey"
+            columns: ["survey_id"]
+            isOneToOne: false
+            referencedRelation: "site_surveys"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "consultant" | "installer"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -191,6 +405,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "consultant", "installer"],
+    },
   },
 } as const
