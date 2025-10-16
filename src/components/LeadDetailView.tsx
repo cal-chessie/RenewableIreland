@@ -15,6 +15,7 @@ import {
   ArrowLeft
 } from 'lucide-react';
 import SiteSurveyForm from './SiteSurveyForm';
+import ProposalQuestionnaire from './ProposalQuestionnaire';
 
 interface Lead {
   id: string;
@@ -86,6 +87,10 @@ export default function LeadDetailView({ lead, onClose }: LeadDetailViewProps) {
                 <TabsTrigger value="survey" className="gap-2">
                   <ClipboardCheck className="h-4 w-4" />
                   Site Survey
+                </TabsTrigger>
+                <TabsTrigger value="proposal" className="gap-2">
+                  <FileText className="h-4 w-4" />
+                  Proposal
                 </TabsTrigger>
                 <TabsTrigger value="timeline" className="gap-2">
                   <Calendar className="h-4 w-4" />
@@ -187,6 +192,10 @@ export default function LeadDetailView({ lead, onClose }: LeadDetailViewProps) {
 
               <TabsContent value="survey" className="mt-0">
                 <SiteSurveyForm leadId={lead.id} />
+              </TabsContent>
+
+              <TabsContent value="proposal" className="mt-0">
+                <ProposalQuestionnaire leadId={lead.id} />
               </TabsContent>
 
               <TabsContent value="timeline" className="mt-0">
