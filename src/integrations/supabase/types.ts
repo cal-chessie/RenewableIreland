@@ -14,6 +14,66 @@ export type Database = {
   }
   public: {
     Tables: {
+      assignments: {
+        Row: {
+          assigned_by: string
+          assignment_type: string
+          completed_date: string | null
+          created_at: string
+          id: string
+          installer_id: string
+          lead_id: string
+          notes: string | null
+          priority: string | null
+          scheduled_date: string | null
+          status: string | null
+          updated_at: string
+        }
+        Insert: {
+          assigned_by: string
+          assignment_type: string
+          completed_date?: string | null
+          created_at?: string
+          id?: string
+          installer_id: string
+          lead_id: string
+          notes?: string | null
+          priority?: string | null
+          scheduled_date?: string | null
+          status?: string | null
+          updated_at?: string
+        }
+        Update: {
+          assigned_by?: string
+          assignment_type?: string
+          completed_date?: string | null
+          created_at?: string
+          id?: string
+          installer_id?: string
+          lead_id?: string
+          notes?: string | null
+          priority?: string | null
+          scheduled_date?: string | null
+          status?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "assignments_installer_id_fkey"
+            columns: ["installer_id"]
+            isOneToOne: false
+            referencedRelation: "installers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "assignments_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       installers: {
         Row: {
           availability_status: string | null
@@ -122,6 +182,141 @@ export type Database = {
         }
         Relationships: []
       }
+      proposals: {
+        Row: {
+          approved_at: string | null
+          assigned_installer_id: string | null
+          battery_capacity_kwh: number | null
+          battery_storage: boolean | null
+          consultant_id: string
+          created_at: string
+          current_annual_consumption_kwh: number | null
+          current_panel_capacity: string | null
+          electrical_panel_upgrade_needed: boolean | null
+          energy_offset_percentage: number | null
+          estimated_annual_production_kwh: number | null
+          id: string
+          installation_cost: number | null
+          installation_notes: string | null
+          installation_timeline_weeks: number | null
+          inverter_type: string | null
+          lead_id: string
+          monthly_savings: number | null
+          net_cost: number | null
+          new_panel_capacity: string | null
+          panel_count: number | null
+          panel_type: string | null
+          payback_period_years: number | null
+          presented_at: string | null
+          roof_condition: string | null
+          roof_material: string | null
+          roof_orientation: string | null
+          roof_pitch: number | null
+          roof_type: string | null
+          seai_grant: number | null
+          selected_products: Json | null
+          shading_level: string | null
+          special_requirements: string | null
+          status: string | null
+          system_cost: number | null
+          system_size_kw: number | null
+          updated_at: string
+        }
+        Insert: {
+          approved_at?: string | null
+          assigned_installer_id?: string | null
+          battery_capacity_kwh?: number | null
+          battery_storage?: boolean | null
+          consultant_id: string
+          created_at?: string
+          current_annual_consumption_kwh?: number | null
+          current_panel_capacity?: string | null
+          electrical_panel_upgrade_needed?: boolean | null
+          energy_offset_percentage?: number | null
+          estimated_annual_production_kwh?: number | null
+          id?: string
+          installation_cost?: number | null
+          installation_notes?: string | null
+          installation_timeline_weeks?: number | null
+          inverter_type?: string | null
+          lead_id: string
+          monthly_savings?: number | null
+          net_cost?: number | null
+          new_panel_capacity?: string | null
+          panel_count?: number | null
+          panel_type?: string | null
+          payback_period_years?: number | null
+          presented_at?: string | null
+          roof_condition?: string | null
+          roof_material?: string | null
+          roof_orientation?: string | null
+          roof_pitch?: number | null
+          roof_type?: string | null
+          seai_grant?: number | null
+          selected_products?: Json | null
+          shading_level?: string | null
+          special_requirements?: string | null
+          status?: string | null
+          system_cost?: number | null
+          system_size_kw?: number | null
+          updated_at?: string
+        }
+        Update: {
+          approved_at?: string | null
+          assigned_installer_id?: string | null
+          battery_capacity_kwh?: number | null
+          battery_storage?: boolean | null
+          consultant_id?: string
+          created_at?: string
+          current_annual_consumption_kwh?: number | null
+          current_panel_capacity?: string | null
+          electrical_panel_upgrade_needed?: boolean | null
+          energy_offset_percentage?: number | null
+          estimated_annual_production_kwh?: number | null
+          id?: string
+          installation_cost?: number | null
+          installation_notes?: string | null
+          installation_timeline_weeks?: number | null
+          inverter_type?: string | null
+          lead_id?: string
+          monthly_savings?: number | null
+          net_cost?: number | null
+          new_panel_capacity?: string | null
+          panel_count?: number | null
+          panel_type?: string | null
+          payback_period_years?: number | null
+          presented_at?: string | null
+          roof_condition?: string | null
+          roof_material?: string | null
+          roof_orientation?: string | null
+          roof_pitch?: number | null
+          roof_type?: string | null
+          seai_grant?: number | null
+          selected_products?: Json | null
+          shading_level?: string | null
+          special_requirements?: string | null
+          status?: string | null
+          system_cost?: number | null
+          system_size_kw?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "proposals_assigned_installer_id_fkey"
+            columns: ["assigned_installer_id"]
+            isOneToOne: false
+            referencedRelation: "installers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "proposals_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       site_surveys: {
         Row: {
           completed_at: string | null
@@ -210,6 +405,69 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      solar_products: {
+        Row: {
+          active: boolean | null
+          cost: number
+          created_at: string
+          currency: string | null
+          datasheet_url: string | null
+          description: string | null
+          efficiency_percentage: number | null
+          id: string
+          image_url: string | null
+          in_stock: boolean | null
+          lead_time_days: number | null
+          manufacturer: string
+          model: string
+          power_rating: number | null
+          product_type: string
+          specifications: Json | null
+          updated_at: string
+          warranty_years: number | null
+        }
+        Insert: {
+          active?: boolean | null
+          cost: number
+          created_at?: string
+          currency?: string | null
+          datasheet_url?: string | null
+          description?: string | null
+          efficiency_percentage?: number | null
+          id?: string
+          image_url?: string | null
+          in_stock?: boolean | null
+          lead_time_days?: number | null
+          manufacturer: string
+          model: string
+          power_rating?: number | null
+          product_type: string
+          specifications?: Json | null
+          updated_at?: string
+          warranty_years?: number | null
+        }
+        Update: {
+          active?: boolean | null
+          cost?: number
+          created_at?: string
+          currency?: string | null
+          datasheet_url?: string | null
+          description?: string | null
+          efficiency_percentage?: number | null
+          id?: string
+          image_url?: string | null
+          in_stock?: boolean | null
+          lead_time_days?: number | null
+          manufacturer?: string
+          model?: string
+          power_rating?: number | null
+          product_type?: string
+          specifications?: Json | null
+          updated_at?: string
+          warranty_years?: number | null
+        }
+        Relationships: []
       }
       survey_photos: {
         Row: {
