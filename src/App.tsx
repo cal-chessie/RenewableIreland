@@ -10,6 +10,7 @@ import NotFound from "./pages/NotFound";
 import ValueUpsell from "./pages/ValueUpsell";
 import Auth from "./pages/Auth";
 import ConsultantDashboard from "./pages/ConsultantDashboard";
+import InstallerPortal from "./pages/InstallerPortal";
 
 const queryClient = new QueryClient();
 
@@ -26,6 +27,7 @@ const App = () => (
             <Route path="/upsell" element={<ValueUpsell />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/consultant" element={<ConsultantDashboard />} />
+            <Route path="/installer" element={<InstallerPortal />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
