@@ -112,9 +112,34 @@ export default function ProposalQuestionnaire({ leadId, proposalId, onBack }: Pr
       const systemSizeKw = parseFloat(formData.systemSize || (annualConsumption ? (annualConsumption / 900).toFixed(1) : '0'));
       const estimatedProduction = systemSizeKw * 900;
       const monthlySavings = estimatedProduction && currentTariff ? (estimatedProduction * currentTariff) / 12 : null;
-      const systemCost = systemSizeKw ? systemSizeKw * 1500 : null;
-      const seaiGrant = systemSizeKw ? Math.min(2400, systemSizeKw * 900) : null;
-      const netCost = systemCost !== null && seaiGrant !== null ? systemCost - seaiGrant : null;
+      const systemCost = systemSizeKw ? systemSizeKw * 1400 : null;
+      
+      // Updated SEAI Grant Logic (2024): €1,800 max for domestic systems ≥2kWp
+      const propertyType = formData.propertyType || 'residential';
+      let seaiGrant = 0;
+      let requiresReview = false;
+      
+      if (propertyType === 'residential') {
+        // Domestic: €900/kWp up to €1,800 max for systems ≥2kWp
+        seaiGrant = systemSizeKw >= 2 ? 1800 : Math.round(systemSizeKw * 900);
+      } else if (propertyType === 'commercial') {
+        // Commercial: €900/kWp up to €2,700 for <6kWp, then €300/kWp additional
+        if (systemSizeKw < 6) {
+          seaiGrant = Math.min(2700, Math.round(systemSizeKw * 900));
+        } else if (systemSizeKw <= 50) {
+          seaiGrant = 2700 + Math.round((systemSizeKw - 6) * 300);
+          seaiGrant = Math.min(16200, seaiGrant);
+          requiresReview = systemSizeKw > 20;
+        } else {
+          seaiGrant = 16200; // Estimate pending consultation
+          requiresReview = true;
+        }
+      } else if (propertyType === 'industrial') {
+        seaiGrant = 0;
+        requiresReview = true;
+      }
+      
+      const netCost = systemCost !== null ? systemCost - seaiGrant : null;
       const annualSavings = monthlySavings !== null ? monthlySavings * 12 : null;
       const paybackYears = netCost !== null && annualSavings ? netCost / annualSavings : null;
 
@@ -128,6 +153,8 @@ export default function ProposalQuestionnaire({ leadId, proposalId, onBack }: Pr
         seai_grant: seaiGrant || null,
         net_cost: netCost || null,
         payback_period_years: paybackYears || null,
+        property_type: propertyType,
+        requires_review: requiresReview,
         roof_type: formData.roofType || null,
         roof_material: formData.roofMaterial || null,
         roof_orientation: formData.roofOrientation || null,

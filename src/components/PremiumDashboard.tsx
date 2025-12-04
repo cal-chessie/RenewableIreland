@@ -606,33 +606,9 @@ const ProposalsPanel = ({ onProposalSelect, onEditProposal }: {
 // InstallationsPanel and AnalyticsPanel are now imported from dashboard/
 
 
+// AISalesCoachPanel is now dynamic - imported from ai/DynamicAISalesCoach
+import DynamicAISalesCoach from './ai/DynamicAISalesCoach';
+
 const AISalesCoachPanel = ({ leadId }: { leadId: string }) => (
-  <div>
-    <h3 className="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2">
-      <Zap className="text-primary" size={24} />
-      AI Sales Coach
-    </h3>
-    <div className="space-y-4">
-      <div className="p-4 bg-primary-50 rounded-xl">
-        <h4 className="font-semibold text-slate-900 mb-2">Opening Strategy</h4>
-        <p className="text-sm text-slate-700">
-          Start with their current energy costs and emphasize SEAI grant availability in Dublin.
-        </p>
-      </div>
-      <div className="p-4 bg-slate-50 rounded-xl">
-        <h4 className="font-semibold text-slate-900 mb-2">Key Points</h4>
-        <ul className="text-sm text-slate-700 space-y-1 list-disc list-inside">
-          <li>€2,400 SEAI grant available</li>
-          <li>8-year payback period</li>
-          <li>30% ROI over 25 years</li>
-        </ul>
-      </div>
-      <div className="p-4 bg-slate-50 rounded-xl">
-        <h4 className="font-semibold text-slate-900 mb-2">Next Steps</h4>
-        <p className="text-sm text-slate-700">
-          Schedule site survey within 48 hours. Mention current promotion ending soon.
-        </p>
-      </div>
-    </div>
-  </div>
+  <DynamicAISalesCoach leadId={leadId} />
 );

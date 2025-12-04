@@ -74,6 +74,45 @@ export type Database = {
           },
         ]
       }
+      contracts: {
+        Row: {
+          created_at: string
+          gdpr_consent: boolean
+          gdpr_consent_text: string | null
+          id: string
+          lead_id: string
+          proposal_id: string
+          signature_data: string | null
+          signed_at: string
+          signed_by_email: string
+          signed_by_name: string
+        }
+        Insert: {
+          created_at?: string
+          gdpr_consent?: boolean
+          gdpr_consent_text?: string | null
+          id?: string
+          lead_id: string
+          proposal_id: string
+          signature_data?: string | null
+          signed_at?: string
+          signed_by_email: string
+          signed_by_name: string
+        }
+        Update: {
+          created_at?: string
+          gdpr_consent?: boolean
+          gdpr_consent_text?: string | null
+          id?: string
+          lead_id?: string
+          proposal_id?: string
+          signature_data?: string | null
+          signed_at?: string
+          signed_by_email?: string
+          signed_by_name?: string
+        }
+        Relationships: []
+      }
       installers: {
         Row: {
           availability_status: string | null
@@ -107,6 +146,66 @@ export type Database = {
         }
         Relationships: []
       }
+      invoices: {
+        Row: {
+          contract_id: string | null
+          created_at: string
+          deposit_amount: number | null
+          deposit_paid: boolean | null
+          deposit_paid_at: string | null
+          due_date: string | null
+          final_amount: number | null
+          final_paid: boolean | null
+          final_paid_at: string | null
+          id: string
+          invoice_number: string
+          lead_id: string
+          notes: string | null
+          proposal_id: string
+          status: string | null
+          total_amount: number
+          updated_at: string
+        }
+        Insert: {
+          contract_id?: string | null
+          created_at?: string
+          deposit_amount?: number | null
+          deposit_paid?: boolean | null
+          deposit_paid_at?: string | null
+          due_date?: string | null
+          final_amount?: number | null
+          final_paid?: boolean | null
+          final_paid_at?: string | null
+          id?: string
+          invoice_number: string
+          lead_id: string
+          notes?: string | null
+          proposal_id: string
+          status?: string | null
+          total_amount: number
+          updated_at?: string
+        }
+        Update: {
+          contract_id?: string | null
+          created_at?: string
+          deposit_amount?: number | null
+          deposit_paid?: boolean | null
+          deposit_paid_at?: string | null
+          due_date?: string | null
+          final_amount?: number | null
+          final_paid?: boolean | null
+          final_paid_at?: string | null
+          id?: string
+          invoice_number?: string
+          lead_id?: string
+          notes?: string | null
+          proposal_id?: string
+          status?: string | null
+          total_amount?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       leads: {
         Row: {
           address: string | null
@@ -117,9 +216,11 @@ export type Database = {
           name: string
           notes: string | null
           phone: string | null
+          property_type: string | null
           score: number | null
           status: string | null
           updated_at: string
+          workflow_stage: string | null
         }
         Insert: {
           address?: string | null
@@ -130,9 +231,11 @@ export type Database = {
           name: string
           notes?: string | null
           phone?: string | null
+          property_type?: string | null
           score?: number | null
           status?: string | null
           updated_at?: string
+          workflow_stage?: string | null
         }
         Update: {
           address?: string | null
@@ -143,9 +246,11 @@ export type Database = {
           name?: string
           notes?: string | null
           phone?: string | null
+          property_type?: string | null
           score?: number | null
           status?: string | null
           updated_at?: string
+          workflow_stage?: string | null
         }
         Relationships: []
       }
@@ -208,6 +313,10 @@ export type Database = {
           panel_type: string | null
           payback_period_years: number | null
           presented_at: string | null
+          property_type: string | null
+          requires_review: boolean | null
+          reviewed_at: string | null
+          reviewed_by: string | null
           roof_condition: string | null
           roof_material: string | null
           roof_orientation: string | null
@@ -247,6 +356,10 @@ export type Database = {
           panel_type?: string | null
           payback_period_years?: number | null
           presented_at?: string | null
+          property_type?: string | null
+          requires_review?: boolean | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
           roof_condition?: string | null
           roof_material?: string | null
           roof_orientation?: string | null
@@ -286,6 +399,10 @@ export type Database = {
           panel_type?: string | null
           payback_period_years?: number | null
           presented_at?: string | null
+          property_type?: string | null
+          requires_review?: boolean | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
           roof_condition?: string | null
           roof_material?: string | null
           roof_orientation?: string | null
