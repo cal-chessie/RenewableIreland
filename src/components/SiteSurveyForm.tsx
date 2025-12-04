@@ -10,8 +10,10 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from '@/components/ui/use-toast';
-import { Loader2, Save, CheckCircle, Upload, X, Image as ImageIcon } from 'lucide-react';
+import { Loader2, Save, CheckCircle, Upload, X, FileText, ArrowRight } from 'lucide-react';
 import { useDropzone } from 'react-dropzone';
+import { validateSurveyCompletion, mapSurveyToProposal } from '@/lib/surveyValidation';
+import SurveyProgressIndicator from '@/components/survey/SurveyProgressIndicator';
 
 const surveySchema = z.object({
   roof_type: z.string().min(1, 'Roof type is required'),
@@ -37,16 +39,18 @@ type SurveyFormData = z.infer<typeof surveySchema>;
 
 interface SiteSurveyFormProps {
   leadId: string;
+  onCreateProposal?: (surveyData: any, leadData: any) => void;
 }
 
-export default function SiteSurveyForm({ leadId }: SiteSurveyFormProps) {
+export default function SiteSurveyForm({ leadId, onCreateProposal }: SiteSurveyFormProps) {
   const [loading, setLoading] = useState(false);
   const [existingSurvey, setExistingSurvey] = useState<any>(null);
+  const [leadData, setLeadData] = useState<any>(null);
   const [fetchingData, setFetchingData] = useState(true);
   const [uploadedPhotos, setUploadedPhotos] = useState<Array<{ url: string; type: string; description: string }>>([]);
   const [uploadingPhotos, setUploadingPhotos] = useState(false);
 
-  const { register, handleSubmit, formState: { errors }, setValue, watch } = useForm<SurveyFormData>({
+  const { register, handleSubmit, formState: { errors }, setValue, watch, getValues } = useForm<SurveyFormData>({
     resolver: zodResolver(surveySchema),
     defaultValues: {
       status: 'draft',
@@ -54,6 +58,10 @@ export default function SiteSurveyForm({ leadId }: SiteSurveyFormProps) {
   });
 
   const status = watch('status');
+  const formValues = watch();
+
+  // Calculate completion status
+  const completionStatus = validateSurveyCompletion(formValues, uploadedPhotos.length);
 
   useEffect(() => {
     fetchExistingSurvey();
@@ -61,6 +69,17 @@ export default function SiteSurveyForm({ leadId }: SiteSurveyFormProps) {
 
   const fetchExistingSurvey = async () => {
     try {
+      // Fetch lead data
+      const { data: lead } = await supabase
+        .from('leads')
+        .select('*')
+        .eq('id', leadId)
+        .single();
+      
+      if (lead) {
+        setLeadData(lead);
+      }
+
       const { data, error } = await supabase
         .from('site_surveys')
         .select('*')
@@ -161,11 +180,23 @@ export default function SiteSurveyForm({ leadId }: SiteSurveyFormProps) {
     setUploadedPhotos(prev => prev.filter((_, i) => i !== index));
   };
 
-  const onSubmit = async (data: SurveyFormData) => {
+  const onSubmit = async (data: SurveyFormData, shouldComplete: boolean = false) => {
+    // Validate completion if trying to complete
+    if (shouldComplete && !completionStatus.isComplete) {
+      toast({
+        title: 'Cannot Complete Survey',
+        description: `Please fill in all required fields: ${completionStatus.missingFields.slice(0, 3).join(', ')}${completionStatus.missingFields.length > 3 ? '...' : ''}`,
+        variant: 'destructive',
+      });
+      return;
+    }
+
     setLoading(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Not authenticated');
+
+      const finalStatus = shouldComplete ? 'completed' : data.status;
 
       const surveyData = {
         lead_id: leadId,
@@ -186,8 +217,8 @@ export default function SiteSurveyForm({ leadId }: SiteSurveyFormProps) {
         estimated_installation_cost: data.estimated_installation_cost ? parseFloat(data.estimated_installation_cost) : null,
         installation_notes: data.installation_notes || null,
         special_requirements: data.special_requirements || null,
-        status: data.status,
-        completed_at: data.status === 'completed' ? new Date().toISOString() : null,
+        status: finalStatus,
+        completed_at: finalStatus === 'completed' ? new Date().toISOString() : null,
       };
 
       let surveyId;
@@ -232,9 +263,22 @@ export default function SiteSurveyForm({ leadId }: SiteSurveyFormProps) {
         if (photoError) throw photoError;
       }
 
+      // Update lead workflow stage
+      if (finalStatus === 'completed') {
+        await supabase
+          .from('leads')
+          .update({ workflow_stage: 'survey_complete' })
+          .eq('id', leadId);
+      } else if (finalStatus === 'in_progress') {
+        await supabase
+          .from('leads')
+          .update({ workflow_stage: 'survey_in_progress' })
+          .eq('id', leadId);
+      }
+
       toast({
         title: 'Success',
-        description: `Site survey ${existingSurvey ? 'updated' : 'created'} successfully`,
+        description: `Site survey ${existingSurvey ? 'updated' : 'created'} successfully${finalStatus === 'completed' ? ' and marked as complete' : ''}`,
       });
 
       fetchExistingSurvey();
@@ -250,6 +294,16 @@ export default function SiteSurveyForm({ leadId }: SiteSurveyFormProps) {
     }
   };
 
+  const handleCompleteAndCreateProposal = async () => {
+    const formData = getValues();
+    await onSubmit(formData, true);
+    
+    if (completionStatus.isComplete && onCreateProposal) {
+      const proposalData = mapSurveyToProposal(formData, leadData);
+      onCreateProposal(proposalData, leadData);
+    }
+  };
+
   if (fetchingData) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -259,251 +313,348 @@ export default function SiteSurveyForm({ leadId }: SiteSurveyFormProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-      {/* Roof Details */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Roof Details</CardTitle>
-          <CardDescription>Information about the property's roof</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="roof_type">Roof Type *</Label>
-              <Select onValueChange={(value) => setValue('roof_type', value)} value={watch('roof_type')}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select roof type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="pitched">Pitched</SelectItem>
-                  <SelectItem value="flat">Flat</SelectItem>
-                  <SelectItem value="mixed">Mixed</SelectItem>
-                </SelectContent>
-              </Select>
-              {errors.roof_type && <p className="text-sm text-destructive mt-1">{errors.roof_type.message}</p>}
-            </div>
+    <div className="space-y-6">
+      {/* Progress Indicator - Sticky on mobile */}
+      <div className="sticky top-0 z-10 bg-background/95 backdrop-blur pb-4 -mx-4 px-4 sm:mx-0 sm:px-0 sm:static sm:bg-transparent">
+        <SurveyProgressIndicator status={completionStatus} />
+      </div>
 
-            <div>
-              <Label htmlFor="roof_condition">Roof Condition *</Label>
-              <Select onValueChange={(value) => setValue('roof_condition', value)} value={watch('roof_condition')}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select condition" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="excellent">Excellent</SelectItem>
-                  <SelectItem value="good">Good</SelectItem>
-                  <SelectItem value="fair">Fair</SelectItem>
-                  <SelectItem value="poor">Poor</SelectItem>
-                </SelectContent>
-              </Select>
-              {errors.roof_condition && <p className="text-sm text-destructive mt-1">{errors.roof_condition.message}</p>}
-            </div>
-
-            <div>
-              <Label htmlFor="roof_orientation">Roof Orientation</Label>
-              <Input {...register('roof_orientation')} placeholder="e.g., South-facing" />
-            </div>
-
-            <div>
-              <Label htmlFor="roof_pitch">Roof Pitch (degrees)</Label>
-              <Input {...register('roof_pitch')} type="number" step="0.1" placeholder="e.g., 30" />
-            </div>
-
-            <div>
-              <Label htmlFor="roof_material">Roof Material</Label>
-              <Input {...register('roof_material')} placeholder="e.g., Tiles, Slate" />
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Environmental Analysis */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Environmental Analysis</CardTitle>
-          <CardDescription>Shading and surrounding conditions</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div>
-            <Label htmlFor="shading_analysis">Shading Analysis</Label>
-            <Textarea {...register('shading_analysis')} placeholder="Describe any shading issues..." rows={3} />
-          </div>
-
-          <div>
-            <Label htmlFor="nearby_obstructions">Nearby Obstructions</Label>
-            <Textarea {...register('nearby_obstructions')} placeholder="Trees, buildings, etc..." rows={3} />
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Electrical System */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Electrical System</CardTitle>
-          <CardDescription>Current electrical infrastructure</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="electrical_panel_capacity">Panel Capacity</Label>
-              <Input {...register('electrical_panel_capacity')} placeholder="e.g., 100A" />
-            </div>
-
-            <div>
-              <Label htmlFor="electrical_panel_condition">Panel Condition</Label>
-              <Select onValueChange={(value) => setValue('electrical_panel_condition', value)} value={watch('electrical_panel_condition')}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select condition" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="excellent">Excellent</SelectItem>
-                  <SelectItem value="good">Good</SelectItem>
-                  <SelectItem value="needs_upgrade">Needs Upgrade</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div>
-              <Label htmlFor="meter_location">Meter Location</Label>
-              <Input {...register('meter_location')} placeholder="e.g., Outside front" />
-            </div>
-
-            <div>
-              <Label htmlFor="grid_connection_type">Grid Connection Type</Label>
-              <Input {...register('grid_connection_type')} placeholder="e.g., Single phase" />
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* System Recommendations */}
-      <Card>
-        <CardHeader>
-          <CardTitle>System Recommendations</CardTitle>
-          <CardDescription>Proposed solar system specifications</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <Label htmlFor="recommended_system_size">System Size (kW)</Label>
-              <Input {...register('recommended_system_size')} type="number" step="0.1" placeholder="e.g., 6.5" />
-            </div>
-
-            <div>
-              <Label htmlFor="recommended_panel_count">Panel Count</Label>
-              <Input {...register('recommended_panel_count')} type="number" placeholder="e.g., 16" />
-            </div>
-
-            <div>
-              <Label htmlFor="estimated_installation_cost">Est. Cost (€)</Label>
-              <Input {...register('estimated_installation_cost')} type="number" step="0.01" placeholder="e.g., 12000" />
-            </div>
-          </div>
-
-          <div>
-            <Label htmlFor="installation_notes">Installation Notes</Label>
-            <Textarea {...register('installation_notes')} placeholder="Any special installation considerations..." rows={3} />
-          </div>
-
-          <div>
-            <Label htmlFor="special_requirements">Special Requirements</Label>
-            <Textarea {...register('special_requirements')} placeholder="Scaffolding, permits, etc..." rows={3} />
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Photo Upload */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Site Photos</CardTitle>
-          <CardDescription>Upload photos of the roof, electrical panel, and property</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div
-            {...getRootProps()}
-            className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors ${
-              isDragActive ? 'border-primary bg-primary/5' : 'border-muted-foreground/25 hover:border-primary/50'
-            }`}
-          >
-            <input {...getInputProps()} />
-            <Upload className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-            {uploadingPhotos ? (
-              <div className="flex items-center justify-center gap-2">
-                <Loader2 className="h-4 w-4 animate-spin" />
-                <p className="text-sm text-muted-foreground">Uploading...</p>
+      <form onSubmit={handleSubmit((data) => onSubmit(data, false))} className="space-y-6">
+        {/* Roof Details */}
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-lg flex items-center justify-between">
+              Roof Details
+              {completionStatus.sections.roof.complete && (
+                <CheckCircle className="h-5 w-5 text-green-500" />
+              )}
+            </CardTitle>
+            <CardDescription className="text-xs sm:text-sm">Information about the property's roof</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="roof_type">Roof Type *</Label>
+                <Select onValueChange={(value) => setValue('roof_type', value)} value={watch('roof_type')}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select roof type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="pitched">Pitched</SelectItem>
+                    <SelectItem value="flat">Flat</SelectItem>
+                    <SelectItem value="mixed">Mixed</SelectItem>
+                  </SelectContent>
+                </Select>
+                {errors.roof_type && <p className="text-sm text-destructive mt-1">{errors.roof_type.message}</p>}
               </div>
-            ) : (
-              <>
-                <p className="text-sm text-muted-foreground mb-2">
-                  {isDragActive ? 'Drop photos here' : 'Drag & drop photos here, or click to browse'}
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  Accepts JPEG, PNG, WebP (max 5MB per file)
-                </p>
-              </>
-            )}
-          </div>
 
-          {uploadedPhotos.length > 0 && (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
-              {uploadedPhotos.map((photo, index) => (
-                <div key={index} className="relative group">
-                  <img
-                    src={photo.url}
-                    alt={photo.description}
-                    className="w-full h-32 object-cover rounded-lg border border-border"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => removePhoto(index)}
-                    className="absolute top-2 right-2 bg-destructive text-destructive-foreground rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
-                  >
-                    <X className="h-4 w-4" />
-                  </button>
-                  <div className="mt-1">
-                    <p className="text-xs text-muted-foreground truncate">{photo.description}</p>
-                  </div>
-                </div>
-              ))}
+              <div>
+                <Label htmlFor="roof_condition">Roof Condition *</Label>
+                <Select onValueChange={(value) => setValue('roof_condition', value)} value={watch('roof_condition')}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select condition" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="excellent">Excellent</SelectItem>
+                    <SelectItem value="good">Good</SelectItem>
+                    <SelectItem value="fair">Fair</SelectItem>
+                    <SelectItem value="poor">Poor</SelectItem>
+                  </SelectContent>
+                </Select>
+                {errors.roof_condition && <p className="text-sm text-destructive mt-1">{errors.roof_condition.message}</p>}
+              </div>
+
+              <div>
+                <Label htmlFor="roof_orientation">Roof Orientation *</Label>
+                <Select onValueChange={(value) => setValue('roof_orientation', value)} value={watch('roof_orientation')}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select orientation" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="South">South</SelectItem>
+                    <SelectItem value="South-East">South-East</SelectItem>
+                    <SelectItem value="South-West">South-West</SelectItem>
+                    <SelectItem value="East">East</SelectItem>
+                    <SelectItem value="West">West</SelectItem>
+                    <SelectItem value="North">North (not ideal)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <Label htmlFor="roof_pitch">Roof Pitch (degrees) *</Label>
+                <Input {...register('roof_pitch')} type="number" step="1" placeholder="e.g., 30" className="w-full" />
+              </div>
+
+              <div className="sm:col-span-2">
+                <Label htmlFor="roof_material">Roof Material *</Label>
+                <Select onValueChange={(value) => setValue('roof_material', value)} value={watch('roof_material')}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select material" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Concrete tiles">Concrete tiles</SelectItem>
+                    <SelectItem value="Clay tiles">Clay tiles</SelectItem>
+                    <SelectItem value="Slate">Slate</SelectItem>
+                    <SelectItem value="Metal">Metal</SelectItem>
+                    <SelectItem value="Felt/Membrane">Felt/Membrane (flat)</SelectItem>
+                    <SelectItem value="Other">Other</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
-          )}
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
 
-      {/* Status and Submit */}
-      <Card>
-        <CardContent className="pt-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Label htmlFor="status">Survey Status</Label>
-              <Select onValueChange={(value) => setValue('status', value)} value={status}>
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue />
+        {/* Environmental Analysis */}
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-lg">Environmental Analysis</CardTitle>
+            <CardDescription className="text-xs sm:text-sm">Shading and surrounding conditions</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div>
+              <Label htmlFor="shading_analysis">Shading Analysis</Label>
+              <Select onValueChange={(value) => setValue('shading_analysis', value)} value={watch('shading_analysis')}>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select shading level" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="draft">Draft</SelectItem>
-                  <SelectItem value="in_progress">In Progress</SelectItem>
-                  <SelectItem value="completed">Completed</SelectItem>
+                  <SelectItem value="None">No shading</SelectItem>
+                  <SelectItem value="Minimal">Minimal (early morning/late evening only)</SelectItem>
+                  <SelectItem value="Partial">Partial (some hours affected)</SelectItem>
+                  <SelectItem value="Significant">Significant (major obstruction)</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
-            <Button type="submit" disabled={loading} className="gap-2">
-              {loading ? (
-                <>
+            <div>
+              <Label htmlFor="nearby_obstructions">Nearby Obstructions</Label>
+              <Textarea {...register('nearby_obstructions')} placeholder="Trees, chimneys, neighboring buildings..." rows={2} className="w-full" />
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Electrical System */}
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-lg flex items-center justify-between">
+              Electrical System
+              {completionStatus.sections.electrical.complete && (
+                <CheckCircle className="h-5 w-5 text-green-500" />
+              )}
+            </CardTitle>
+            <CardDescription className="text-xs sm:text-sm">Current electrical infrastructure</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="electrical_panel_capacity">Panel Capacity *</Label>
+                <Select onValueChange={(value) => setValue('electrical_panel_capacity', value)} value={watch('electrical_panel_capacity')}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select capacity" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="40A">40A (older property)</SelectItem>
+                    <SelectItem value="63A">63A (standard)</SelectItem>
+                    <SelectItem value="80A">80A (modern)</SelectItem>
+                    <SelectItem value="100A">100A (large property)</SelectItem>
+                    <SelectItem value="3-phase">3-phase (commercial)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <Label htmlFor="electrical_panel_condition">Panel Condition *</Label>
+                <Select onValueChange={(value) => setValue('electrical_panel_condition', value)} value={watch('electrical_panel_condition')}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select condition" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="excellent">Excellent (modern, compliant)</SelectItem>
+                    <SelectItem value="good">Good (adequate)</SelectItem>
+                    <SelectItem value="needs_upgrade">Needs Upgrade</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <Label htmlFor="meter_location">Meter Location</Label>
+                <Input {...register('meter_location')} placeholder="e.g., Outside front, utility room" className="w-full" />
+              </div>
+
+              <div>
+                <Label htmlFor="grid_connection_type">Grid Connection *</Label>
+                <Select onValueChange={(value) => setValue('grid_connection_type', value)} value={watch('grid_connection_type')}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Single phase">Single phase</SelectItem>
+                    <SelectItem value="Three phase">Three phase</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* System Recommendations */}
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-lg flex items-center justify-between">
+              System Recommendations
+              {completionStatus.sections.recommendations.complete && (
+                <CheckCircle className="h-5 w-5 text-green-500" />
+              )}
+            </CardTitle>
+            <CardDescription className="text-xs sm:text-sm">Proposed solar system specifications</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div>
+                <Label htmlFor="recommended_system_size">System Size (kW) *</Label>
+                <Input {...register('recommended_system_size')} type="number" step="0.1" placeholder="e.g., 6.5" className="w-full" />
+              </div>
+
+              <div>
+                <Label htmlFor="recommended_panel_count">Panel Count *</Label>
+                <Input {...register('recommended_panel_count')} type="number" placeholder="e.g., 16" className="w-full" />
+              </div>
+
+              <div>
+                <Label htmlFor="estimated_installation_cost">Est. Cost (€)</Label>
+                <Input {...register('estimated_installation_cost')} type="number" step="0.01" placeholder="e.g., 12000" className="w-full" />
+              </div>
+            </div>
+
+            <div>
+              <Label htmlFor="installation_notes">Installation Notes</Label>
+              <Textarea {...register('installation_notes')} placeholder="Access requirements, scaffolding needs, special considerations..." rows={2} className="w-full" />
+            </div>
+
+            <div>
+              <Label htmlFor="special_requirements">Special Requirements</Label>
+              <Textarea {...register('special_requirements')} placeholder="Permits, planning permission, HOA restrictions..." rows={2} className="w-full" />
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Photo Upload */}
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-lg flex items-center justify-between">
+              Site Photos
+              {completionStatus.sections.photos.complete && (
+                <CheckCircle className="h-5 w-5 text-green-500" />
+              )}
+            </CardTitle>
+            <CardDescription className="text-xs sm:text-sm">
+              Upload photos of roof, electrical panel, meter ({completionStatus.sections.photos.count}/{completionStatus.sections.photos.required} minimum)
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div
+              {...getRootProps()}
+              className={`border-2 border-dashed rounded-lg p-6 sm:p-8 text-center cursor-pointer transition-colors ${
+                isDragActive ? 'border-primary bg-primary/5' : 'border-muted-foreground/25 hover:border-primary/50'
+              }`}
+            >
+              <input {...getInputProps()} />
+              <Upload className="mx-auto h-10 w-10 sm:h-12 sm:w-12 text-muted-foreground mb-3" />
+              {uploadingPhotos ? (
+                <div className="flex items-center justify-center gap-2">
                   <Loader2 className="h-4 w-4 animate-spin" />
-                  Saving...
-                </>
+                  <p className="text-sm text-muted-foreground">Uploading...</p>
+                </div>
               ) : (
                 <>
-                  {status === 'completed' ? <CheckCircle className="h-4 w-4" /> : <Save className="h-4 w-4" />}
-                  {existingSurvey ? 'Update Survey' : 'Create Survey'}
+                  <p className="text-sm text-muted-foreground mb-1">
+                    {isDragActive ? 'Drop photos here' : 'Tap to add photos or drag & drop'}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    JPEG, PNG, WebP (max 5MB)
+                  </p>
                 </>
               )}
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-    </form>
+            </div>
+
+            {uploadedPhotos.length > 0 && (
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+                {uploadedPhotos.map((photo, index) => (
+                  <div key={index} className="relative group aspect-square">
+                    <img
+                      src={photo.url}
+                      alt={photo.description}
+                      className="w-full h-full object-cover rounded-lg border border-border"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removePhoto(index)}
+                      className="absolute top-1 right-1 bg-destructive text-destructive-foreground rounded-full p-1.5 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity"
+                    >
+                      <X className="h-3 w-3" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Status & Actions */}
+        <Card>
+          <CardContent className="pt-6">
+            <div className="flex flex-col sm:flex-row gap-3">
+              <div className="flex-1">
+                <Label htmlFor="status" className="mb-2 block">Survey Status</Label>
+                <Select onValueChange={(value) => setValue('status', value)} value={status}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="draft">Draft</SelectItem>
+                    <SelectItem value="in_progress">In Progress</SelectItem>
+                    <SelectItem value="completed" disabled={!completionStatus.isComplete}>
+                      Completed {!completionStatus.isComplete && `(${completionStatus.completionPercentage}%)`}
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            {/* Action Buttons - Mobile optimized */}
+            <div className="mt-6 flex flex-col gap-3">
+              <Button type="submit" disabled={loading} className="w-full sm:w-auto">
+                {loading ? (
+                  <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Saving...</>
+                ) : (
+                  <><Save className="mr-2 h-4 w-4" /> Save Survey</>
+                )}
+              </Button>
+
+              {completionStatus.isComplete && onCreateProposal && (
+                <Button
+                  type="button"
+                  onClick={handleCompleteAndCreateProposal}
+                  disabled={loading}
+                  className="w-full sm:w-auto bg-green-600 hover:bg-green-700"
+                >
+                  <FileText className="mr-2 h-4 w-4" />
+                  Complete & Create Proposal
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              )}
+
+              {!completionStatus.isComplete && onCreateProposal && (
+                <p className="text-sm text-muted-foreground text-center sm:text-left">
+                  Complete all required fields ({completionStatus.completionPercentage}%) to create a proposal
+                </p>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      </form>
+    </div>
   );
 }
