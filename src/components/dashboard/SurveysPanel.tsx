@@ -3,20 +3,15 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/components/ui/use-toast';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ClipboardList, Eye, Plus, Image as ImageIcon } from 'lucide-react';
+import { ClipboardList, Eye, Image as ImageIcon, FileText, ArrowRight } from 'lucide-react';
 import SiteSurveyForm from '@/components/SiteSurveyForm';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
 
 interface SurveysPanelProps {
   onStartSurvey?: (leadId: string) => void;
+  onCreateProposal?: (surveyData: any, leadData: any) => void;
 }
 
-export default function SurveysPanel({ onStartSurvey }: SurveysPanelProps) {
+export default function SurveysPanel({ onStartSurvey, onCreateProposal }: SurveysPanelProps) {
   const [surveys, setSurveys] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedSurvey, setSelectedSurvey] = useState<any | null>(null);
@@ -32,7 +27,7 @@ export default function SurveysPanel({ onStartSurvey }: SurveysPanelProps) {
         .from('site_surveys')
         .select(`
           *,
-          leads (id, name, email, address),
+          leads (id, name, email, address, monthly_bill),
           survey_photos (id, photo_url, photo_type)
         `)
         .order('created_at', { ascending: false });
@@ -60,6 +55,32 @@ export default function SurveysPanel({ onStartSurvey }: SurveysPanelProps) {
     return styles[status] || 'bg-slate-100 text-slate-700';
   };
 
+  const handleCreateProposalFromSurvey = (survey: any) => {
+    if (onCreateProposal && survey.leads) {
+      // Map survey data to proposal format
+      const proposalData = {
+        roofType: survey.roof_type,
+        roofCondition: survey.roof_condition,
+        roofOrientation: survey.roof_orientation,
+        roofPitch: survey.roof_pitch?.toString() || '',
+        roofMaterial: survey.roof_material,
+        shadingLevel: survey.shading_analysis || '',
+        systemSize: survey.recommended_system_size?.toString() || '',
+        panelCapacity: survey.electrical_panel_capacity,
+        specialRequirements: survey.special_requirements,
+        installationNotes: survey.installation_notes,
+        // Calculate annual consumption from monthly bill
+        annualConsumption: survey.leads.monthly_bill 
+          ? Math.round((survey.leads.monthly_bill / 0.35) * 12).toString()
+          : '',
+        currentTariff: '0.35',
+        batteryInterest: 'no',
+      };
+      
+      onCreateProposal(proposalData, survey.leads);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -82,7 +103,14 @@ export default function SurveysPanel({ onStartSurvey }: SurveysPanelProps) {
         >
           ← Back to Surveys
         </Button>
-        <SiteSurveyForm leadId={selectedSurvey.lead_id} />
+        <SiteSurveyForm 
+          leadId={selectedSurvey.lead_id} 
+          onCreateProposal={onCreateProposal ? (surveyData, leadData) => {
+            onCreateProposal(surveyData, leadData);
+            setViewMode('list');
+            setSelectedSurvey(null);
+          } : undefined}
+        />
       </div>
     );
   }
@@ -99,7 +127,7 @@ export default function SurveysPanel({ onStartSurvey }: SurveysPanelProps) {
           <ClipboardList className="mx-auto text-slate-300 mb-4" size={48} />
           <h3 className="text-lg font-semibold text-slate-900 mb-2">No surveys yet</h3>
           <p className="text-slate-600 text-sm">
-            Start a survey from the Leads tab by clicking "Start Survey" on any lead
+            Start a survey from the Leads tab by clicking "Survey" on any lead
           </p>
         </div>
       ) : (
@@ -122,7 +150,7 @@ export default function SurveysPanel({ onStartSurvey }: SurveysPanelProps) {
                   <p className="text-sm text-slate-600">
                     {survey.leads?.address || 'No address'}
                   </p>
-                  <div className="flex gap-4 mt-2 text-xs text-slate-500">
+                  <div className="flex flex-wrap gap-3 mt-2 text-xs text-slate-500">
                     <span>Roof: {survey.roof_type || 'N/A'}</span>
                     <span>Condition: {survey.roof_condition || 'N/A'}</span>
                     {survey.recommended_system_size && (
@@ -130,7 +158,7 @@ export default function SurveysPanel({ onStartSurvey }: SurveysPanelProps) {
                     )}
                   </div>
                 </div>
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2 flex-wrap justify-end">
                   {survey.survey_photos?.length > 0 && (
                     <div className="flex items-center gap-1 text-sm text-slate-500">
                       <ImageIcon size={16} />
@@ -149,6 +177,17 @@ export default function SurveysPanel({ onStartSurvey }: SurveysPanelProps) {
                     <Eye size={16} />
                     View / Edit
                   </Button>
+                  {survey.status === 'completed' && onCreateProposal && (
+                    <Button
+                      size="sm"
+                      onClick={() => handleCreateProposalFromSurvey(survey)}
+                      className="gap-2 bg-green-600 hover:bg-green-700"
+                    >
+                      <FileText size={16} />
+                      Create Proposal
+                      <ArrowRight size={14} />
+                    </Button>
+                  )}
                 </div>
               </div>
               <p className="text-xs text-slate-500">

@@ -14,6 +14,8 @@ import { Zap } from 'lucide-react';
 const emailSchema = z.string().email('Invalid email address').max(255);
 const passwordSchema = z.string().min(8, 'Password must be at least 8 characters').max(100);
 
+type RoleType = 'owner' | 'consultant' | 'installer';
+
 export default function Auth() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -23,7 +25,7 @@ export default function Auth() {
   const [resetDialogOpen, setResetDialogOpen] = useState(false);
   const [newPassword, setNewPassword] = useState('');
   const [isPasswordRecovery, setIsPasswordRecovery] = useState(false);
-  const [role, setRole] = useState<'consultant' | 'installer'>('consultant');
+  const [role, setRole] = useState<RoleType>('consultant');
 
   useEffect(() => {
     // Check if user is already logged in or if this is a password recovery
@@ -34,11 +36,29 @@ export default function Auth() {
         if (hashParams.get('type') === 'recovery') {
           setIsPasswordRecovery(true);
         } else {
-          navigate('/consultant');
+          // Redirect based on roles
+          redirectBasedOnRoles(session.user.id);
         }
       }
     });
   }, [navigate]);
+
+  const redirectBasedOnRoles = async (userId: string) => {
+    const { data: roles } = await supabase
+      .from('user_roles')
+      .select('role')
+      .eq('user_id', userId);
+
+    const userRoles = (roles || []).map(r => r.role);
+    
+    // If only installer, go to installer portal
+    if (userRoles.length === 1 && userRoles.includes('installer')) {
+      navigate('/installer');
+    } else {
+      // Consultants, owners, or mixed roles go to consultant dashboard
+      navigate('/consultant');
+    }
+  };
 
   const validateInputs = () => {
     try {
@@ -84,30 +104,34 @@ export default function Auth() {
       return;
     }
 
-    // Create user_role entry
+    // Create user_role entries based on selected role
     if (data.user) {
-      const { error: roleError } = await supabase
-        .from('user_roles')
-        .insert({ user_id: data.user.id, role: role });
-
-      if (roleError) {
-        console.error('Error creating user role:', roleError);
+      if (role === 'owner') {
+        // Owner gets all three roles for full access
+        const rolesToInsert = ['consultant', 'installer', 'admin'] as const;
+        for (const r of rolesToInsert) {
+          await supabase.from('user_roles').insert({ user_id: data.user.id, role: r });
+        }
+      } else {
+        // Single role
+        await supabase.from('user_roles').insert({ user_id: data.user.id, role: role });
       }
 
       // Create profile entry
+      const profileRole = role === 'owner' ? 'consultant' : role;
       const { error: profileError } = await supabase
         .from('profiles')
         .insert({ 
           user_id: data.user.id,
-          role: role
+          role: profileRole
         });
 
       if (profileError) {
         console.error('Error creating profile:', profileError);
       }
 
-      // Create installer profile if role is installer
-      if (role === 'installer') {
+      // Create installer profile if role includes installer
+      if (role === 'installer' || role === 'owner') {
         const { error: installerError } = await supabase
           .from('installers')
           .insert({ user_id: data.user.id });
@@ -130,7 +154,7 @@ export default function Auth() {
     if (!validateInputs()) return;
 
     setLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
@@ -142,8 +166,9 @@ export default function Auth() {
         variant: 'destructive',
       });
       setLoading(false);
-    } else {
-      navigate('/consultant');
+    } else if (data.user) {
+      // Redirect based on user roles
+      redirectBasedOnRoles(data.user.id);
     }
   };
 
@@ -276,8 +301,8 @@ export default function Auth() {
               <Zap className="h-6 w-6 text-primary" />
             </div>
           </div>
-          <CardTitle className="text-2xl">Consultant Portal</CardTitle>
-          <CardDescription>Sign in to manage your solar leads</CardDescription>
+          <CardTitle className="text-2xl">Solar Portal</CardTitle>
+          <CardDescription>Sign in to manage your solar business</CardDescription>
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="signin" className="w-full">
@@ -295,7 +320,7 @@ export default function Auth() {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="consultant@example.com"
+                    placeholder="you@example.com"
                     required
                     className="mt-1"
                   />
@@ -343,7 +368,7 @@ export default function Auth() {
                           type="email"
                           value={resetEmail}
                           onChange={(e) => setResetEmail(e.target.value)}
-                          placeholder="consultant@example.com"
+                          placeholder="you@example.com"
                           required
                           className="mt-1"
                         />
@@ -370,7 +395,7 @@ export default function Auth() {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="consultant@example.com"
+                    placeholder="you@example.com"
                     required
                     className="mt-1"
                   />
@@ -395,14 +420,19 @@ export default function Auth() {
                   <select
                     id="role"
                     value={role}
-                    onChange={(e) => setRole(e.target.value as 'consultant' | 'installer')}
+                    onChange={(e) => setRole(e.target.value as RoleType)}
                     className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 mt-1"
                   >
+                    <option value="owner">Owner / Solo Operator (full access)</option>
                     <option value="consultant">Consultant</option>
                     <option value="installer">Installer</option>
                   </select>
                   <p className="text-xs text-slate-500 mt-1">
-                    Select your role to access the appropriate dashboard
+                    {role === 'owner' 
+                      ? 'Full access to leads, surveys, proposals, and installations' 
+                      : role === 'consultant'
+                      ? 'Manage leads, surveys, and proposals'
+                      : 'View assigned installations and surveys'}
                   </p>
                 </div>
                 <Button
