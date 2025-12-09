@@ -12,10 +12,12 @@ import {
   LogOut,
   Eye,
   ClipboardList,
-  Plus
+  Search,
+  FileCheck
 } from 'lucide-react';
 import { toast } from '@/components/ui/use-toast';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
 import LeadDetailView from './LeadDetailView';
@@ -72,6 +74,7 @@ export default function PremiumDashboard({ onBackToClient }: { onBackToClient?: 
   const [viewMode, setViewMode] = useState<'list' | 'view' | 'edit'>('list');
   const [surveyLeadId, setSurveyLeadId] = useState<string | null>(null);
   const [refreshLeads, setRefreshLeads] = useState(0);
+  const [prefilledProposalData, setPrefilledProposalData] = useState<Record<string, any> | null>(null);
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -79,6 +82,17 @@ export default function PremiumDashboard({ onBackToClient }: { onBackToClient?: 
     toast({
       title: 'Logged out successfully',
       description: 'You have been signed out.',
+    });
+  };
+
+  // Handler for Survey → Proposal flow
+  const handleCreateProposalFromSurvey = (surveyData: any, leadData: any) => {
+    setPrefilledProposalData(surveyData);
+    setActiveLeadForProposal(leadData);
+    setActiveTab('proposals');
+    toast({
+      title: 'Creating proposal from survey',
+      description: 'Survey data has been pre-filled into the proposal form.',
     });
   };
 
@@ -115,8 +129,8 @@ export default function PremiumDashboard({ onBackToClient }: { onBackToClient?: 
 
   const tabs = [
     { id: 'leads' as TabType, label: 'Leads' },
-    { id: 'proposals' as TabType, label: 'Proposals' },
     { id: 'surveys' as TabType, label: 'Surveys' },
+    { id: 'proposals' as TabType, label: 'Proposals' },
     { id: 'installations' as TabType, label: 'Installations' },
     { id: 'products' as TabType, label: 'Products' },
     { id: 'analytics' as TabType, label: 'Analytics' }
@@ -126,15 +140,15 @@ export default function PremiumDashboard({ onBackToClient }: { onBackToClient?: 
     <div className="min-h-screen gradient-background">
       {/* Header */}
       <header className="bg-card border-b border-border shadow-md">
-        <div className="max-w-7xl mx-auto px-8 py-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-8 py-4 sm:py-6">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-slate-900">Solar Dublin</h1>
-              <p className="text-slate-600 mt-1">Consultant Portal</p>
+              <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">Solar Dublin</h1>
+              <p className="text-slate-600 mt-1 text-sm sm:text-base">Consultant Portal</p>
             </div>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 sm:gap-4">
               <button 
-                className="gradient-primary text-white px-6 py-3 rounded-xl font-semibold flex items-center gap-2 hover:shadow-lg transition-all"
+                className="gradient-primary text-white px-3 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold flex items-center gap-2 hover:shadow-lg transition-all text-sm sm:text-base"
                 onClick={() => {
                   if (!activeLeadForProposal) {
                     toast({
@@ -144,22 +158,24 @@ export default function PremiumDashboard({ onBackToClient }: { onBackToClient?: 
                     setActiveTab('leads');
                     return;
                   }
+                  setPrefilledProposalData(null);
                   setActiveTab('proposals');
                 }}
                 aria-label="Create new proposal"
               >
                 <Zap size={20} />
-                New Proposal
+                <span className="hidden sm:inline">New Proposal</span>
               </button>
               <Button
                 variant="outline"
                 onClick={handleLogout}
                 className="flex items-center gap-2"
+                size="sm"
               >
                 <LogOut size={18} />
-                Logout
+                <span className="hidden sm:inline">Logout</span>
               </Button>
-              <div className="w-12 h-12 rounded-full gradient-primary flex items-center justify-center text-white font-semibold text-lg cursor-pointer hover:shadow-lg transition-all">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full gradient-primary flex items-center justify-center text-white font-semibold text-sm sm:text-lg cursor-pointer hover:shadow-lg transition-all">
                 JD
               </div>
             </div>
@@ -168,8 +184,8 @@ export default function PremiumDashboard({ onBackToClient }: { onBackToClient?: 
       </header>
 
       {/* Stats Grid */}
-      <div className="max-w-7xl mx-auto px-8 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-8 py-6 sm:py-8">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
           {stats.map((stat, idx) => (
             <StatCard key={idx} {...stat} />
           ))}
@@ -177,16 +193,16 @@ export default function PremiumDashboard({ onBackToClient }: { onBackToClient?: 
       </div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-8 pb-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-8 pb-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Left Panel - Tabs & Content */}
           <div className="lg:col-span-2">
-            {/* Navigation Tabs */}
-            <nav className="flex gap-2 mb-6">
+            {/* Navigation Tabs - Horizontal scroll on mobile */}
+            <nav className="flex gap-2 mb-6 overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 scrollbar-hide">
               {tabs.map(tab => (
                 <button
                   key={tab.id}
-                  className={`px-6 py-3 rounded-xl font-medium transition-all ${
+                  className={`px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-medium transition-all whitespace-nowrap text-sm sm:text-base ${
                     activeTab === tab.id
                       ? 'gradient-primary text-white shadow-lg'
                       : 'bg-card text-slate-600 hover:bg-slate-50 border border-border'
@@ -206,7 +222,7 @@ export default function PremiumDashboard({ onBackToClient }: { onBackToClient?: 
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.2 }}
-                className="bg-card rounded-2xl border border-border shadow-lg p-6 min-h-[600px]"
+                className="bg-card rounded-2xl border border-border shadow-lg p-4 sm:p-6 min-h-[500px] sm:min-h-[600px]"
               >
                 {activeTab === 'leads' && (
                   <LeadsPanel
@@ -245,8 +261,10 @@ export default function PremiumDashboard({ onBackToClient }: { onBackToClient?: 
                   ) : activeLeadForProposal ? (
                     <ProposalQuestionnaire
                       leadId={activeLeadForProposal.id}
+                      initialData={prefilledProposalData}
                       onBack={() => {
                         setActiveLeadForProposal(null);
+                        setPrefilledProposalData(null);
                         setViewMode('list');
                       }}
                     />
@@ -273,10 +291,16 @@ export default function PremiumDashboard({ onBackToClient }: { onBackToClient?: 
                       >
                         ← Back to Surveys
                       </Button>
-                      <SiteSurveyForm leadId={surveyLeadId} />
+                      <SiteSurveyForm 
+                        leadId={surveyLeadId} 
+                        onCreateProposal={(surveyData, leadData) => {
+                          setSurveyLeadId(null);
+                          handleCreateProposalFromSurvey(surveyData, leadData);
+                        }}
+                      />
                     </div>
                   ) : (
-                    <SurveysPanel />
+                    <SurveysPanel onCreateProposal={handleCreateProposalFromSurvey} />
                   )
                 )}
                 {activeTab === 'installations' && <InstallationsPanel />}
@@ -329,7 +353,7 @@ export default function PremiumDashboard({ onBackToClient }: { onBackToClient?: 
   );
 }
 
-// LeadsPanel with survey and add lead support
+// LeadsPanel with search, survey, and quick actions
 interface LeadsPanelProps {
   onLeadSelect: (lead: any) => void;
   onStartSurvey?: (leadId: string) => void;
@@ -340,6 +364,7 @@ interface LeadsPanelProps {
 const LeadsPanel = ({ onLeadSelect, onStartSurvey, onLeadAdded, refreshKey }: LeadsPanelProps) => {
   const [leads, setLeads] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     fetchLeads();
@@ -388,11 +413,11 @@ const LeadsPanel = ({ onLeadSelect, onStartSurvey, onLeadAdded, refreshKey }: Le
   };
 
   const StarRating = ({ score, leadId }: { score: number; leadId: string }) => (
-    <div className="flex gap-1" onClick={(e) => e.stopPropagation()}>
+    <div className="flex gap-0.5" onClick={(e) => e.stopPropagation()}>
       {[1, 2, 3, 4, 5].map((star) => (
         <Star
           key={star}
-          size={18}
+          size={16}
           className={`cursor-pointer transition-all ${
             star <= score
               ? 'fill-yellow-400 text-yellow-400'
@@ -404,6 +429,18 @@ const LeadsPanel = ({ onLeadSelect, onStartSurvey, onLeadAdded, refreshKey }: Le
     </div>
   );
 
+  // Filter leads by search query
+  const filteredLeads = leads.filter(lead => {
+    if (!searchQuery.trim()) return true;
+    const query = searchQuery.toLowerCase();
+    return (
+      lead.name?.toLowerCase().includes(query) ||
+      lead.email?.toLowerCase().includes(query) ||
+      lead.phone?.toLowerCase().includes(query) ||
+      lead.address?.toLowerCase().includes(query)
+    );
+  });
+
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -414,48 +451,69 @@ const LeadsPanel = ({ onLeadSelect, onStartSurvey, onLeadAdded, refreshKey }: Le
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-slate-900">Active Leads</h2>
-        <div className="flex items-center gap-3">
-          <span className="text-sm text-slate-600">{leads.length} total leads</span>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+        <h2 className="text-xl sm:text-2xl font-bold text-slate-900">Active Leads</h2>
+        <div className="flex items-center gap-3 w-full sm:w-auto">
+          <div className="relative flex-1 sm:flex-initial">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" size={18} />
+            <Input
+              placeholder="Search leads..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10 w-full sm:w-64"
+            />
+          </div>
           <AddLeadDialog onLeadAdded={() => {
             fetchLeads();
             onLeadAdded?.();
           }} />
         </div>
       </div>
-      {leads.length === 0 ? (
+
+      {searchQuery && (
+        <p className="text-sm text-slate-500 mb-4">
+          Showing {filteredLeads.length} of {leads.length} leads
+        </p>
+      )}
+
+      {filteredLeads.length === 0 ? (
         <div className="text-center py-12">
           <Users className="mx-auto text-slate-300 mb-4" size={48} />
-          <h3 className="text-lg font-semibold text-slate-900 mb-2">No leads yet</h3>
+          <h3 className="text-lg font-semibold text-slate-900 mb-2">
+            {searchQuery ? 'No leads found' : 'No leads yet'}
+          </h3>
           <p className="text-slate-600 text-sm mb-4">
-            Leads will appear here as clients submit their information
+            {searchQuery 
+              ? 'Try a different search term' 
+              : 'Leads will appear here as clients submit their information'}
           </p>
-          <AddLeadDialog onLeadAdded={() => {
-            fetchLeads();
-            onLeadAdded?.();
-          }} />
+          {!searchQuery && (
+            <AddLeadDialog onLeadAdded={() => {
+              fetchLeads();
+              onLeadAdded?.();
+            }} />
+          )}
         </div>
       ) : (
-        <div className="space-y-4">
-          {leads.map((lead) => (
+        <div className="space-y-3 sm:space-y-4">
+          {filteredLeads.map((lead) => (
             <div 
               key={lead.id}
-              className="p-5 bg-slate-50 rounded-xl border border-slate-200 hover:shadow-md transition-all"
+              className="p-4 sm:p-5 bg-slate-50 rounded-xl border border-slate-200 hover:shadow-md transition-all"
             >
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex-1">
-                  <div className="flex items-center gap-3 mb-2">
-                    <h3 className="font-semibold text-slate-900 text-lg">{lead.name}</h3>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-2">
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 sm:gap-3 mb-2 flex-wrap">
+                    <h3 className="font-semibold text-slate-900 text-base sm:text-lg truncate">{lead.name}</h3>
                     <StarRating score={lead.score || 0} leadId={lead.id} />
                   </div>
-                  <p className="text-sm text-slate-600">
+                  <p className="text-sm text-slate-600 truncate">
                     {lead.address || 'No address'} • €{lead.monthly_bill || 0}/month
                   </p>
-                  <p className="text-xs text-slate-500 mt-1">{lead.email}</p>
+                  <p className="text-xs text-slate-500 mt-1 truncate">{lead.email}</p>
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className={`px-2 sm:px-3 py-1 rounded-full text-xs font-medium ${
                     lead.status === 'new' ? 'bg-primary text-white' :
                     lead.status === 'contacted' ? 'bg-blue-100 text-blue-700' :
                     lead.status === 'qualified' ? 'bg-purple-100 text-purple-700' :
@@ -470,25 +528,25 @@ const LeadsPanel = ({ onLeadSelect, onStartSurvey, onLeadAdded, refreshKey }: Le
                       variant="outline"
                       size="sm"
                       onClick={() => onStartSurvey(lead.id)}
-                      className="gap-1"
+                      className="gap-1 text-xs sm:text-sm"
                     >
                       <ClipboardList size={14} />
-                      Survey
+                      <span className="hidden sm:inline">Survey</span>
                     </Button>
                   )}
                   <Button
                     variant="outline"
                     size="sm"
                     onClick={() => onLeadSelect(lead)}
-                    className="gap-1"
+                    className="gap-1 text-xs sm:text-sm"
                   >
                     <Eye size={14} />
-                    View
+                    <span className="hidden sm:inline">View</span>
                   </Button>
                 </div>
               </div>
               {lead.notes && (
-                <p className="text-sm text-slate-600 mt-2 italic">
+                <p className="text-sm text-slate-600 mt-2 italic truncate">
                   Note: {lead.notes}
                 </p>
               )}
@@ -541,7 +599,7 @@ const ProposalsPanel = ({ onProposalSelect, onEditProposal }: {
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-slate-900">Proposals</h2>
+        <h2 className="text-xl sm:text-2xl font-bold text-slate-900">Proposals</h2>
         <span className="text-sm text-slate-600">{proposals.length} total</span>
       </div>
       {proposals.length === 0 ? (
@@ -549,7 +607,7 @@ const ProposalsPanel = ({ onProposalSelect, onEditProposal }: {
           <FileText className="mx-auto text-slate-300 mb-4" size={48} />
           <h3 className="text-lg font-semibold text-slate-900 mb-2">No proposals yet</h3>
           <p className="text-slate-600 text-sm">
-            Create proposals from the Leads tab
+            Create proposals from the Leads tab or complete a survey first
           </p>
         </div>
       ) : (
@@ -557,24 +615,27 @@ const ProposalsPanel = ({ onProposalSelect, onEditProposal }: {
           {proposals.map((proposal) => (
             <div 
               key={proposal.id} 
-              className="p-5 bg-slate-50 rounded-xl border border-slate-200 hover:shadow-md transition-all"
+              className="p-4 sm:p-5 bg-slate-50 rounded-xl border border-slate-200 hover:shadow-md transition-all"
             >
-              <div className="flex justify-between items-start mb-3">
+              <div className="flex flex-col sm:flex-row justify-between items-start gap-3 mb-3">
                 <div>
-                  <h3 className="font-semibold text-slate-900 text-lg">{proposal.leads?.name || 'Unknown'}</h3>
+                  <h3 className="font-semibold text-slate-900 text-base sm:text-lg">{proposal.leads?.name || 'Unknown'}</h3>
                   <p className="text-sm text-slate-600">{proposal.system_size_kw} kW system</p>
                 </div>
-                <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                  proposal.status === 'approved' ? 'bg-green-100 text-green-700' :
-                  proposal.status === 'presented' ? 'bg-blue-100 text-blue-700' :
-                  proposal.status === 'draft' ? 'bg-orange-100 text-orange-700' :
-                  'bg-slate-100 text-slate-700'
-                }`}>
-                  {proposal.status}
-                </span>
+                <div className="flex items-center gap-2">
+                  <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                    proposal.status === 'approved' ? 'bg-green-100 text-green-700' :
+                    proposal.status === 'presented' ? 'bg-blue-100 text-blue-700' :
+                    proposal.status === 'draft' ? 'bg-orange-100 text-orange-700' :
+                    proposal.requires_review ? 'bg-red-100 text-red-700' :
+                    'bg-slate-100 text-slate-700'
+                  }`}>
+                    {proposal.requires_review && !proposal.reviewed_at ? 'PENDING REVIEW' : proposal.status?.toUpperCase()}
+                  </span>
+                </div>
               </div>
-              <div className="flex justify-between items-center">
-                <span className="text-2xl font-bold text-primary">€{proposal.net_cost?.toLocaleString() || 'N/A'}</span>
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                <span className="text-xl sm:text-2xl font-bold text-primary">€{proposal.net_cost?.toLocaleString() || 'N/A'}</span>
                 <div className="flex gap-2">
                   <Button
                     size="sm"
@@ -602,9 +663,6 @@ const ProposalsPanel = ({ onProposalSelect, onEditProposal }: {
     </div>
   );
 };
-
-// InstallationsPanel and AnalyticsPanel are now imported from dashboard/
-
 
 // AISalesCoachPanel is now dynamic - imported from ai/DynamicAISalesCoach
 import DynamicAISalesCoach from './ai/DynamicAISalesCoach';

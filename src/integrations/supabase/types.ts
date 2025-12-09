@@ -436,17 +436,23 @@ export type Database = {
       }
       site_surveys: {
         Row: {
+          access_notes: string | null
+          attic_access: string | null
           completed_at: string | null
           created_at: string
+          customer_availability: string | null
           electrical_panel_capacity: string | null
           electrical_panel_condition: string | null
           estimated_installation_cost: number | null
+          existing_solar: boolean | null
           grid_connection_type: string | null
           id: string
           installation_notes: string | null
           lead_id: string
           meter_location: string | null
           nearby_obstructions: string | null
+          parking_situation: string | null
+          property_storeys: number | null
           recommended_panel_count: number | null
           recommended_system_size: number | null
           roof_condition: string | null
@@ -454,6 +460,7 @@ export type Database = {
           roof_orientation: string | null
           roof_pitch: number | null
           roof_type: string | null
+          scaffolding_required: string | null
           shading_analysis: string | null
           special_requirements: string | null
           status: string | null
@@ -462,17 +469,23 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          access_notes?: string | null
+          attic_access?: string | null
           completed_at?: string | null
           created_at?: string
+          customer_availability?: string | null
           electrical_panel_capacity?: string | null
           electrical_panel_condition?: string | null
           estimated_installation_cost?: number | null
+          existing_solar?: boolean | null
           grid_connection_type?: string | null
           id?: string
           installation_notes?: string | null
           lead_id: string
           meter_location?: string | null
           nearby_obstructions?: string | null
+          parking_situation?: string | null
+          property_storeys?: number | null
           recommended_panel_count?: number | null
           recommended_system_size?: number | null
           roof_condition?: string | null
@@ -480,6 +493,7 @@ export type Database = {
           roof_orientation?: string | null
           roof_pitch?: number | null
           roof_type?: string | null
+          scaffolding_required?: string | null
           shading_analysis?: string | null
           special_requirements?: string | null
           status?: string | null
@@ -488,17 +502,23 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          access_notes?: string | null
+          attic_access?: string | null
           completed_at?: string | null
           created_at?: string
+          customer_availability?: string | null
           electrical_panel_capacity?: string | null
           electrical_panel_condition?: string | null
           estimated_installation_cost?: number | null
+          existing_solar?: boolean | null
           grid_connection_type?: string | null
           id?: string
           installation_notes?: string | null
           lead_id?: string
           meter_location?: string | null
           nearby_obstructions?: string | null
+          parking_situation?: string | null
+          property_storeys?: number | null
           recommended_panel_count?: number | null
           recommended_system_size?: number | null
           roof_condition?: string | null
@@ -506,6 +526,7 @@ export type Database = {
           roof_orientation?: string | null
           roof_pitch?: number | null
           roof_type?: string | null
+          scaffolding_required?: string | null
           shading_analysis?: string | null
           special_requirements?: string | null
           status?: string | null

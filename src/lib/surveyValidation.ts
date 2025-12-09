@@ -26,6 +26,14 @@ export interface SurveyData {
   shading_analysis?: string;
   installation_notes?: string;
   special_requirements?: string;
+  // New installer logistics fields (optional)
+  property_storeys?: number | string;
+  scaffolding_required?: string;
+  parking_situation?: string;
+  attic_access?: string;
+  access_notes?: string;
+  customer_availability?: string;
+  existing_solar?: boolean;
 }
 
 export function validateSurveyCompletion(
@@ -85,7 +93,7 @@ export function validateSurveyCompletion(
   };
 }
 
-// Map survey data to proposal data
+// Map survey data to proposal data - used for Survey → Proposal flow
 export function mapSurveyToProposal(surveyData: any, leadData: any) {
   const systemSize = parseFloat(surveyData.recommended_system_size) || 0;
   const panelCount = parseInt(surveyData.recommended_panel_count) || 0;
@@ -98,16 +106,19 @@ export function mapSurveyToProposal(surveyData: any, leadData: any) {
     : systemSize * 900;
 
   return {
-    // From survey
-    roofType: surveyData.roof_type,
-    roofCondition: surveyData.roof_condition,
-    roofOrientation: surveyData.roof_orientation,
+    // From survey - roof details
+    roofType: surveyData.roof_type || '',
+    roofCondition: surveyData.roof_condition || '',
+    roofOrientation: surveyData.roof_orientation || '',
     roofPitch: surveyData.roof_pitch?.toString() || '',
-    roofMaterial: surveyData.roof_material,
+    roofMaterial: surveyData.roof_material || '',
+    
+    // From survey - other
     shadingLevel: surveyData.shading_analysis || '',
     systemSize: systemSize.toString(),
-    panelCapacity: surveyData.electrical_panel_capacity,
-    specialRequirements: surveyData.special_requirements,
+    panelCapacity: surveyData.electrical_panel_capacity || '',
+    specialRequirements: surveyData.special_requirements || '',
+    installationNotes: surveyData.installation_notes || '',
     
     // Calculated/derived
     annualConsumption: estimatedAnnualConsumption.toString(),
@@ -116,6 +127,7 @@ export function mapSurveyToProposal(surveyData: any, leadData: any) {
     // Defaults
     currentTariff: '0.35',
     batteryInterest: 'no',
+    propertyType: leadData?.property_type || 'residential',
   };
 }
 

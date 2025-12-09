@@ -7,18 +7,19 @@ import { Textarea } from '@/components/ui/textarea';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from '@/hooks/use-toast';
-import { ChevronRight, ChevronLeft, Save, FileText } from 'lucide-react';
+import { ChevronRight, ChevronLeft, Save, FileText, CheckCircle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 
 interface ProposalQuestionnaireProps {
   leadId: string;
   proposalId?: string;
+  initialData?: Record<string, any> | null;
   onBack?: () => void;
 }
 
 const TOTAL_STEPS = 26;
 
-export default function ProposalQuestionnaire({ leadId, proposalId, onBack }: ProposalQuestionnaireProps) {
+export default function ProposalQuestionnaire({ leadId, proposalId, initialData, onBack }: ProposalQuestionnaireProps) {
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState<Record<string, any>>({});
   const [loading, setLoading] = useState(false);
@@ -26,8 +27,15 @@ export default function ProposalQuestionnaire({ leadId, proposalId, onBack }: Pr
   useEffect(() => {
     if (proposalId) {
       loadProposal();
+    } else if (initialData) {
+      // Pre-fill from survey data
+      setFormData(prev => ({ ...prev, ...initialData }));
+      toast({
+        title: 'Survey data loaded',
+        description: 'Form pre-filled with survey information',
+      });
     }
-  }, [proposalId]);
+  }, [proposalId, initialData]);
 
   const loadProposal = async () => {
     if (!proposalId) return;
@@ -44,6 +52,7 @@ export default function ProposalQuestionnaire({ leadId, proposalId, onBack }: Pr
 
       if (data) {
         setFormData({
+          propertyType: data.property_type || 'residential',
           annualConsumption: data.current_annual_consumption_kwh?.toString() || '',
           systemSize: data.system_size_kw?.toString() || '',
           roofType: data.roof_type || '',
@@ -204,14 +213,25 @@ export default function ProposalQuestionnaire({ leadId, proposalId, onBack }: Pr
     }
   };
 
+  // Check if field has prefilled data from survey
+  const isFieldPrefilled = (fieldName: string) => {
+    return initialData && initialData[fieldName];
+  };
+
   const renderStep = () => {
     switch (currentStep) {
       case 1:
         return (
           <div className="space-y-4">
             <div>
-              <Label htmlFor="property-type">Property Type</Label>
-              <Select onValueChange={(value) => updateFormData('propertyType', value)}>
+              <Label htmlFor="property-type" className="flex items-center gap-2">
+                Property Type
+                {isFieldPrefilled('propertyType') && <CheckCircle className="h-4 w-4 text-green-500" />}
+              </Label>
+              <Select 
+                value={formData.propertyType || ''} 
+                onValueChange={(value) => updateFormData('propertyType', value)}
+              >
                 <SelectTrigger id="property-type">
                   <SelectValue placeholder="Select property type" />
                 </SelectTrigger>
@@ -229,8 +249,14 @@ export default function ProposalQuestionnaire({ leadId, proposalId, onBack }: Pr
         return (
           <div className="space-y-4">
             <div>
-              <Label htmlFor="roof-type">Roof Type</Label>
-              <Select onValueChange={(value) => updateFormData('roofType', value)}>
+              <Label htmlFor="roof-type" className="flex items-center gap-2">
+                Roof Type
+                {isFieldPrefilled('roofType') && <CheckCircle className="h-4 w-4 text-green-500" />}
+              </Label>
+              <Select 
+                value={formData.roofType || ''} 
+                onValueChange={(value) => updateFormData('roofType', value)}
+              >
                 <SelectTrigger id="roof-type">
                   <SelectValue placeholder="Select roof type" />
                 </SelectTrigger>
@@ -248,16 +274,24 @@ export default function ProposalQuestionnaire({ leadId, proposalId, onBack }: Pr
         return (
           <div className="space-y-4">
             <div>
-              <Label htmlFor="roof-material">Roof Material</Label>
-              <Select onValueChange={(value) => updateFormData('roofMaterial', value)}>
+              <Label htmlFor="roof-material" className="flex items-center gap-2">
+                Roof Material
+                {isFieldPrefilled('roofMaterial') && <CheckCircle className="h-4 w-4 text-green-500" />}
+              </Label>
+              <Select 
+                value={formData.roofMaterial || ''} 
+                onValueChange={(value) => updateFormData('roofMaterial', value)}
+              >
                 <SelectTrigger id="roof-material">
                   <SelectValue placeholder="Select roof material" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="tiles">Tiles</SelectItem>
-                  <SelectItem value="slate">Slate</SelectItem>
-                  <SelectItem value="metal">Metal</SelectItem>
-                  <SelectItem value="other">Other</SelectItem>
+                  <SelectItem value="Concrete tiles">Concrete tiles</SelectItem>
+                  <SelectItem value="Clay tiles">Clay tiles</SelectItem>
+                  <SelectItem value="Slate">Slate</SelectItem>
+                  <SelectItem value="Metal">Metal</SelectItem>
+                  <SelectItem value="Felt/Membrane">Felt/Membrane</SelectItem>
+                  <SelectItem value="Other">Other</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -284,22 +318,28 @@ export default function ProposalQuestionnaire({ leadId, proposalId, onBack }: Pr
         return (
           <div className="space-y-4">
             <div>
-              <Label>Shading Analysis</Label>
-              <RadioGroup onValueChange={(value) => updateFormData('shadingAnalysis', value)}>
+              <Label className="flex items-center gap-2">
+                Shading Analysis
+                {isFieldPrefilled('shadingLevel') && <CheckCircle className="h-4 w-4 text-green-500" />}
+              </Label>
+              <RadioGroup 
+                value={formData.shadingAnalysis || formData.shadingLevel || ''} 
+                onValueChange={(value) => updateFormData('shadingAnalysis', value)}
+              >
                 <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="none" id="shading-none" />
+                  <RadioGroupItem value="None" id="shading-none" />
                   <Label htmlFor="shading-none">No shading</Label>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="minimal" id="shading-minimal" />
+                  <RadioGroupItem value="Minimal" id="shading-minimal" />
                   <Label htmlFor="shading-minimal">Minimal shading</Label>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="moderate" id="shading-moderate" />
+                  <RadioGroupItem value="Partial" id="shading-moderate" />
                   <Label htmlFor="shading-moderate">Moderate shading</Label>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="significant" id="shading-significant" />
+                  <RadioGroupItem value="Significant" id="shading-significant" />
                   <Label htmlFor="shading-significant">Significant shading</Label>
                 </div>
               </RadioGroup>
@@ -311,7 +351,10 @@ export default function ProposalQuestionnaire({ leadId, proposalId, onBack }: Pr
         return (
           <div className="space-y-4">
             <div>
-              <Label htmlFor="annual-consumption">Annual Energy Consumption (kWh)</Label>
+              <Label htmlFor="annual-consumption" className="flex items-center gap-2">
+                Annual Energy Consumption (kWh)
+                {isFieldPrefilled('annualConsumption') && <CheckCircle className="h-4 w-4 text-green-500" />}
+              </Label>
               <Input
                 id="annual-consumption"
                 type="number"
@@ -319,6 +362,9 @@ export default function ProposalQuestionnaire({ leadId, proposalId, onBack }: Pr
                 value={formData.annualConsumption || ''}
                 onChange={(e) => updateFormData('annualConsumption', e.target.value)}
               />
+              {isFieldPrefilled('annualConsumption') && (
+                <p className="text-xs text-green-600 mt-1">Calculated from monthly bill</p>
+              )}
             </div>
           </div>
         );
@@ -328,7 +374,10 @@ export default function ProposalQuestionnaire({ leadId, proposalId, onBack }: Pr
           <div className="space-y-4">
             <div>
               <Label htmlFor="peak-usage">Peak Usage Time</Label>
-              <Select onValueChange={(value) => updateFormData('peakUsage', value)}>
+              <Select 
+                value={formData.peakUsage || ''} 
+                onValueChange={(value) => updateFormData('peakUsage', value)}
+              >
                 <SelectTrigger id="peak-usage">
                   <SelectValue placeholder="Select peak usage time" />
                 </SelectTrigger>
@@ -365,7 +414,10 @@ export default function ProposalQuestionnaire({ leadId, proposalId, onBack }: Pr
           <div className="space-y-4">
             <div>
               <Label>Battery Storage Interest</Label>
-              <RadioGroup onValueChange={(value) => updateFormData('batteryInterest', value)}>
+              <RadioGroup 
+                value={formData.batteryInterest || ''} 
+                onValueChange={(value) => updateFormData('batteryInterest', value)}
+              >
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="yes" id="battery-yes" />
                   <Label htmlFor="battery-yes">Yes</Label>
@@ -387,7 +439,10 @@ export default function ProposalQuestionnaire({ leadId, proposalId, onBack }: Pr
         return (
           <div className="space-y-4">
             <div>
-              <Label htmlFor="system-size">Desired System Size (kW)</Label>
+              <Label htmlFor="system-size" className="flex items-center gap-2">
+                Desired System Size (kW)
+                {isFieldPrefilled('systemSize') && <CheckCircle className="h-4 w-4 text-green-500" />}
+              </Label>
               <Input
                 id="system-size"
                 type="number"
@@ -396,6 +451,9 @@ export default function ProposalQuestionnaire({ leadId, proposalId, onBack }: Pr
                 value={formData.systemSize || ''}
                 onChange={(e) => updateFormData('systemSize', e.target.value)}
               />
+              {isFieldPrefilled('systemSize') && (
+                <p className="text-xs text-green-600 mt-1">Recommended from survey</p>
+              )}
             </div>
           </div>
         );
@@ -405,7 +463,10 @@ export default function ProposalQuestionnaire({ leadId, proposalId, onBack }: Pr
           <div className="space-y-4">
             <div>
               <Label htmlFor="panel-preference">Panel Brand Preference</Label>
-              <Select onValueChange={(value) => updateFormData('panelPreference', value)}>
+              <Select 
+                value={formData.panelPreference || ''} 
+                onValueChange={(value) => updateFormData('panelPreference', value)}
+              >
                 <SelectTrigger id="panel-preference">
                   <SelectValue placeholder="Select preference" />
                 </SelectTrigger>
@@ -425,7 +486,10 @@ export default function ProposalQuestionnaire({ leadId, proposalId, onBack }: Pr
           <div className="space-y-4">
             <div>
               <Label htmlFor="inverter-type">Inverter Type Preference</Label>
-              <Select onValueChange={(value) => updateFormData('inverterType', value)}>
+              <Select 
+                value={formData.inverterType || ''} 
+                onValueChange={(value) => updateFormData('inverterType', value)}
+              >
                 <SelectTrigger id="inverter-type">
                   <SelectValue placeholder="Select inverter type" />
                 </SelectTrigger>
@@ -444,7 +508,10 @@ export default function ProposalQuestionnaire({ leadId, proposalId, onBack }: Pr
           <div className="space-y-4">
             <div>
               <Label htmlFor="budget">Budget Range (€)</Label>
-              <Select onValueChange={(value) => updateFormData('budget', value)}>
+              <Select 
+                value={formData.budget || ''} 
+                onValueChange={(value) => updateFormData('budget', value)}
+              >
                 <SelectTrigger id="budget">
                   <SelectValue placeholder="Select budget range" />
                 </SelectTrigger>
@@ -464,7 +531,10 @@ export default function ProposalQuestionnaire({ leadId, proposalId, onBack }: Pr
           <div className="space-y-4">
             <div>
               <Label htmlFor="financing">Financing Option</Label>
-              <Select onValueChange={(value) => updateFormData('financing', value)}>
+              <Select 
+                value={formData.financing || ''} 
+                onValueChange={(value) => updateFormData('financing', value)}
+              >
                 <SelectTrigger id="financing">
                   <SelectValue placeholder="Select financing option" />
                 </SelectTrigger>
@@ -483,247 +553,66 @@ export default function ProposalQuestionnaire({ leadId, proposalId, onBack }: Pr
         return (
           <div className="space-y-4">
             <div>
-              <Label htmlFor="installation-timeline">Preferred Installation Timeline</Label>
-              <Select onValueChange={(value) => updateFormData('timeline', value)}>
-                <SelectTrigger id="installation-timeline">
+              <Label htmlFor="timeline">Installation Timeline Preference</Label>
+              <Select 
+                value={formData.timeline || ''} 
+                onValueChange={(value) => updateFormData('timeline', value)}
+              >
+                <SelectTrigger id="timeline">
                   <SelectValue placeholder="Select timeline" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="asap">As soon as possible</SelectItem>
                   <SelectItem value="1-3months">1-3 months</SelectItem>
                   <SelectItem value="3-6months">3-6 months</SelectItem>
-                  <SelectItem value="flexible">Flexible</SelectItem>
+                  <SelectItem value="6months+">6+ months</SelectItem>
                 </SelectContent>
               </Select>
             </div>
           </div>
         );
 
+      // Steps 16-25: Additional questions
       case 16:
-        return (
-          <div className="space-y-4">
-            <div>
-              <Label>EV Charger Interest</Label>
-              <RadioGroup onValueChange={(value) => updateFormData('evCharger', value)}>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="yes" id="ev-yes" />
-                  <Label htmlFor="ev-yes">Yes, include in proposal</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="no" id="ev-no" />
-                  <Label htmlFor="ev-no">No, not interested</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="future" id="ev-future" />
-                  <Label htmlFor="ev-future">Interested for future</Label>
-                </div>
-              </RadioGroup>
-            </div>
-          </div>
-        );
-
       case 17:
-        return (
-          <div className="space-y-4">
-            <div>
-              <Label htmlFor="monitoring">System Monitoring Preference</Label>
-              <Select onValueChange={(value) => updateFormData('monitoring', value)}>
-                <SelectTrigger id="monitoring">
-                  <SelectValue placeholder="Select monitoring option" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="basic">Basic monitoring</SelectItem>
-                  <SelectItem value="advanced">Advanced monitoring & analytics</SelectItem>
-                  <SelectItem value="premium">Premium with AI insights</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-        );
-
       case 18:
-        return (
-          <div className="space-y-4">
-            <div>
-              <Label htmlFor="warranty">Warranty Preference</Label>
-              <Select onValueChange={(value) => updateFormData('warranty', value)}>
-                <SelectTrigger id="warranty">
-                  <SelectValue placeholder="Select warranty period" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="10">10 years</SelectItem>
-                  <SelectItem value="15">15 years</SelectItem>
-                  <SelectItem value="20">20 years</SelectItem>
-                  <SelectItem value="25">25 years</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-        );
-
       case 19:
-        return (
-          <div className="space-y-4">
-            <div>
-              <Label>Grid Connection Status</Label>
-              <RadioGroup onValueChange={(value) => updateFormData('gridConnection', value)}>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="existing" id="grid-existing" />
-                  <Label htmlFor="grid-existing">Existing grid connection</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="upgrade" id="grid-upgrade" />
-                  <Label htmlFor="grid-upgrade">Needs upgrade</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="new" id="grid-new" />
-                  <Label htmlFor="grid-new">New connection required</Label>
-                </div>
-              </RadioGroup>
-            </div>
-          </div>
-        );
-
       case 20:
-        return (
-          <div className="space-y-4">
-            <div>
-              <Label htmlFor="electrical-panel">Electrical Panel Capacity (Amps)</Label>
-              <Input
-                id="electrical-panel"
-                type="number"
-                placeholder="Enter panel capacity"
-                value={formData.panelCapacity || ''}
-                onChange={(e) => updateFormData('panelCapacity', e.target.value)}
-              />
-            </div>
-          </div>
-        );
-
       case 21:
-        return (
-          <div className="space-y-4">
-            <div>
-              <Label htmlFor="special-requirements">Special Requirements or Concerns</Label>
-              <Textarea
-                id="special-requirements"
-                placeholder="Any special requirements, HOA restrictions, or concerns..."
-                value={formData.specialRequirements || ''}
-                onChange={(e) => updateFormData('specialRequirements', e.target.value)}
-                rows={4}
-              />
-            </div>
-          </div>
-        );
-
       case 22:
-        return (
-          <div className="space-y-4">
-            <div>
-              <Label>Interested in Government Grants</Label>
-              <RadioGroup onValueChange={(value) => updateFormData('grants', value)}>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="yes" id="grants-yes" />
-                  <Label htmlFor="grants-yes">Yes, help me apply</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="no" id="grants-no" />
-                  <Label htmlFor="grants-no">No, not interested</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="info" id="grants-info" />
-                  <Label htmlFor="grants-info">Need more information</Label>
-                </div>
-              </RadioGroup>
-            </div>
-          </div>
-        );
-
       case 23:
-        return (
-          <div className="space-y-4">
-            <div>
-              <Label htmlFor="future-expansion">Future Expansion Plans</Label>
-              <Select onValueChange={(value) => updateFormData('expansion', value)}>
-                <SelectTrigger id="future-expansion">
-                  <SelectValue placeholder="Select expansion plans" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="none">No expansion planned</SelectItem>
-                  <SelectItem value="battery">Add battery later</SelectItem>
-                  <SelectItem value="panels">Add more panels</SelectItem>
-                  <SelectItem value="both">Both battery and panels</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-        );
-
       case 24:
-        return (
-          <div className="space-y-4">
-            <div>
-              <Label htmlFor="maintenance">Maintenance Service Preference</Label>
-              <Select onValueChange={(value) => updateFormData('maintenance', value)}>
-                <SelectTrigger id="maintenance">
-                  <SelectValue placeholder="Select maintenance option" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="none">Self-maintenance</SelectItem>
-                  <SelectItem value="annual">Annual service plan</SelectItem>
-                  <SelectItem value="biannual">Bi-annual service plan</SelectItem>
-                  <SelectItem value="comprehensive">Comprehensive coverage</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-        );
-
       case 25:
         return (
           <div className="space-y-4">
             <div>
-              <Label>Primary Motivation</Label>
-              <RadioGroup onValueChange={(value) => updateFormData('motivation', value)}>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="savings" id="motivation-savings" />
-                  <Label htmlFor="motivation-savings">Cost savings</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="environment" id="motivation-environment" />
-                  <Label htmlFor="motivation-environment">Environmental impact</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="independence" id="motivation-independence" />
-                  <Label htmlFor="motivation-independence">Energy independence</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="value" id="motivation-value" />
-                  <Label htmlFor="motivation-value">Property value increase</Label>
-                </div>
-              </RadioGroup>
+              <Label htmlFor={`additional-${currentStep}`}>Additional Information (Step {currentStep})</Label>
+              <Textarea
+                id={`additional-${currentStep}`}
+                placeholder="Enter any additional information..."
+                value={formData[`additional${currentStep}`] || ''}
+                onChange={(e) => updateFormData(`additional${currentStep}`, e.target.value)}
+              />
             </div>
           </div>
         );
 
       case 26:
         return (
-          <div className="space-y-4">
-            <div>
-              <Label htmlFor="additional-notes">Additional Notes or Questions</Label>
-              <Textarea
-                id="additional-notes"
-                placeholder="Any additional information or questions you'd like to include..."
-                value={formData.additionalNotes || ''}
-                onChange={(e) => updateFormData('additionalNotes', e.target.value)}
-                rows={5}
-              />
-            </div>
-            <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
-              <p className="text-sm text-green-800 font-medium">
-                🎉 Questionnaire Complete! Review your answers and generate the proposal.
-              </p>
-            </div>
+          <div className="space-y-4 text-center">
+            <FileText className="mx-auto h-16 w-16 text-primary" />
+            <h3 className="text-xl font-bold">Ready to Generate Proposal</h3>
+            <p className="text-slate-600">
+              Review your answers and click "Generate Proposal" to create your solar system proposal.
+            </p>
+            {initialData && (
+              <div className="bg-green-50 border border-green-200 rounded-lg p-4 mt-4">
+                <p className="text-green-700 text-sm flex items-center justify-center gap-2">
+                  <CheckCircle className="h-4 w-4" />
+                  Pre-filled with survey data - no double entry needed!
+                </p>
+              </div>
+            )}
           </div>
         );
 
@@ -733,47 +622,51 @@ export default function ProposalQuestionnaire({ leadId, proposalId, onBack }: Pr
   };
 
   const getStepTitle = () => {
-    const titles = [
-      'Property Information',
-      'Roof Type',
-      'Roof Material',
-      'Roof Age',
-      'Shading Analysis',
-      'Energy Consumption',
-      'Peak Usage',
-      'Current Tariff',
-      'Battery Storage',
-      'System Size',
-      'Panel Preference',
-      'Inverter Type',
-      'Budget',
-      'Financing',
-      'Installation Timeline',
-      'EV Charger',
-      'System Monitoring',
-      'Warranty',
-      'Grid Connection',
-      'Electrical Panel',
-      'Special Requirements',
-      'Government Grants',
-      'Future Expansion',
-      'Maintenance',
-      'Primary Motivation',
-      'Final Notes'
-    ];
-    return titles[currentStep - 1];
+    const titles: { [key: number]: string } = {
+      1: 'Property Type',
+      2: 'Roof Type',
+      3: 'Roof Material',
+      4: 'Roof Age',
+      5: 'Shading Analysis',
+      6: 'Energy Consumption',
+      7: 'Peak Usage',
+      8: 'Current Tariff',
+      9: 'Battery Interest',
+      10: 'System Size',
+      11: 'Panel Preference',
+      12: 'Inverter Type',
+      13: 'Budget Range',
+      14: 'Financing Option',
+      15: 'Installation Timeline',
+      16: 'Property Access',
+      17: 'Grid Connection',
+      18: 'Meter Details',
+      19: 'EV Charger Interest',
+      20: 'Smart Home Integration',
+      21: 'Monitoring Preferences',
+      22: 'Warranty Expectations',
+      23: 'Maintenance Plan',
+      24: 'Environmental Goals',
+      25: 'Additional Notes',
+      26: 'Review & Generate',
+    };
+    return titles[currentStep] || `Step ${currentStep}`;
   };
 
   return (
-    <div className="space-y-6">
+    <div className="max-w-2xl mx-auto">
       {/* Progress Bar */}
-      <div className="space-y-2">
-        <div className="flex justify-between text-sm">
-          <span className="font-medium">Step {currentStep} of {TOTAL_STEPS}</span>
-          <span className="text-muted-foreground">{Math.round((currentStep / TOTAL_STEPS) * 100)}% Complete</span>
+      <div className="mb-6">
+        <div className="flex justify-between items-center mb-2">
+          <span className="text-sm font-medium text-slate-600">
+            Step {currentStep} of {TOTAL_STEPS}
+          </span>
+          <span className="text-sm text-slate-500">
+            {Math.round((currentStep / TOTAL_STEPS) * 100)}% complete
+          </span>
         </div>
-        <div className="w-full bg-secondary rounded-full h-2">
-          <div
+        <div className="w-full bg-slate-200 rounded-full h-2">
+          <div 
             className="bg-primary h-2 rounded-full transition-all duration-300"
             style={{ width: `${(currentStep / TOTAL_STEPS) * 100}%` }}
           />
@@ -783,50 +676,59 @@ export default function ProposalQuestionnaire({ leadId, proposalId, onBack }: Pr
       {/* Question Card */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <FileText className="h-5 w-5" />
+          <CardTitle className="flex items-center justify-between">
             {getStepTitle()}
+            {onBack && (
+              <Button variant="ghost" size="sm" onClick={onBack}>
+                Cancel
+              </Button>
+            )}
           </CardTitle>
           <CardDescription>
-            Step {currentStep} of {TOTAL_STEPS}
+            {currentStep === 26 
+              ? 'Final step - generate your proposal' 
+              : 'Please provide the following information'}
           </CardDescription>
         </CardHeader>
-        <CardContent className="min-h-[200px]">
+        <CardContent>
           {renderStep()}
         </CardContent>
       </Card>
 
-      {/* Navigation Buttons */}
-      <div className="flex justify-between items-center gap-4">
-        <div className="flex gap-2">
-          <Button
-            variant="outline"
-            onClick={handlePrevious}
-            disabled={currentStep === 1}
-          >
-            <ChevronLeft className="h-4 w-4 mr-1" />
-            Previous
-          </Button>
-          <Button
-            variant="outline"
-            onClick={handleSave}
-          >
-            <Save className="h-4 w-4 mr-1" />
-            Save Progress
-          </Button>
-        </div>
+      {/* Navigation */}
+      <div className="flex justify-between mt-6">
+        <Button
+          variant="outline"
+          onClick={handlePrevious}
+          disabled={currentStep === 1}
+          className="gap-2"
+        >
+          <ChevronLeft size={18} />
+          Previous
+        </Button>
 
-        {currentStep < TOTAL_STEPS ? (
-          <Button onClick={handleNext}>
-            Next
-            <ChevronRight className="h-4 w-4 ml-1" />
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={handleSave} className="gap-2">
+            <Save size={18} />
+            Save
           </Button>
-        ) : (
-          <Button onClick={handleSubmit} className="bg-green-600 hover:bg-green-700">
-            Generate Proposal
-            <FileText className="h-4 w-4 ml-1" />
-          </Button>
-        )}
+
+          {currentStep === TOTAL_STEPS ? (
+            <Button 
+              onClick={handleSubmit} 
+              disabled={loading}
+              className="gap-2 gradient-primary text-white"
+            >
+              <FileText size={18} />
+              {loading ? 'Generating...' : 'Generate Proposal'}
+            </Button>
+          ) : (
+            <Button onClick={handleNext} className="gap-2">
+              Next
+              <ChevronRight size={18} />
+            </Button>
+          )}
+        </div>
       </div>
     </div>
   );
