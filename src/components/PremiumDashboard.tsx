@@ -34,6 +34,7 @@ import DeleteLeadDialog from './dashboard/DeleteLeadDialog';
 import CollapsibleStats from './dashboard/CollapsibleStats';
 import SiteSurveyForm from './SiteSurveyForm';
 import { FollowUpReminders } from './dashboard/FollowUpReminders';
+import DocumentManager from './dashboard/DocumentManager';
 import MobileBottomNav from './layout/MobileBottomNav';
 import AICoachFloatingButton from './ai/AICoachFloatingButton';
 import { DashboardStatsSkeleton, LeadCardsSkeleton } from './ui/skeletons';
@@ -71,7 +72,7 @@ const StatCard = ({ icon, value, label, trend, color }: StatCardProps) => (
   </motion.div>
 );
 
-type TabType = 'leads' | 'proposals' | 'surveys' | 'installations' | 'products' | 'analytics';
+type TabType = 'leads' | 'proposals' | 'surveys' | 'installations' | 'products' | 'documents' | 'analytics';
 
 interface DashboardStats {
   totalLeads: number;
@@ -253,6 +254,7 @@ export default function PremiumDashboard({ onBackToClient }: { onBackToClient?: 
     { id: 'proposals' as TabType, label: 'Proposals' },
     { id: 'installations' as TabType, label: 'Installations' },
     { id: 'products' as TabType, label: 'Products' },
+    { id: 'documents' as TabType, label: 'Documents' },
     { id: 'analytics' as TabType, label: 'Analytics' }
   ];
 
@@ -437,6 +439,7 @@ export default function PremiumDashboard({ onBackToClient }: { onBackToClient?: 
                 )}
                 {activeTab === 'installations' && <InstallationsPanel />}
                 {activeTab === 'products' && <ProductsManagement />}
+                {activeTab === 'documents' && <DocumentManager />}
                 {activeTab === 'analytics' && <AnalyticsPanel />}
               </motion.div>
             </AnimatePresence>
