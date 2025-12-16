@@ -11,6 +11,7 @@ import { toast } from '@/hooks/use-toast';
 import { ChevronRight, ChevronLeft, Save, FileText, CheckCircle, Zap, Battery, Package } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { logActivity } from '@/lib/activityLog';
+import EquipmentLibrary from '@/components/equipment/EquipmentLibrary';
 
 interface ProposalQuestionnaireProps {
   leadId: string;
@@ -534,67 +535,34 @@ export default function ProposalQuestionnaire({ leadId, proposalId, initialData,
           </div>
         );
 
-      // Step 6: Equipment Selection
+      // Step 6: Equipment Selection - Using Equipment Library
       case 6:
+        const systemSize = parseFloat(formData.systemSize || '5');
         return (
-          <div className="space-y-6">
-            <div className="flex items-center gap-2 mb-4">
-              <Package className="h-5 w-5 text-primary" />
-              <span className="font-semibold">Equipment Package</span>
-            </div>
-
-            <div>
-              <Label htmlFor="panel-type" className="mb-2 block">Solar Panel Type</Label>
-              <Select 
-                value={formData.panelType || ''} 
-                onValueChange={(value) => updateFormData('panelType', value)}
-              >
-                <SelectTrigger id="panel-type">
-                  <SelectValue placeholder="Select panel type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Premium Mono PERC">Premium Mono PERC (400W+)</SelectItem>
-                  <SelectItem value="Standard Mono">Standard Mono (370-390W)</SelectItem>
-                  <SelectItem value="All-Black Mono">All-Black Mono (Aesthetic)</SelectItem>
-                  <SelectItem value="Bifacial">Bifacial (High efficiency)</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div>
-              <Label htmlFor="inverter-type" className="mb-2 block">Inverter Type</Label>
-              <Select 
-                value={formData.inverterType || ''} 
-                onValueChange={(value) => updateFormData('inverterType', value)}
-              >
-                <SelectTrigger id="inverter-type">
-                  <SelectValue placeholder="Select inverter type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="String">String Inverter (Cost effective)</SelectItem>
-                  <SelectItem value="Micro">Micro Inverters (Panel-level optimisation)</SelectItem>
-                  <SelectItem value="Hybrid">Hybrid Inverter (Battery ready)</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div>
-              <Label htmlFor="panel-preference" className="mb-2 block">Brand Preference</Label>
-              <Select 
-                value={formData.panelPreference || ''} 
-                onValueChange={(value) => updateFormData('panelPreference', value)}
-              >
-                <SelectTrigger id="panel-preference">
-                  <SelectValue placeholder="Select preference" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="premium">Premium brands (25yr warranty)</SelectItem>
-                  <SelectItem value="mid">Mid-range brands (20yr warranty)</SelectItem>
-                  <SelectItem value="budget">Budget friendly (15yr warranty)</SelectItem>
-                  <SelectItem value="no-preference">No preference - recommend best value</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+          <div className="space-y-4">
+            <EquipmentLibrary
+              selectedPanel={formData.selectedPanelId}
+              selectedInverter={formData.selectedInverterId}
+              selectedBattery={formData.selectedBatteryId}
+              onSelectPanel={(product) => {
+                updateFormData('selectedPanelId', product?.id);
+                updateFormData('panelType', product ? `${product.manufacturer} ${product.model}` : '');
+              }}
+              onSelectInverter={(product) => {
+                updateFormData('selectedInverterId', product?.id);
+                updateFormData('inverterType', product ? `${product.manufacturer} ${product.model}` : '');
+              }}
+              onSelectBattery={(product) => {
+                updateFormData('selectedBatteryId', product?.id || null);
+                if (product) {
+                  updateFormData('batteryStorage', 'yes');
+                }
+              }}
+              systemSizeKw={systemSize}
+            />
+            <p className="text-xs text-muted-foreground text-center mt-4">
+              Select equipment to include in your proposal. Pricing will update automatically.
+            </p>
           </div>
         );
 
