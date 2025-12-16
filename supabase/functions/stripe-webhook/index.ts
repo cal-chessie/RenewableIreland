@@ -58,6 +58,13 @@ serve(async (req) => {
     console.log(`Payment completed: ${payment_type} for invoice ${invoice_id}`);
 
     try {
+      // Get lead_id for email notification
+      const { data: invoiceData } = await supabase
+        .from("invoices")
+        .select("lead_id, total_amount, deposit_amount")
+        .eq("id", invoice_id)
+        .single();
+
       if (payment_type === "deposit") {
         const { error } = await supabase
           .from("invoices")
@@ -70,16 +77,31 @@ serve(async (req) => {
 
         if (error) throw error;
         console.log(`Deposit marked as paid for invoice ${invoice_id}`);
-      } else if (payment_type === "final") {
-        // Get invoice to calculate final amount
-        const { data: invoice } = await supabase
-          .from("invoices")
-          .select("total_amount, deposit_amount")
-          .eq("id", invoice_id)
-          .single();
 
-        const finalAmount = invoice 
-          ? invoice.total_amount - (invoice.deposit_amount || 0)
+        // Send deposit confirmation email
+        if (invoiceData?.lead_id) {
+          try {
+            const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+            await fetch(`${supabaseUrl}/functions/v1/send-notification`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")}`,
+              },
+              body: JSON.stringify({
+                type: "deposit_paid",
+                leadId: invoiceData.lead_id,
+                invoiceId: invoice_id,
+              }),
+            });
+            console.log("Deposit confirmation email sent");
+          } catch (emailError) {
+            console.error("Failed to send email:", emailError);
+          }
+        }
+      } else if (payment_type === "final") {
+        const finalAmount = invoiceData 
+          ? invoiceData.total_amount - (invoiceData.deposit_amount || 0)
           : null;
 
         const { error } = await supabase
@@ -96,17 +118,31 @@ serve(async (req) => {
         console.log(`Final payment marked as paid for invoice ${invoice_id}`);
 
         // Update lead workflow stage to completed
-        const { data: invoiceData } = await supabase
-          .from("invoices")
-          .select("lead_id")
-          .eq("id", invoice_id)
-          .single();
-
         if (invoiceData?.lead_id) {
           await supabase
             .from("leads")
             .update({ workflow_stage: "completed" })
             .eq("id", invoiceData.lead_id);
+
+          // Send final payment confirmation email
+          try {
+            const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+            await fetch(`${supabaseUrl}/functions/v1/send-notification`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")}`,
+              },
+              body: JSON.stringify({
+                type: "final_paid",
+                leadId: invoiceData.lead_id,
+                invoiceId: invoice_id,
+              }),
+            });
+            console.log("Final payment confirmation email sent");
+          } catch (emailError) {
+            console.error("Failed to send email:", emailError);
+          }
         }
       }
 

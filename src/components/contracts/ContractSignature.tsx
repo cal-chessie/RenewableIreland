@@ -92,7 +92,7 @@ warranty registration, and customer support. I can withdraw consent at any time 
       const invoiceNumber = `INV-${Date.now().toString(36).toUpperCase()}`;
       const depositAmount = totalAmount * 0.3; // 30% deposit
 
-      await supabase
+      const { data: newInvoice } = await supabase
         .from('invoices')
         .insert({
           proposal_id: proposalId,
@@ -103,7 +103,23 @@ warranty registration, and customer support. I can withdraw consent at any time 
           deposit_amount: depositAmount,
           status: 'pending',
           due_date: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString() // 14 days
+        })
+        .select()
+        .single();
+
+      // Send invoice notification email
+      try {
+        await supabase.functions.invoke('send-notification', {
+          body: {
+            type: 'invoice_created',
+            leadId,
+            invoiceId: newInvoice?.id,
+          },
         });
+      } catch (emailError) {
+        console.error('Email notification failed:', emailError);
+        // Don't fail the signing process if email fails
+      }
 
       // Update lead workflow stage
       await supabase
