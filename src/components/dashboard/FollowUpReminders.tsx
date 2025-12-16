@@ -6,6 +6,7 @@ import { Bell, Clock, Phone, Mail, AlertTriangle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { differenceInDays, formatDistanceToNow } from 'date-fns';
+import { logActivity } from '@/lib/activityLog';
 
 interface StaleLead {
   id: string;
@@ -15,42 +16,76 @@ interface StaleLead {
   workflow_stage: string | null;
   updated_at: string;
   days_stale: number;
+  threshold: number;
+}
+
+interface StageThreshold {
+  workflow_stage: string;
+  threshold_days: number;
 }
 
 interface FollowUpRemindersProps {
   onLeadClick?: (leadId: string) => void;
 }
 
+// Default thresholds if settings table is empty
+const DEFAULT_THRESHOLDS: Record<string, number> = {
+  'new': 2,
+  'survey': 3,
+  'proposal': 5,
+  'approved': 3,
+  'scheduled': 7,
+  'installed': 14
+};
+
 export function FollowUpReminders({ onLeadClick }: FollowUpRemindersProps) {
   const [staleLeads, setStaleLeads] = useState<StaleLead[]>([]);
   const [loading, setLoading] = useState(true);
   const [isCollapsed, setIsCollapsed] = useState(false);
-
-  const STALE_THRESHOLD_DAYS = 3;
+  const [thresholds, setThresholds] = useState<Record<string, number>>(DEFAULT_THRESHOLDS);
 
   useEffect(() => {
-    fetchStaleLeads();
+    fetchThresholdsAndLeads();
   }, []);
 
-  const fetchStaleLeads = async () => {
+  const fetchThresholdsAndLeads = async () => {
     try {
-      const thresholdDate = new Date();
-      thresholdDate.setDate(thresholdDate.getDate() - STALE_THRESHOLD_DAYS);
+      // Fetch stage thresholds
+      const { data: thresholdData } = await supabase
+        .from('follow_up_settings')
+        .select('workflow_stage, threshold_days');
 
-      const { data, error } = await supabase
+      const thresholdMap: Record<string, number> = { ...DEFAULT_THRESHOLDS };
+      (thresholdData || []).forEach((t: StageThreshold) => {
+        thresholdMap[t.workflow_stage] = t.threshold_days;
+      });
+      setThresholds(thresholdMap);
+
+      // Fetch all leads that aren't completed
+      const { data: leads, error } = await supabase
         .from('leads')
         .select('id, name, email, phone, workflow_stage, updated_at')
-        .lt('updated_at', thresholdDate.toISOString())
         .not('workflow_stage', 'in', '("completed","installed","done")');
 
       if (error) throw error;
 
-      const leadsWithDays = (data || []).map(lead => ({
-        ...lead,
-        days_stale: differenceInDays(new Date(), new Date(lead.updated_at))
-      })).sort((a, b) => b.days_stale - a.days_stale);
+      // Filter leads that exceed their stage threshold
+      const now = new Date();
+      const stale = (leads || [])
+        .map(lead => {
+          const stage = lead.workflow_stage || 'new';
+          const threshold = thresholdMap[stage] || 3;
+          const daysSinceUpdate = differenceInDays(now, new Date(lead.updated_at));
+          return {
+            ...lead,
+            days_stale: daysSinceUpdate,
+            threshold
+          };
+        })
+        .filter(lead => lead.days_stale >= lead.threshold)
+        .sort((a, b) => (b.days_stale - b.threshold) - (a.days_stale - a.threshold));
 
-      setStaleLeads(leadsWithDays);
+      setStaleLeads(stale);
     } catch (error) {
       console.error('Error fetching stale leads:', error);
       toast.error('Failed to fetch follow-up reminders');
@@ -59,7 +94,7 @@ export function FollowUpReminders({ onLeadClick }: FollowUpRemindersProps) {
     }
   };
 
-  const markAsContacted = async (leadId: string) => {
+  const markAsContacted = async (leadId: string, leadName: string) => {
     try {
       const { error } = await supabase
         .from('leads')
@@ -68,17 +103,24 @@ export function FollowUpReminders({ onLeadClick }: FollowUpRemindersProps) {
 
       if (error) throw error;
 
+      // Log the activity
+      await logActivity({
+        leadId,
+        actionType: 'lead_contacted',
+        description: `Marked ${leadName} as contacted via follow-up reminder`
+      });
+
       toast.success('Lead marked as contacted');
-      fetchStaleLeads();
+      fetchThresholdsAndLeads();
     } catch (error) {
       console.error('Error updating lead:', error);
       toast.error('Failed to update lead');
     }
   };
 
-  const getUrgencyColor = (days: number) => {
-    if (days >= 7) return 'destructive';
-    if (days >= 5) return 'default';
+  const getUrgencyColor = (daysPastThreshold: number) => {
+    if (daysPastThreshold >= 4) return 'destructive';
+    if (daysPastThreshold >= 2) return 'default';
     return 'secondary';
   };
 
@@ -136,69 +178,71 @@ export function FollowUpReminders({ onLeadClick }: FollowUpRemindersProps) {
           </Button>
         </div>
         <p className="text-sm text-muted-foreground">
-          Leads with no activity for {STALE_THRESHOLD_DAYS}+ days
+          Leads exceeding their stage-specific follow-up threshold
         </p>
       </CardHeader>
       
       {!isCollapsed && (
         <CardContent className="space-y-3">
-          {staleLeads.slice(0, 5).map((lead) => (
-            <div
-              key={lead.id}
-              className="flex items-center justify-between p-3 bg-background rounded-lg border"
-            >
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => onLeadClick?.(lead.id)}
-                    className="font-medium text-foreground hover:text-primary truncate text-left"
-                  >
-                    {lead.name}
-                  </button>
-                  <Badge variant={getUrgencyColor(lead.days_stale)}>
-                    <Clock className="h-3 w-3 mr-1" />
-                    {lead.days_stale}d
-                  </Badge>
+          {staleLeads.slice(0, 5).map((lead) => {
+            const daysPastThreshold = lead.days_stale - lead.threshold;
+            return (
+              <div
+                key={lead.id}
+                className="flex items-center justify-between p-3 bg-background rounded-lg border"
+              >
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => onLeadClick?.(lead.id)}
+                      className="font-medium text-foreground hover:text-primary truncate text-left"
+                    >
+                      {lead.name}
+                    </button>
+                    <Badge variant={getUrgencyColor(daysPastThreshold)}>
+                      <Clock className="h-3 w-3 mr-1" />
+                      {lead.days_stale}d / {lead.threshold}d
+                    </Badge>
+                  </div>
+                  <div className="flex items-center gap-3 mt-1 text-sm text-muted-foreground">
+                    <span className="truncate">{getStageLabel(lead.workflow_stage)}</span>
+                    <span>•</span>
+                    <span className="truncate">
+                      {daysPastThreshold > 0 ? `${daysPastThreshold}d overdue` : 'Due now'}
+                    </span>
+                  </div>
                 </div>
-                <div className="flex items-center gap-3 mt-1 text-sm text-muted-foreground">
-                  <span className="truncate">{getStageLabel(lead.workflow_stage)}</span>
-                  <span>•</span>
-                  <span className="truncate">
-                    Last activity {formatDistanceToNow(new Date(lead.updated_at))} ago
-                  </span>
-                </div>
-              </div>
-              
-              <div className="flex items-center gap-2 ml-4">
-                {lead.phone && (
+                
+                <div className="flex items-center gap-2 ml-4">
+                  {lead.phone && (
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="h-8 w-8"
+                      onClick={() => window.open(`tel:${lead.phone}`, '_blank')}
+                    >
+                      <Phone className="h-4 w-4" />
+                    </Button>
+                  )}
                   <Button
                     variant="outline"
                     size="icon"
                     className="h-8 w-8"
-                    onClick={() => window.open(`tel:${lead.phone}`, '_blank')}
+                    onClick={() => window.open(`mailto:${lead.email}`, '_blank')}
                   >
-                    <Phone className="h-4 w-4" />
+                    <Mail className="h-4 w-4" />
                   </Button>
-                )}
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="h-8 w-8"
-                  onClick={() => window.open(`mailto:${lead.email}`, '_blank')}
-                >
-                  <Mail className="h-4 w-4" />
-                </Button>
-                <Button
-                  variant="default"
-                  size="sm"
-                  onClick={() => markAsContacted(lead.id)}
-                >
-                  Mark Contacted
-                </Button>
+                  <Button
+                    variant="default"
+                    size="sm"
+                    onClick={() => markAsContacted(lead.id, lead.name)}
+                  >
+                    Mark Contacted
+                  </Button>
+                </div>
               </div>
-            </div>
-          ))}
-          
+            );
+          })}
           {staleLeads.length > 5 && (
             <div className="text-center pt-2">
               <Button variant="link" className="text-orange-600">

@@ -17,7 +17,8 @@ import {
   Trash2,
   Euro,
   Wrench,
-  Award
+  Award,
+  Clock
 } from 'lucide-react';
 import SiteSurveyForm from './SiteSurveyForm';
 import ProposalQuestionnaire from './ProposalQuestionnaire';
@@ -25,8 +26,9 @@ import SendToCustomerDialog from './dashboard/SendToCustomerDialog';
 import InvoiceManagement from './dashboard/InvoiceManagement';
 import InstallationChecklist from './installer/InstallationChecklist';
 import SEAIGrantTracker from './seai/SEAIGrantTracker';
+import { ActivityTimeline } from './dashboard/ActivityTimeline';
 import { supabase } from '@/integrations/supabase/client';
-import { toast } from '@/components/ui/use-toast';
+import { toast } from '@/hooks/use-toast';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -197,8 +199,8 @@ export default function LeadDetailView({ lead, onClose, onDelete }: LeadDetailVi
                   SEAI Grant
                 </TabsTrigger>
                 <TabsTrigger value="timeline" className="gap-2">
-                  <Calendar className="h-4 w-4" />
-                  Timeline
+                  <Clock className="h-4 w-4" />
+                  Activity
                 </TabsTrigger>
               </TabsList>
             </div>
@@ -341,36 +343,7 @@ export default function LeadDetailView({ lead, onClose, onDelete }: LeadDetailVi
               </TabsContent>
 
               <TabsContent value="timeline" className="mt-0">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Activity Timeline</CardTitle>
-                    <CardDescription>Track all interactions with this lead</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      <div className="flex gap-4">
-                        <div className="flex flex-col items-center">
-                          <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
-                            <Calendar className="h-4 w-4 text-primary" />
-                          </div>
-                          <div className="w-px h-full bg-border mt-2" />
-                        </div>
-                        <div className="pb-4">
-                          <p className="font-medium">Lead Created</p>
-                          <p className="text-sm text-muted-foreground">
-                            {new Date(lead.created_at).toLocaleDateString('en-GB', {
-                              day: '2-digit',
-                              month: 'short',
-                              year: 'numeric',
-                              hour: '2-digit',
-                              minute: '2-digit'
-                            })}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+                <ActivityTimeline leadId={lead.id} />
               </TabsContent>
             </div>
           </Tabs>
