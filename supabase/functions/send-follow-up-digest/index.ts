@@ -9,6 +9,16 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+// Default thresholds per stage
+const DEFAULT_THRESHOLDS: Record<string, number> = {
+  'new': 2,
+  'survey': 3,
+  'proposal': 5,
+  'approved': 3,
+  'scheduled': 7,
+  'installed': 14
+};
+
 const STALE_THRESHOLD_DAYS = 3;
 
 interface StaleLead {
@@ -18,6 +28,7 @@ interface StaleLead {
   workflow_stage: string | null;
   updated_at: string;
   days_stale: number;
+  threshold: number;
 }
 
 const handler = async (req: Request): Promise<Response> => {
@@ -32,23 +43,46 @@ const handler = async (req: Request): Promise<Response> => {
     const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    // Calculate threshold date
-    const thresholdDate = new Date();
-    thresholdDate.setDate(thresholdDate.getDate() - STALE_THRESHOLD_DAYS);
+    // Fetch stage thresholds from settings
+    const { data: thresholdSettings } = await supabase
+      .from("follow_up_settings")
+      .select("workflow_stage, threshold_days");
 
-    // Fetch stale leads
-    const { data: staleLeads, error: leadsError } = await supabase
+    const thresholds: Record<string, number> = { ...DEFAULT_THRESHOLDS };
+    (thresholdSettings || []).forEach((t: { workflow_stage: string; threshold_days: number }) => {
+      thresholds[t.workflow_stage] = t.threshold_days;
+    });
+
+    // Fetch all leads that aren't completed
+    const { data: allLeads, error: leadsError } = await supabase
       .from("leads")
       .select("id, name, email, workflow_stage, updated_at")
-      .lt("updated_at", thresholdDate.toISOString())
       .not("workflow_stage", "in", '("completed","installed","done")');
 
     if (leadsError) {
-      console.error("Error fetching stale leads:", leadsError);
+      console.error("Error fetching leads:", leadsError);
       throw leadsError;
     }
 
-    if (!staleLeads || staleLeads.length === 0) {
+    // Filter leads that exceed their stage-specific threshold
+    const now = new Date();
+    const staleLeads: StaleLead[] = (allLeads || [])
+      .map(lead => {
+        const stage = lead.workflow_stage || 'new';
+        const threshold = thresholds[stage] || 3;
+        const daysSinceUpdate = Math.floor(
+          (now.getTime() - new Date(lead.updated_at).getTime()) / (1000 * 60 * 60 * 24)
+        );
+        return {
+          ...lead,
+          days_stale: daysSinceUpdate,
+          threshold
+        };
+      })
+      .filter(lead => lead.days_stale >= lead.threshold)
+      .sort((a, b) => (b.days_stale - b.threshold) - (a.days_stale - a.threshold));
+
+    if (staleLeads.length === 0) {
       console.log("No stale leads found");
       return new Response(
         JSON.stringify({ message: "No stale leads to report" }),
@@ -56,15 +90,7 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    // Calculate days stale for each lead
-    const leadsWithDays: StaleLead[] = staleLeads.map(lead => ({
-      ...lead,
-      days_stale: Math.floor(
-        (new Date().getTime() - new Date(lead.updated_at).getTime()) / (1000 * 60 * 60 * 24)
-      )
-    })).sort((a, b) => b.days_stale - a.days_stale);
-
-    console.log(`Found ${leadsWithDays.length} stale leads`);
+    console.log(`Found ${staleLeads.length} stale leads`);
 
     // Fetch all consultants to send digest
     const { data: consultants, error: consultantsError } = await supabase
@@ -94,10 +120,10 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    // Generate email HTML
-    const urgentLeads = leadsWithDays.filter(l => l.days_stale >= 7);
-    const warningLeads = leadsWithDays.filter(l => l.days_stale >= 5 && l.days_stale < 7);
-    const attentionLeads = leadsWithDays.filter(l => l.days_stale < 5);
+    // Generate email HTML - categorize by overdue severity
+    const urgentLeads = staleLeads.filter(l => (l.days_stale - l.threshold) >= 4);
+    const warningLeads = staleLeads.filter(l => (l.days_stale - l.threshold) >= 2 && (l.days_stale - l.threshold) < 4);
+    const attentionLeads = staleLeads.filter(l => (l.days_stale - l.threshold) < 2);
 
     const getStageLabel = (stage: string | null) => {
       const labels: Record<string, string> = {
@@ -114,8 +140,8 @@ const handler = async (req: Request): Promise<Response> => {
       <tr>
         <td style="padding: 12px; border-bottom: 1px solid #e5e7eb;">${lead.name}</td>
         <td style="padding: 12px; border-bottom: 1px solid #e5e7eb;">${getStageLabel(lead.workflow_stage)}</td>
-        <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; color: ${lead.days_stale >= 7 ? '#dc2626' : lead.days_stale >= 5 ? '#f59e0b' : '#6b7280'}; font-weight: bold;">
-          ${lead.days_stale} days
+        <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; color: ${(lead.days_stale - lead.threshold) >= 4 ? '#dc2626' : (lead.days_stale - lead.threshold) >= 2 ? '#f59e0b' : '#6b7280'}; font-weight: bold;">
+          ${lead.days_stale}d / ${lead.threshold}d
         </td>
       </tr>
     `;
@@ -140,19 +166,19 @@ const handler = async (req: Request): Promise<Response> => {
         <div class="container">
           <div class="header">
             <h1 style="margin: 0; font-size: 24px;">📋 Follow-up Reminder Digest</h1>
-            <p style="margin: 8px 0 0 0; opacity: 0.9;">You have ${leadsWithDays.length} leads needing attention</p>
+            <p style="margin: 8px 0 0 0; opacity: 0.9;">You have ${staleLeads.length} leads needing attention</p>
           </div>
           
           <div class="content">
             ${urgentLeads.length > 0 ? `
               <div class="alert">
-                <strong>🚨 Urgent:</strong> ${urgentLeads.length} lead${urgentLeads.length > 1 ? 's' : ''} with no activity for 7+ days
+                <strong>🚨 Urgent:</strong> ${urgentLeads.length} lead${urgentLeads.length > 1 ? 's' : ''} significantly overdue
               </div>
             ` : ''}
             
             ${warningLeads.length > 0 ? `
               <div class="warning">
-                <strong>⚠️ Warning:</strong> ${warningLeads.length} lead${warningLeads.length > 1 ? 's' : ''} with no activity for 5-6 days
+                <strong>⚠️ Warning:</strong> ${warningLeads.length} lead${warningLeads.length > 1 ? 's' : ''} overdue for follow-up
               </div>
             ` : ''}
             
@@ -161,17 +187,17 @@ const handler = async (req: Request): Promise<Response> => {
                 <tr>
                   <th>Lead Name</th>
                   <th>Stage</th>
-                  <th>Days Inactive</th>
+                  <th>Days / Threshold</th>
                 </tr>
               </thead>
               <tbody>
-                ${leadsWithDays.slice(0, 15).map(generateLeadRow).join('')}
+                ${staleLeads.slice(0, 15).map(generateLeadRow).join('')}
               </tbody>
             </table>
             
-            ${leadsWithDays.length > 15 ? `
+            ${staleLeads.length > 15 ? `
               <p style="text-align: center; color: #6b7280; margin-top: 16px;">
-                + ${leadsWithDays.length - 15} more leads...
+                + ${staleLeads.length - 15} more leads...
               </p>
             ` : ''}
             
@@ -195,7 +221,7 @@ const handler = async (req: Request): Promise<Response> => {
     const emailResponse = await resend.emails.send({
       from: "Solar CRM <onboarding@resend.dev>",
       to: consultantEmails,
-      subject: `📋 Follow-up Reminder: ${leadsWithDays.length} leads need attention`,
+      subject: `📋 Follow-up Reminder: ${staleLeads.length} leads need attention`,
       html: emailHtml,
     });
 
@@ -204,7 +230,7 @@ const handler = async (req: Request): Promise<Response> => {
     return new Response(
       JSON.stringify({ 
         success: true, 
-        staleLeadsCount: leadsWithDays.length,
+        staleLeadsCount: staleLeads.length,
         emailsSent: consultantEmails.length
       }),
       { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }

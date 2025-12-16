@@ -14,6 +14,44 @@ export type Database = {
   }
   public: {
     Tables: {
+      activity_logs: {
+        Row: {
+          action_type: string
+          created_at: string
+          description: string
+          id: string
+          lead_id: string | null
+          metadata: Json | null
+          user_id: string | null
+        }
+        Insert: {
+          action_type: string
+          created_at?: string
+          description: string
+          id?: string
+          lead_id?: string | null
+          metadata?: Json | null
+          user_id?: string | null
+        }
+        Update: {
+          action_type?: string
+          created_at?: string
+          description?: string
+          id?: string
+          lead_id?: string | null
+          metadata?: Json | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "activity_logs_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       assignments: {
         Row: {
           assigned_by: string
@@ -110,6 +148,30 @@ export type Database = {
           signed_at?: string
           signed_by_email?: string
           signed_by_name?: string
+        }
+        Relationships: []
+      }
+      follow_up_settings: {
+        Row: {
+          created_at: string
+          id: string
+          threshold_days: number
+          updated_at: string
+          workflow_stage: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          threshold_days?: number
+          updated_at?: string
+          workflow_stage: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          threshold_days?: number
+          updated_at?: string
+          workflow_stage?: string
         }
         Relationships: []
       }
