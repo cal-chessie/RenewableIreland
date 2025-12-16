@@ -577,17 +577,8 @@ export default function SiteSurveyForm({ leadId, onCreateProposal }: SiteSurveyF
                   </div>
 
                   <div>
-                    <Label htmlFor="electrical_panel_condition">Panel Condition *</Label>
-                    <Select onValueChange={(value) => setValue('electrical_panel_condition', value)} value={watch('electrical_panel_condition')}>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select condition" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="excellent">Excellent (modern, compliant)</SelectItem>
-                        <SelectItem value="good">Good (adequate)</SelectItem>
-                        <SelectItem value="needs_upgrade">Needs Upgrade</SelectItem>
-                      </SelectContent>
-                    </Select>
+                    <Label htmlFor="meter_location">Meter Location</Label>
+                    <Input {...register('meter_location')} placeholder="e.g., Outside front, utility room" className="w-full" />
                   </div>
 
                   <div>

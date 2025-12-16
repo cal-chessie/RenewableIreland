@@ -29,9 +29,13 @@ import SurveysPanel from './dashboard/SurveysPanel';
 import InstallationsPanel from './dashboard/InstallationsPanel';
 import AnalyticsPanel from './dashboard/AnalyticsPanel';
 import AddLeadDialog from './dashboard/AddLeadDialog';
+import LeadSelectorDialog from './dashboard/LeadSelectorDialog';
+import DeleteLeadDialog from './dashboard/DeleteLeadDialog';
+import CollapsibleStats from './dashboard/CollapsibleStats';
 import SiteSurveyForm from './SiteSurveyForm';
 import { FollowUpReminders } from './dashboard/FollowUpReminders';
 import MobileBottomNav from './layout/MobileBottomNav';
+import AICoachFloatingButton from './ai/AICoachFloatingButton';
 import { DashboardStatsSkeleton, LeadCardsSkeleton } from './ui/skeletons';
 
 interface StatCardProps {
@@ -92,6 +96,8 @@ export default function PremiumDashboard({ onBackToClient }: { onBackToClient?: 
   const [refreshLeads, setRefreshLeads] = useState(0);
   const [prefilledProposalData, setPrefilledProposalData] = useState<Record<string, any> | null>(null);
   const [statsLoading, setStatsLoading] = useState(true);
+  const [showLeadSelector, setShowLeadSelector] = useState(false);
+  const [showAddLead, setShowAddLead] = useState(false);
   const [stats, setStats] = useState<DashboardStats>({
     totalLeads: 0,
     conversionRate: '0%',
@@ -263,18 +269,7 @@ export default function PremiumDashboard({ onBackToClient }: { onBackToClient?: 
             <div className="flex items-center gap-2 sm:gap-4">
               <button 
                 className="gradient-primary text-white px-3 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold flex items-center gap-2 hover:shadow-lg transition-all text-sm sm:text-base"
-                onClick={() => {
-                  if (!activeLeadForProposal) {
-                    toast({
-                      title: 'Select a lead first',
-                      description: 'Open a lead from the Leads tab to start a proposal.',
-                    });
-                    setActiveTab('leads');
-                    return;
-                  }
-                  setPrefilledProposalData(null);
-                  setActiveTab('proposals');
-                }}
+                onClick={() => setShowLeadSelector(true)}
                 aria-label="Create new proposal"
               >
                 <Zap size={20} />
@@ -305,17 +300,19 @@ export default function PremiumDashboard({ onBackToClient }: { onBackToClient?: 
         </div>
       </header>
 
-      {/* Stats Grid */}
+      {/* Stats Grid - Collapsible */}
       <div className="max-w-7xl mx-auto px-4 sm:px-8 py-6 sm:py-8">
-        {statsLoading ? (
-          <DashboardStatsSkeleton count={4} />
-        ) : (
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6">
-            {statCards.map((stat, idx) => (
-              <StatCard key={idx} {...stat} />
-            ))}
-          </div>
-        )}
+        <CollapsibleStats defaultExpanded={false}>
+          {statsLoading ? (
+            <DashboardStatsSkeleton count={4} />
+          ) : (
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+              {statCards.map((stat, idx) => (
+                <StatCard key={idx} {...stat} />
+              ))}
+            </div>
+          )}
+        </CollapsibleStats>
         
         {/* Follow-up Reminders */}
         <FollowUpReminders 
@@ -484,6 +481,24 @@ export default function PremiumDashboard({ onBackToClient }: { onBackToClient?: 
           onClose={() => setSelectedLeadData(null)} 
         />
       )}
+
+      {/* Lead Selector Dialog for New Proposal */}
+      <LeadSelectorDialog
+        isOpen={showLeadSelector}
+        onClose={() => setShowLeadSelector(false)}
+        onSelectLead={(lead) => {
+          setActiveLeadForProposal(lead);
+          setSelectedLeadId(lead.id);
+          setPrefilledProposalData(null);
+          setActiveTab('proposals');
+        }}
+        onCreateNewLead={() => {
+          setShowAddLead(true);
+        }}
+      />
+
+      {/* AI Coach Floating Button for Mobile/Tablet */}
+      <AICoachFloatingButton leadId={selectedLeadId} />
 
       {/* Mobile Bottom Navigation */}
       <MobileBottomNav 
@@ -689,6 +704,14 @@ const LeadsPanel = ({ onLeadSelect, onStartSurvey, onLeadAdded, refreshKey }: Le
                     <Eye size={14} />
                     <span className="hidden sm:inline">View</span>
                   </Button>
+                  <DeleteLeadDialog
+                    leadId={lead.id}
+                    leadName={lead.name}
+                    onDeleted={() => {
+                      fetchLeads();
+                      onLeadAdded?.();
+                    }}
+                  />
                 </div>
               </div>
               {lead.notes && (
