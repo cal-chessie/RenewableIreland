@@ -8,6 +8,7 @@ import StatusTimeline from '@/components/customer/StatusTimeline';
 import ProposalSummaryCard from '@/components/customer/ProposalSummaryCard';
 import ContractSignature from '@/components/contracts/ContractSignature';
 import InvoiceCard from '@/components/customer/InvoiceCard';
+import InstallationCalendar from '@/components/customer/InstallationCalendar';
 import { Helmet } from 'react-helmet-async';
 import { toast } from '@/components/ui/use-toast';
 
@@ -298,6 +299,15 @@ export default function CustomerPortal() {
 
                   {/* Invoice Card */}
                   {invoice && <InvoiceCard invoice={invoice} portalToken={token} />}
+
+                  {/* Installation Calendar - Show after deposit paid */}
+                  {invoice?.deposit_paid && proposal && (
+                    <InstallationCalendar
+                      proposalId={proposal.id}
+                      leadId={lead.id}
+                      currentDate={proposal.confirmed_install_date}
+                    />
+                  )}
                 </>
               )}
 
