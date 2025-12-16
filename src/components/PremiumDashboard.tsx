@@ -29,6 +29,7 @@ import InstallationsPanel from './dashboard/InstallationsPanel';
 import AnalyticsPanel from './dashboard/AnalyticsPanel';
 import AddLeadDialog from './dashboard/AddLeadDialog';
 import SiteSurveyForm from './SiteSurveyForm';
+import { FollowUpReminders } from './dashboard/FollowUpReminders';
 
 interface StatCardProps {
   icon: React.ReactNode;
@@ -185,11 +186,20 @@ export default function PremiumDashboard({ onBackToClient }: { onBackToClient?: 
 
       {/* Stats Grid */}
       <div className="max-w-7xl mx-auto px-4 sm:px-8 py-6 sm:py-8">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6">
           {stats.map((stat, idx) => (
             <StatCard key={idx} {...stat} />
           ))}
         </div>
+        
+        {/* Follow-up Reminders */}
+        <FollowUpReminders 
+          onLeadClick={(leadId) => {
+            const lead = { id: leadId };
+            setSelectedLeadId(leadId);
+            setActiveTab('leads');
+          }}
+        />
       </div>
 
       {/* Main Content */}
