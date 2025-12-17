@@ -272,13 +272,13 @@ export default function PremiumDashboard({ onBackToClient }: { onBackToClient?: 
 
   // Admin-only tabs
   const adminTabs = [
-    { id: 'products' as TabType, label: 'Products', icon: <FileText size={16} /> },
-    { id: 'documents' as TabType, label: 'Documents', icon: <FileText size={16} /> },
-    { id: 'analytics' as TabType, label: 'Analytics', icon: <TrendingUp size={16} /> },
+    { id: 'products' as TabType, label: 'Products', icon: <FileText size={16} />, isAdmin: true },
+    { id: 'documents' as TabType, label: 'Documents', icon: <FileText size={16} />, isAdmin: true },
+    { id: 'analytics' as TabType, label: 'Analytics', icon: <TrendingUp size={16} />, isAdmin: true },
   ];
 
-  // Combine tabs based on role
-  const tabs = isAdmin ? [...consultantTabs, ...adminTabs] : consultantTabs;
+  // Helper to check if current tab is admin tab
+  const isAdminTab = (tabId: TabType) => adminTabs.some(t => t.id === tabId);
 
   return (
     <div className="min-h-screen gradient-background">
@@ -354,9 +354,9 @@ export default function PremiumDashboard({ onBackToClient }: { onBackToClient?: 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Left Panel - Tabs & Content */}
           <div className="lg:col-span-2">
-            {/* Navigation Tabs - Horizontal scroll on mobile */}
-            <nav className="flex gap-2 mb-6 overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 scrollbar-hide">
-              {tabs.map(tab => (
+            {/* Navigation Tabs - Horizontal scroll on mobile with Admin separator */}
+            <nav className="flex gap-2 mb-6 overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 scrollbar-hide items-center">
+              {consultantTabs.map(tab => (
                 <button
                   key={tab.id}
                   className={`px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-medium transition-all whitespace-nowrap text-sm sm:text-base ${
@@ -369,6 +369,30 @@ export default function PremiumDashboard({ onBackToClient }: { onBackToClient?: 
                   {tab.label}
                 </button>
               ))}
+              
+              {/* Admin tabs separator and tabs */}
+              {isAdmin && (
+                <>
+                  <div className="flex items-center gap-2 px-2">
+                    <div className="h-6 w-px bg-border"></div>
+                    <span className="text-xs text-muted-foreground font-medium uppercase tracking-wide">Admin</span>
+                    <div className="h-6 w-px bg-border"></div>
+                  </div>
+                  {adminTabs.map(tab => (
+                    <button
+                      key={tab.id}
+                      className={`px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-medium transition-all whitespace-nowrap text-sm sm:text-base ${
+                        activeTab === tab.id
+                          ? 'bg-orange-500 text-white shadow-lg'
+                          : 'bg-orange-500/10 text-orange-600 dark:text-orange-400 hover:bg-orange-500/20 border border-orange-500/20'
+                      }`}
+                      onClick={() => setActiveTab(tab.id)}
+                    >
+                      {tab.label}
+                    </button>
+                  ))}
+                </>
+              )}
             </nav>
 
             {/* Tab Content */}
