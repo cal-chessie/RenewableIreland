@@ -170,7 +170,8 @@ export default function PremiumIndex() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2, duration: 0.5 }}
-                className="bg-white dark:bg-slate-900 rounded-2xl p-5 shadow-lg shadow-slate-200/50 dark:shadow-slate-900/50 border border-slate-100 dark:border-slate-800"
+                whileHover={{ y: -4, transition: { duration: 0.2 } }}
+                className="bg-white dark:bg-slate-900 rounded-2xl p-5 shadow-lg shadow-slate-200/50 dark:shadow-slate-900/50 border border-slate-100 dark:border-slate-800 cursor-pointer hover:shadow-xl hover:shadow-slate-300/50 dark:hover:shadow-slate-800/50 transition-shadow duration-200"
               >
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-200">Project Snapshot</h3>
@@ -200,7 +201,8 @@ export default function PremiumIndex() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4, duration: 0.5 }}
-                className="bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-950/40 dark:to-teal-950/40 rounded-2xl p-5 shadow-lg shadow-emerald-100/50 dark:shadow-emerald-900/20 border border-emerald-100 dark:border-emerald-800/50"
+                whileHover={{ y: -4, transition: { duration: 0.2 } }}
+                className="bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-950/40 dark:to-teal-950/40 rounded-2xl p-5 shadow-lg shadow-emerald-100/50 dark:shadow-emerald-900/20 border border-emerald-100 dark:border-emerald-800/50 cursor-pointer hover:shadow-xl hover:shadow-emerald-200/50 dark:hover:shadow-emerald-800/30 transition-shadow duration-200"
               >
                 <div className="flex items-center gap-2 mb-3">
                   <div className="p-1.5 bg-emerald-500 rounded-lg">
@@ -221,7 +223,8 @@ export default function PremiumIndex() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6, duration: 0.5 }}
-                className="bg-white dark:bg-slate-900 rounded-2xl p-5 shadow-lg shadow-slate-200/50 dark:shadow-slate-900/50 border border-slate-100 dark:border-slate-800"
+                whileHover={{ y: -4, transition: { duration: 0.2 } }}
+                className="bg-white dark:bg-slate-900 rounded-2xl p-5 shadow-lg shadow-slate-200/50 dark:shadow-slate-900/50 border border-slate-100 dark:border-slate-800 cursor-pointer hover:shadow-xl hover:shadow-slate-300/50 dark:hover:shadow-slate-800/50 transition-shadow duration-200"
               >
                 <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-200 mb-4">Next Steps</h3>
                 <div className="space-y-3">
