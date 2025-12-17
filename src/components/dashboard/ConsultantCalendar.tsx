@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Calendar as CalendarIcon, 
@@ -16,7 +16,9 @@ import {
   Plus,
   FileText,
   Truck,
-  RefreshCw
+  RefreshCw,
+  GripVertical,
+  Zap
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -33,6 +35,7 @@ import { toast } from '@/hooks/use-toast';
 import { EventDetailDialog } from './EventDetailDialog';
 import { QuickAddEventDialog } from './QuickAddEventDialog';
 import { PipelineProgress } from './PipelineProgress';
+import { useSurveysRealtime, useProposalsRealtime } from '@/hooks/useRealtimeUpdates';
 import { 
   format, 
   startOfMonth, 
@@ -90,6 +93,45 @@ interface ConsultantCalendarProps {
   onViewProposal?: (proposalId: string) => void;
 }
 
+// Demo events to show when no real data exists
+const DEMO_EVENTS: ScheduledEvent[] = [
+  {
+    id: 'demo-1',
+    lead_id: 'demo-lead-1',
+    lead_name: 'Demo: Sarah Murphy',
+    lead_email: 'sarah.demo@example.com',
+    lead_phone: '+353 87 123 4567',
+    lead_address: 'Dublin 4',
+    type: 'survey',
+    date: addDays(new Date(), 1),
+    time: '10:00',
+    status: 'scheduled',
+    notes: 'Site survey for 5kW system'
+  },
+  {
+    id: 'demo-2',
+    lead_id: 'demo-lead-2',
+    lead_name: 'Demo: John O\'Brien',
+    lead_email: 'john.demo@example.com',
+    lead_phone: '+353 86 234 5678',
+    type: 'installation',
+    date: addDays(new Date(), 3),
+    time: '09:00',
+    status: 'scheduled',
+    notes: '8kW solar installation'
+  },
+  {
+    id: 'demo-3',
+    lead_id: 'demo-lead-3',
+    lead_name: 'Demo: Emma Kelly',
+    lead_email: 'emma.demo@example.com',
+    type: 'survey',
+    date: addDays(new Date(), -1),
+    time: '14:00',
+    status: 'completed'
+  }
+];
+
 export default function ConsultantCalendar({ onViewLead, onViewSurvey, onViewProposal }: ConsultantCalendarProps) {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
@@ -103,6 +145,8 @@ export default function ConsultantCalendar({ onViewLead, onViewSurvey, onViewPro
   const [showEventDetail, setShowEventDetail] = useState(false);
   const [showQuickAdd, setShowQuickAdd] = useState(false);
   const [quickAddDate, setQuickAddDate] = useState<Date | null>(null);
+  const [draggedEvent, setDraggedEvent] = useState<ScheduledEvent | null>(null);
+  const [showDemoData, setShowDemoData] = useState(false);
   const [scheduleForm, setScheduleForm] = useState({
     type: 'call' as 'call' | 'survey',
     date: '',
@@ -224,9 +268,92 @@ export default function ConsultantCalendar({ onViewLead, onViewSurvey, onViewPro
     }
   }, [currentDate]);
 
+  // Real-time subscriptions for calendar updates
+  useSurveysRealtime({
+    onChange: useCallback(() => {
+      console.log('Survey change detected, refreshing calendar...');
+      fetchData();
+    }, [fetchData])
+  });
+
+  useProposalsRealtime({
+    onChange: useCallback(() => {
+      console.log('Proposal change detected, refreshing calendar...');
+      fetchData();
+    }, [fetchData])
+  });
+
   useEffect(() => {
     fetchData();
   }, [fetchData]);
+
+  // Drag and drop handlers
+  const handleDragStart = (event: ScheduledEvent, e: React.DragEvent) => {
+    if (event.id.startsWith('demo-')) {
+      e.preventDefault();
+      toast({
+        title: 'Demo Event',
+        description: 'Demo events cannot be rescheduled. Add real events to use drag-and-drop.',
+      });
+      return;
+    }
+    setDraggedEvent(event);
+    e.dataTransfer.effectAllowed = 'move';
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+  };
+
+  const handleDrop = async (targetDate: Date, targetTime?: string) => {
+    if (!draggedEvent || draggedEvent.id.startsWith('demo-')) {
+      setDraggedEvent(null);
+      return;
+    }
+
+    try {
+      const newDate = new Date(targetDate);
+      if (targetTime) {
+        const [hours, minutes] = targetTime.split(':').map(Number);
+        newDate.setHours(hours, minutes, 0, 0);
+      } else {
+        newDate.setHours(draggedEvent.date.getHours(), draggedEvent.date.getMinutes(), 0, 0);
+      }
+
+      if (draggedEvent.type === 'survey' && draggedEvent.survey_id) {
+        const { error } = await supabase
+          .from('site_surveys')
+          .update({ survey_date: newDate.toISOString() })
+          .eq('id', draggedEvent.survey_id);
+
+        if (error) throw error;
+      } else if (draggedEvent.type === 'installation' && draggedEvent.proposal_id) {
+        const { error } = await supabase
+          .from('proposals')
+          .update({ confirmed_install_date: newDate.toISOString() })
+          .eq('id', draggedEvent.proposal_id);
+
+        if (error) throw error;
+      }
+
+      toast({
+        title: 'Event rescheduled',
+        description: `${draggedEvent.lead_name} moved to ${format(newDate, 'MMM d, h:mm a')}`
+      });
+
+      fetchData();
+    } catch (error) {
+      console.error('Error rescheduling event:', error);
+      toast({
+        title: 'Error',
+        description: 'Could not reschedule event',
+        variant: 'destructive'
+      });
+    } finally {
+      setDraggedEvent(null);
+    }
+  };
 
   const handleSchedule = async () => {
     if (!selectedLead || !scheduleForm.date) {
@@ -355,10 +482,21 @@ export default function ConsultantCalendar({ onViewLead, onViewSurvey, onViewPro
     }
   };
 
-  // Get events for a specific day
+  // Get events for a specific day (including demo data if no real events)
   const getEventsForDay = (day: Date) => {
-    return scheduledEvents.filter(event => isSameDay(event.date, day));
+    const realEvents = scheduledEvents.filter(event => isSameDay(event.date, day));
+    if (realEvents.length > 0) return realEvents;
+    
+    // Return demo events for this day if no real events and showDemoData is true
+    if (showDemoData || scheduledEvents.length === 0) {
+      return DEMO_EVENTS.filter(event => isSameDay(event.date, day));
+    }
+    return [];
   };
+
+  // Check if we should show demo banner
+  const hasRealEvents = scheduledEvents.length > 0;
+  const displayEvents = hasRealEvents ? scheduledEvents : DEMO_EVENTS;
 
   // Get week days based on currentDate
   const weekDays = eachDayOfInterval({
@@ -443,6 +581,28 @@ export default function ConsultantCalendar({ onViewLead, onViewSurvey, onViewPro
         onEventAdded={fetchData}
       />
 
+      {/* Demo Data Banner */}
+      {!hasRealEvents && (
+        <div className="flex items-center justify-between p-3 bg-primary/5 border border-primary/20 rounded-lg">
+          <div className="flex items-center gap-2 text-sm">
+            <Zap className="h-4 w-4 text-primary" />
+            <span className="text-muted-foreground">Showing demo events. Schedule your first survey to see real data!</span>
+          </div>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={() => {
+              setQuickAddDate(new Date());
+              setShowQuickAdd(true);
+            }}
+            className="gap-1 text-xs"
+          >
+            <Plus size={12} />
+            Add Event
+          </Button>
+        </div>
+      )}
+
       {/* Header with View Toggle */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <div className="flex items-center gap-2">
@@ -525,7 +685,7 @@ export default function ConsultantCalendar({ onViewLead, onViewSurvey, onViewPro
                       onMonthChange={setCurrentDate}
                       className="rounded-md border w-full [&_.rdp-months]:w-full [&_.rdp-month]:w-full [&_.rdp-table]:w-full"
                       modifiers={{
-                        hasEvent: scheduledEvents.map(e => e.date)
+                        hasEvent: displayEvents.map(e => e.date)
                       }}
                       modifiersClassNames={{
                         hasEvent: 'bg-primary/20 font-bold relative after:absolute after:bottom-1 after:left-1/2 after:-translate-x-1/2 after:w-1 after:h-1 after:bg-primary after:rounded-full'
@@ -595,7 +755,7 @@ export default function ConsultantCalendar({ onViewLead, onViewSurvey, onViewPro
                         ))}
                       </div>
 
-                      {/* Time Grid */}
+                      {/* Time Grid with Drag & Drop */}
                       <div className="border rounded-lg overflow-hidden">
                         {timeSlots.map((time) => (
                           <div key={time} className="grid grid-cols-7 border-b last:border-b-0">
@@ -603,10 +763,21 @@ export default function ConsultantCalendar({ onViewLead, onViewSurvey, onViewPro
                               const dayEvents = getEventsForDay(day).filter(
                                 e => e.time?.startsWith(time.split(':')[0])
                               );
+                              const [hours] = time.split(':').map(Number);
+                              const dropDate = new Date(day);
+                              dropDate.setHours(hours, 0, 0, 0);
+                              
                               return (
                                 <div 
                                   key={day.toISOString()} 
-                                  className="min-h-[50px] border-l first:border-l-0 p-1 relative"
+                                  className={`min-h-[50px] border-l first:border-l-0 p-1 relative transition-colors ${
+                                    draggedEvent ? 'hover:bg-primary/10' : ''
+                                  }`}
+                                  onDragOver={handleDragOver}
+                                  onDrop={(e) => {
+                                    e.preventDefault();
+                                    handleDrop(dropDate, time);
+                                  }}
                                 >
                                   {dayIdx === 0 && (
                                     <span className="absolute -left-0.5 -top-2.5 text-[9px] text-muted-foreground bg-background px-1">
@@ -615,26 +786,31 @@ export default function ConsultantCalendar({ onViewLead, onViewSurvey, onViewPro
                                   )}
                                   {dayEvents.length === 0 ? (
                                     <div 
-                                      className="h-full min-h-[40px] hover:bg-primary/5 transition-colors cursor-pointer rounded"
-                                      onClick={() => {
-                                        const clickDate = new Date(day);
-                                        const [hours] = time.split(':').map(Number);
-                                        clickDate.setHours(hours, 0, 0, 0);
-                                        handleEmptySlotClick(clickDate);
-                                      }}
+                                      className={`h-full min-h-[40px] rounded transition-colors cursor-pointer ${
+                                        draggedEvent ? 'border-2 border-dashed border-primary/30' : 'hover:bg-primary/5'
+                                      }`}
+                                      onClick={() => handleEmptySlotClick(dropDate)}
                                     />
                                   ) : (
-                                    dayEvents.map(event => (
-                                      <div
-                                        key={event.id}
-                                        className={`text-[9px] p-1 rounded mb-1 truncate cursor-pointer hover:opacity-80 flex items-center gap-1 ${getEventColor(event.type, event.status)}`}
-                                        title={`${event.lead_name} - ${event.type}`}
-                                        onClick={() => handleEventClick(event)}
-                                      >
-                                        {getEventIcon(event.type)}
-                                        <span className="truncate">{event.lead_name}</span>
-                                      </div>
-                                    ))
+                                    dayEvents.map(event => {
+                                      const isDemo = event.id.startsWith('demo-');
+                                      return (
+                                        <div
+                                          key={event.id}
+                                          draggable={!isDemo}
+                                          onDragStart={(e) => handleDragStart(event, e)}
+                                          className={`text-[9px] p-1 rounded mb-1 truncate cursor-pointer hover:opacity-80 flex items-center gap-1 ${getEventColor(event.type, event.status)} ${
+                                            !isDemo ? 'cursor-grab active:cursor-grabbing' : ''
+                                          } ${isDemo ? 'opacity-70 border border-dashed' : ''}`}
+                                          title={`${event.lead_name} - ${event.type}${!isDemo ? ' (drag to reschedule)' : ' (demo)'}`}
+                                          onClick={() => handleEventClick(event)}
+                                        >
+                                          {!isDemo && <GripVertical size={8} className="shrink-0 opacity-50" />}
+                                          {getEventIcon(event.type)}
+                                          <span className="truncate">{event.lead_name}</span>
+                                        </div>
+                                      );
+                                    })
                                   )}
                                 </div>
                               );
@@ -659,29 +835,49 @@ export default function ConsultantCalendar({ onViewLead, onViewSurvey, onViewPro
                         const hourEvents = getEventsForDay(currentDate).filter(
                           e => e.time?.startsWith(time.split(':')[0])
                         );
+                        const [hours] = time.split(':').map(Number);
+                        const dropDate = new Date(currentDate);
+                        dropDate.setHours(hours, 0, 0, 0);
+                        
                         return (
-                          <div key={time} className="flex gap-4 border-b pb-2">
+                          <div 
+                            key={time} 
+                            className="flex gap-4 border-b pb-2"
+                            onDragOver={handleDragOver}
+                            onDrop={(e) => {
+                              e.preventDefault();
+                              handleDrop(dropDate, time);
+                            }}
+                          >
                             <div className="w-14 text-sm text-muted-foreground font-medium">
                               {time}
                             </div>
-                            <div className="flex-1 min-h-[60px]">
+                            <div className={`flex-1 min-h-[60px] transition-colors ${draggedEvent ? 'bg-primary/5 rounded-lg' : ''}`}>
                               {hourEvents.length === 0 ? (
                                 <div 
-                                  className="h-full bg-muted/30 rounded-lg border-2 border-dashed border-muted hover:border-primary/30 hover:bg-primary/5 transition-colors cursor-pointer"
-                                  onClick={() => {
-                                    const clickDate = new Date(currentDate);
-                                    const [hours] = time.split(':').map(Number);
-                                    clickDate.setHours(hours, 0, 0, 0);
-                                    handleEmptySlotClick(clickDate);
-                                  }}
+                                  className={`h-full min-h-[60px] rounded-lg border-2 border-dashed transition-colors cursor-pointer ${
+                                    draggedEvent 
+                                      ? 'border-primary/50 bg-primary/10' 
+                                      : 'border-muted bg-muted/30 hover:border-primary/30 hover:bg-primary/5'
+                                  }`}
+                                  onClick={() => handleEmptySlotClick(dropDate)}
                                 />
                               ) : (
                                 <div className="space-y-2">
-                                  {hourEvents.map(event => (
-                                    <div key={event.id} onClick={() => handleEventClick(event)} className="cursor-pointer">
-                                      <EventCard event={event} detailed />
-                                    </div>
-                                  ))}
+                                  {hourEvents.map(event => {
+                                    const isDemo = event.id.startsWith('demo-');
+                                    return (
+                                      <div 
+                                        key={event.id} 
+                                        draggable={!isDemo}
+                                        onDragStart={(e) => handleDragStart(event, e)}
+                                        onClick={() => handleEventClick(event)} 
+                                        className={`cursor-pointer ${!isDemo ? 'cursor-grab active:cursor-grabbing' : ''}`}
+                                      >
+                                        <EventCard event={event} detailed isDemo={isDemo} />
+                                      </div>
+                                    );
+                                  })}
                                 </div>
                               )}
                             </div>
@@ -780,7 +976,7 @@ export default function ConsultantCalendar({ onViewLead, onViewSurvey, onViewPro
 }
 
 // Event Card Component
-function EventCard({ event, detailed = false }: { event: ScheduledEvent; detailed?: boolean }) {
+function EventCard({ event, detailed = false, isDemo = false }: { event: ScheduledEvent; detailed?: boolean; isDemo?: boolean }) {
   const getEventColor = (type: string, status: string) => {
     if (status === 'completed') return 'bg-muted border-muted';
     if (status === 'cancelled') return 'bg-destructive/10 border-destructive/30';
@@ -801,16 +997,22 @@ function EventCard({ event, detailed = false }: { event: ScheduledEvent; detaile
     }
   };
 
+  const isDemoEvent = isDemo || event.id.startsWith('demo-');
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className={`p-3 rounded-lg border-l-4 ${getEventColor(event.type, event.status)}`}
+      className={`p-3 rounded-lg border-l-4 ${getEventColor(event.type, event.status)} ${isDemoEvent ? 'opacity-75 border-dashed' : ''}`}
     >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
+          {!isDemoEvent && <GripVertical size={12} className="text-muted-foreground cursor-grab" />}
           {getEventIcon(event.type)}
           <span className="font-medium text-sm">{event.lead_name}</span>
+          {isDemoEvent && (
+            <Badge variant="outline" className="text-[9px] px-1 py-0 h-4">DEMO</Badge>
+          )}
         </div>
         <Badge variant={event.status === 'completed' ? 'secondary' : event.status === 'cancelled' ? 'destructive' : 'default'} className="text-[10px]">
           {event.status}
@@ -837,6 +1039,9 @@ function EventCard({ event, detailed = false }: { event: ScheduledEvent; detaile
             </p>
           )}
         </>
+      )}
+      {!isDemoEvent && !detailed && (
+        <p className="text-[10px] text-muted-foreground/70 mt-1 italic">Drag to reschedule</p>
       )}
     </motion.div>
   );
