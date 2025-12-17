@@ -589,45 +589,20 @@ function LeadCaptureSection() {
       </div>
     </section>;
 }
-// Animated Counter Component
+// Simple Counter Component - displays value directly
 function AnimatedCounter({ 
   value, 
   prefix = '', 
   suffix = '',
-  isInView 
 }: { 
   value: number; 
   prefix?: string; 
   suffix?: string;
-  isInView: boolean;
+  isInView?: boolean;
 }) {
-  const [displayValue, setDisplayValue] = useState(0);
-  
-  useEffect(() => {
-    if (!isInView) return;
-    
-    const duration = 2000;
-    const startTime = performance.now();
-    const startValue = 0;
-    
-    const animate = (currentTime: number) => {
-      const elapsed = currentTime - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      const easeOutQuart = 1 - Math.pow(1 - progress, 4);
-      
-      setDisplayValue(Math.round(startValue + (value - startValue) * easeOutQuart));
-      
-      if (progress < 1) {
-        requestAnimationFrame(animate);
-      }
-    };
-    
-    requestAnimationFrame(animate);
-  }, [value, isInView]);
-
   return (
     <span className="tabular-nums">
-      {prefix}{displayValue.toLocaleString()}{suffix}
+      {prefix}{value.toLocaleString()}{suffix}
     </span>
   );
 }
