@@ -6,7 +6,15 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { ArrowLeft, Settings, Clock, Save, RotateCcw } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
+import { Switch } from '@/components/ui/switch';
+import { 
+  ArrowLeft, Settings, Clock, Save, RotateCcw, Users, Link2, 
+  Palette, Mail, Shield, CreditCard, CheckCircle2, AlertCircle,
+  Plus, Trash2, Edit2
+} from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import SEOHead from '@/components/SEOHead';
@@ -16,6 +24,23 @@ interface ThresholdSetting {
   id: string;
   workflow_stage: string;
   threshold_days: number;
+}
+
+interface UserWithRole {
+  id: string;
+  user_id: string;
+  email: string;
+  full_name: string | null;
+  role: string;
+  created_at: string;
+}
+
+interface EmailTemplate {
+  id: string;
+  name: string;
+  subject: string;
+  body: string;
+  enabled: boolean;
 }
 
 const STAGE_LABELS: Record<string, { label: string; description: string }> = {
@@ -36,12 +61,76 @@ const DEFAULT_THRESHOLDS: Record<string, number> = {
   'installed': 14
 };
 
+const DEFAULT_EMAIL_TEMPLATES: EmailTemplate[] = [
+  {
+    id: 'proposal_sent',
+    name: 'Proposal Sent',
+    subject: 'Your Solar Proposal from {{company_name}}',
+    body: 'Dear {{customer_name}},\n\nThank you for your interest in solar energy. Your personalized proposal is ready for review.\n\nView your proposal here: {{portal_link}}\n\nBest regards,\n{{company_name}}',
+    enabled: true
+  },
+  {
+    id: 'survey_scheduled',
+    name: 'Survey Scheduled',
+    subject: 'Site Survey Scheduled - {{company_name}}',
+    body: 'Dear {{customer_name}},\n\nYour site survey has been scheduled for {{survey_date}}.\n\nOur consultant will arrive between {{time_slot}}.\n\nBest regards,\n{{company_name}}',
+    enabled: true
+  },
+  {
+    id: 'installation_confirmed',
+    name: 'Installation Confirmed',
+    subject: 'Installation Date Confirmed - {{company_name}}',
+    body: 'Dear {{customer_name}},\n\nGreat news! Your installation has been confirmed for {{install_date}}.\n\nPlease ensure the property is accessible.\n\nBest regards,\n{{company_name}}',
+    enabled: true
+  },
+  {
+    id: 'payment_reminder',
+    name: 'Payment Reminder',
+    subject: 'Payment Reminder - {{company_name}}',
+    body: 'Dear {{customer_name}},\n\nThis is a friendly reminder that your payment of €{{amount}} is due.\n\nPay now: {{payment_link}}\n\nBest regards,\n{{company_name}}',
+    enabled: true
+  }
+];
+
 export default function AdminSettings() {
   const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState('followups');
   const [thresholds, setThresholds] = useState<ThresholdSetting[]>([]);
+  const [users, setUsers] = useState<UserWithRole[]>([]);
+  const [emailTemplates, setEmailTemplates] = useState<EmailTemplate[]>(DEFAULT_EMAIL_TEMPLATES);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
+  
+  // Branding state
+  const [brandingConfig, setBrandingConfig] = useState<{
+    companyName: string;
+    tagline: string;
+    primaryColor: string;
+    accentColor: string;
+    contactEmail: string;
+    contactPhone: string;
+    address: string;
+  }>({
+    companyName: brand.name,
+    tagline: brand.tagline,
+    primaryColor: '#10b981',
+    accentColor: '#059669',
+    contactEmail: brand.contact.email,
+    contactPhone: brand.contact.phone,
+    address: brand.contact.address
+  });
+
+  // Integration state
+  const [integrations, setIntegrations] = useState<{
+    stripe: { enabled: boolean; status: 'connected' | 'not_configured' };
+    resend: { enabled: boolean; status: 'connected' | 'not_configured' };
+    coinbase: { enabled: boolean; status: 'connected' | 'not_configured' };
+  }>({
+    stripe: { enabled: true, status: 'connected' },
+    resend: { enabled: true, status: 'connected' },
+    coinbase: { enabled: false, status: 'not_configured' }
+  });
 
   useEffect(() => {
     checkAuthAndFetch();
@@ -53,7 +142,8 @@ export default function AdminSettings() {
       navigate('/auth');
       return;
     }
-    fetchThresholds();
+    await Promise.all([fetchThresholds(), fetchUsers()]);
+    setLoading(false);
   };
 
   const fetchThresholds = async () => {
@@ -67,9 +157,39 @@ export default function AdminSettings() {
       setThresholds(data || []);
     } catch (error) {
       console.error('Error fetching thresholds:', error);
-      toast.error('Failed to load settings');
-    } finally {
-      setLoading(false);
+    }
+  };
+
+  const fetchUsers = async () => {
+    try {
+      const { data: profiles, error: profilesError } = await supabase
+        .from('profiles')
+        .select('*');
+
+      if (profilesError) throw profilesError;
+
+      const { data: roles, error: rolesError } = await supabase
+        .from('user_roles')
+        .select('*');
+
+      if (rolesError) throw rolesError;
+
+      // Combine profiles with roles
+      const usersWithRoles: UserWithRole[] = (profiles || []).map(profile => {
+        const userRole = roles?.find(r => r.user_id === profile.user_id);
+        return {
+          id: profile.id,
+          user_id: profile.user_id,
+          email: profile.full_name || 'Unknown',
+          full_name: profile.full_name,
+          role: userRole?.role || 'consultant',
+          created_at: profile.created_at
+        };
+      });
+
+      setUsers(usersWithRoles);
+    } catch (error) {
+      console.error('Error fetching users:', error);
     }
   };
 
@@ -127,6 +247,32 @@ export default function AdminSettings() {
     }
   };
 
+  const updateUserRole = async (userId: string, newRole: 'admin' | 'consultant' | 'installer') => {
+    try {
+      const { error } = await supabase
+        .from('user_roles')
+        .update({ role: newRole })
+        .eq('user_id', userId);
+
+      if (error) throw error;
+      
+      setUsers(prev => prev.map(u => 
+        u.user_id === userId ? { ...u, role: newRole } : u
+      ));
+      toast.success('User role updated');
+    } catch (error) {
+      console.error('Error updating role:', error);
+      toast.error('Failed to update user role');
+    }
+  };
+
+  const updateEmailTemplate = (templateId: string, field: keyof EmailTemplate, value: string | boolean) => {
+    setEmailTemplates(prev => prev.map(t =>
+      t.id === templateId ? { ...t, [field]: value } : t
+    ));
+    setHasChanges(true);
+  };
+
   const getStageOrder = (stage: string) => {
     const order = ['new', 'survey', 'proposal', 'approved', 'scheduled', 'installed'];
     return order.indexOf(stage);
@@ -138,7 +284,7 @@ export default function AdminSettings() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-slate-100 to-slate-200 flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
       </div>
     );
@@ -148,11 +294,11 @@ export default function AdminSettings() {
     <>
       <SEOHead 
         title={`Admin Settings - ${brand.name}`}
-        description="Configure follow-up reminders and system settings"
+        description="Configure system settings, user management, and integrations"
       />
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-slate-100 to-slate-200">
-        <header className="bg-card border-b border-border shadow-sm">
-          <div className="max-w-4xl mx-auto px-4 sm:px-8 py-4">
+      <div className="min-h-screen bg-background">
+        <header className="bg-card border-b border-border shadow-sm sticky top-0 z-10">
+          <div className="max-w-6xl mx-auto px-4 sm:px-8 py-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <Button
@@ -167,7 +313,7 @@ export default function AdminSettings() {
                     <Settings className="h-6 w-6" />
                     Admin Settings
                   </h1>
-                  <p className="text-muted-foreground text-sm">Configure system preferences</p>
+                  <p className="text-muted-foreground text-sm">Manage system configuration</p>
                 </div>
               </div>
               {hasChanges && (
@@ -179,108 +325,577 @@ export default function AdminSettings() {
           </div>
         </header>
 
-        <main className="max-w-4xl mx-auto px-4 sm:px-8 py-8">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Clock className="h-5 w-5" />
-                Follow-up Reminder Thresholds
-              </CardTitle>
-              <CardDescription>
-                Configure how many days of inactivity trigger a follow-up reminder for each workflow stage.
-                Leads exceeding their threshold will appear in the dashboard reminders panel.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              {sortedThresholds.map((threshold) => {
-                const stageInfo = STAGE_LABELS[threshold.workflow_stage] || {
-                  label: threshold.workflow_stage,
-                  description: ''
-                };
-                const defaultValue = DEFAULT_THRESHOLDS[threshold.workflow_stage] || 3;
-                const isModified = threshold.threshold_days !== defaultValue;
+        <main className="max-w-6xl mx-auto px-4 sm:px-8 py-8">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+            <TabsList className="grid grid-cols-2 md:grid-cols-5 gap-2 h-auto p-1">
+              <TabsTrigger value="followups" className="flex items-center gap-2">
+                <Clock className="h-4 w-4" />
+                <span className="hidden sm:inline">Follow-ups</span>
+              </TabsTrigger>
+              <TabsTrigger value="users" className="flex items-center gap-2">
+                <Users className="h-4 w-4" />
+                <span className="hidden sm:inline">Users</span>
+              </TabsTrigger>
+              <TabsTrigger value="integrations" className="flex items-center gap-2">
+                <Link2 className="h-4 w-4" />
+                <span className="hidden sm:inline">Integrations</span>
+              </TabsTrigger>
+              <TabsTrigger value="branding" className="flex items-center gap-2">
+                <Palette className="h-4 w-4" />
+                <span className="hidden sm:inline">Branding</span>
+              </TabsTrigger>
+              <TabsTrigger value="emails" className="flex items-center gap-2">
+                <Mail className="h-4 w-4" />
+                <span className="hidden sm:inline">Email Templates</span>
+              </TabsTrigger>
+            </TabsList>
 
-                return (
-                  <div key={threshold.id} className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <Label className="text-base font-medium flex items-center gap-2">
-                          {stageInfo.label}
-                          {isModified && (
-                            <Badge variant="outline" className="text-xs">
-                              Modified
-                            </Badge>
-                          )}
-                        </Label>
-                        <p className="text-sm text-muted-foreground">
-                          {stageInfo.description}
-                        </p>
+            {/* Follow-up Settings Tab */}
+            <TabsContent value="followups" className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Clock className="h-5 w-5" />
+                    Follow-up Reminder Thresholds
+                  </CardTitle>
+                  <CardDescription>
+                    Configure how many days of inactivity trigger a follow-up reminder for each workflow stage.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  {sortedThresholds.map((threshold) => {
+                    const stageInfo = STAGE_LABELS[threshold.workflow_stage] || {
+                      label: threshold.workflow_stage,
+                      description: ''
+                    };
+                    const defaultValue = DEFAULT_THRESHOLDS[threshold.workflow_stage] || 3;
+                    const isModified = threshold.threshold_days !== defaultValue;
+
+                    return (
+                      <div key={threshold.id} className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <Label className="text-base font-medium flex items-center gap-2">
+                              {stageInfo.label}
+                              {isModified && (
+                                <Badge variant="outline" className="text-xs">
+                                  Modified
+                                </Badge>
+                              )}
+                            </Label>
+                            <p className="text-sm text-muted-foreground">
+                              {stageInfo.description}
+                            </p>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Input
+                              type="number"
+                              min={1}
+                              max={30}
+                              value={threshold.threshold_days}
+                              onChange={(e) => updateThreshold(
+                                threshold.workflow_stage,
+                                parseInt(e.target.value) || 1
+                              )}
+                              className="w-20 text-center"
+                            />
+                            <span className="text-sm text-muted-foreground">days</span>
+                          </div>
+                        </div>
+                        <div className="h-2 bg-muted rounded-full overflow-hidden">
+                          <div 
+                            className="h-full bg-primary transition-all"
+                            style={{ width: `${Math.min((threshold.threshold_days / 14) * 100, 100)}%` }}
+                          />
+                        </div>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <Input
-                          type="number"
-                          min={1}
-                          max={30}
-                          value={threshold.threshold_days}
-                          onChange={(e) => updateThreshold(
-                            threshold.workflow_stage,
-                            parseInt(e.target.value) || 1
-                          )}
-                          className="w-20 text-center"
-                        />
-                        <span className="text-sm text-muted-foreground">days</span>
+                    );
+                  })}
+
+                  <Separator className="my-6" />
+
+                  <div className="flex items-center justify-between">
+                    <Button
+                      variant="outline"
+                      onClick={resetToDefaults}
+                      disabled={saving}
+                    >
+                      <RotateCcw className="h-4 w-4 mr-2" />
+                      Reset to Defaults
+                    </Button>
+                    <Button
+                      onClick={saveThresholds}
+                      disabled={saving || !hasChanges}
+                    >
+                      <Save className="h-4 w-4 mr-2" />
+                      {saving ? 'Saving...' : 'Save Changes'}
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            {/* User Management Tab */}
+            <TabsContent value="users" className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Shield className="h-5 w-5" />
+                    User Management
+                  </CardTitle>
+                  <CardDescription>
+                    Manage user accounts and role assignments
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {users.length === 0 ? (
+                      <p className="text-muted-foreground text-center py-8">No users found</p>
+                    ) : (
+                      users.map((user) => (
+                        <div 
+                          key={user.id} 
+                          className="flex items-center justify-between p-4 bg-muted/50 rounded-lg"
+                        >
+                          <div className="flex items-center gap-3">
+                            <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+                              <span className="text-primary font-medium">
+                                {(user.full_name || 'U')[0].toUpperCase()}
+                              </span>
+                            </div>
+                            <div>
+                              <p className="font-medium">{user.full_name || 'Unknown User'}</p>
+                              <p className="text-sm text-muted-foreground">
+                                Joined {new Date(user.created_at).toLocaleDateString()}
+                              </p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <Select
+                              value={user.role}
+                              onValueChange={(value) => updateUserRole(user.user_id, value as 'admin' | 'consultant' | 'installer')}
+                            >
+                              <SelectTrigger className="w-32">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="admin">Admin</SelectItem>
+                                <SelectItem value="consultant">Consultant</SelectItem>
+                                <SelectItem value="installer">Installer</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Role Permissions</CardTitle>
+                  <CardDescription>Overview of what each role can access</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid md:grid-cols-3 gap-4">
+                    <div className="p-4 border border-border rounded-lg">
+                      <h4 className="font-semibold text-primary mb-2">Admin</h4>
+                      <ul className="text-sm space-y-1 text-muted-foreground">
+                        <li>• Full system access</li>
+                        <li>• User management</li>
+                        <li>• Settings & configuration</li>
+                        <li>• Analytics & reports</li>
+                        <li>• Product management</li>
+                      </ul>
+                    </div>
+                    <div className="p-4 border border-border rounded-lg">
+                      <h4 className="font-semibold text-blue-600 mb-2">Consultant</h4>
+                      <ul className="text-sm space-y-1 text-muted-foreground">
+                        <li>• Lead management</li>
+                        <li>• Site surveys</li>
+                        <li>• Proposals</li>
+                        <li>• Calendar scheduling</li>
+                        <li>• Customer communication</li>
+                      </ul>
+                    </div>
+                    <div className="p-4 border border-border rounded-lg">
+                      <h4 className="font-semibold text-orange-600 mb-2">Installer</h4>
+                      <ul className="text-sm space-y-1 text-muted-foreground">
+                        <li>• View assignments</li>
+                        <li>• Survey details</li>
+                        <li>• Installation checklists</li>
+                        <li>• Map view</li>
+                        <li>• Completion signatures</li>
+                      </ul>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            {/* Integrations Tab */}
+            <TabsContent value="integrations" className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <CreditCard className="h-5 w-5" />
+                    Payment Gateways
+                  </CardTitle>
+                  <CardDescription>
+                    Configure payment processing integrations
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex items-center justify-between p-4 border border-border rounded-lg">
+                    <div className="flex items-center gap-3">
+                      <div className="h-10 w-10 rounded bg-[#635BFF] flex items-center justify-center">
+                        <span className="text-white font-bold text-sm">S</span>
+                      </div>
+                      <div>
+                        <p className="font-medium">Stripe</p>
+                        <p className="text-sm text-muted-foreground">Card payments</p>
                       </div>
                     </div>
-                    <div className="h-2 bg-muted rounded-full overflow-hidden">
-                      <div 
-                        className="h-full bg-primary transition-all"
-                        style={{ width: `${Math.min((threshold.threshold_days / 14) * 100, 100)}%` }}
+                    <div className="flex items-center gap-3">
+                      {integrations.stripe.status === 'connected' ? (
+                        <Badge className="bg-green-500/10 text-green-600 border-green-200">
+                          <CheckCircle2 className="h-3 w-3 mr-1" />
+                          Connected
+                        </Badge>
+                      ) : (
+                        <Badge variant="secondary">
+                          <AlertCircle className="h-3 w-3 mr-1" />
+                          Not configured
+                        </Badge>
+                      )}
+                      <Switch 
+                        checked={integrations.stripe.enabled}
+                        onCheckedChange={(checked) => 
+                          setIntegrations(prev => ({
+                            ...prev,
+                            stripe: { ...prev.stripe, enabled: checked }
+                          }))
+                        }
                       />
                     </div>
                   </div>
-                );
-              })}
 
-              <Separator className="my-6" />
-
-              <div className="flex items-center justify-between">
-                <Button
-                  variant="outline"
-                  onClick={resetToDefaults}
-                  disabled={saving}
-                >
-                  <RotateCcw className="h-4 w-4 mr-2" />
-                  Reset to Defaults
-                </Button>
-                <Button
-                  onClick={saveThresholds}
-                  disabled={saving || !hasChanges}
-                >
-                  <Save className="h-4 w-4 mr-2" />
-                  {saving ? 'Saving...' : 'Save Changes'}
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="mt-6">
-            <CardHeader>
-              <CardTitle>Default Threshold Values</CardTitle>
-              <CardDescription>
-                Reference values for follow-up timing best practices
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                {Object.entries(DEFAULT_THRESHOLDS).map(([stage, days]) => (
-                  <div key={stage} className="p-3 bg-muted/50 rounded-lg">
-                    <p className="font-medium text-sm">{STAGE_LABELS[stage]?.label || stage}</p>
-                    <p className="text-2xl font-bold text-primary">{days} days</p>
+                  <div className="flex items-center justify-between p-4 border border-border rounded-lg">
+                    <div className="flex items-center gap-3">
+                      <div className="h-10 w-10 rounded bg-[#0052FF] flex items-center justify-center">
+                        <span className="text-white font-bold text-sm">C</span>
+                      </div>
+                      <div>
+                        <p className="font-medium">Coinbase Commerce</p>
+                        <p className="text-sm text-muted-foreground">Cryptocurrency payments</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      {integrations.coinbase.status === 'connected' ? (
+                        <Badge className="bg-green-500/10 text-green-600 border-green-200">
+                          <CheckCircle2 className="h-3 w-3 mr-1" />
+                          Connected
+                        </Badge>
+                      ) : (
+                        <Badge variant="secondary">
+                          <AlertCircle className="h-3 w-3 mr-1" />
+                          Not configured
+                        </Badge>
+                      )}
+                      <Switch 
+                        checked={integrations.coinbase.enabled}
+                        onCheckedChange={(checked) => 
+                          setIntegrations(prev => ({
+                            ...prev,
+                            coinbase: { ...prev.coinbase, enabled: checked }
+                          }))
+                        }
+                      />
+                    </div>
                   </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Mail className="h-5 w-5" />
+                    Email Service
+                  </CardTitle>
+                  <CardDescription>
+                    Configure email delivery settings
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-center justify-between p-4 border border-border rounded-lg">
+                    <div className="flex items-center gap-3">
+                      <div className="h-10 w-10 rounded bg-black flex items-center justify-center">
+                        <span className="text-white font-bold text-sm">R</span>
+                      </div>
+                      <div>
+                        <p className="font-medium">Resend</p>
+                        <p className="text-sm text-muted-foreground">Transactional emails</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      {integrations.resend.status === 'connected' ? (
+                        <Badge className="bg-green-500/10 text-green-600 border-green-200">
+                          <CheckCircle2 className="h-3 w-3 mr-1" />
+                          Connected
+                        </Badge>
+                      ) : (
+                        <Badge variant="secondary">
+                          <AlertCircle className="h-3 w-3 mr-1" />
+                          Not configured
+                        </Badge>
+                      )}
+                      <Switch 
+                        checked={integrations.resend.enabled}
+                        onCheckedChange={(checked) => 
+                          setIntegrations(prev => ({
+                            ...prev,
+                            resend: { ...prev.resend, enabled: checked }
+                          }))
+                        }
+                      />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            {/* Branding Tab */}
+            <TabsContent value="branding" className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Palette className="h-5 w-5" />
+                    Brand Configuration
+                  </CardTitle>
+                  <CardDescription>
+                    Customize your company branding and appearance
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <Label>Company Name</Label>
+                      <Input 
+                        value={brandingConfig.companyName}
+                        onChange={(e) => setBrandingConfig(prev => ({
+                          ...prev,
+                          companyName: e.target.value
+                        }))}
+                        placeholder="Your Company Name"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Tagline</Label>
+                      <Input 
+                        value={brandingConfig.tagline}
+                        onChange={(e) => setBrandingConfig(prev => ({
+                          ...prev,
+                          tagline: e.target.value
+                        }))}
+                        placeholder="Your company tagline"
+                      />
+                    </div>
+                  </div>
+
+                  <Separator />
+
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <Label>Primary Color</Label>
+                      <div className="flex gap-2">
+                        <Input 
+                          type="color"
+                          value={brandingConfig.primaryColor}
+                          onChange={(e) => setBrandingConfig(prev => ({
+                            ...prev,
+                            primaryColor: e.target.value
+                          }))}
+                          className="w-16 h-10 p-1"
+                        />
+                        <Input 
+                          value={brandingConfig.primaryColor}
+                          onChange={(e) => setBrandingConfig(prev => ({
+                            ...prev,
+                            primaryColor: e.target.value
+                          }))}
+                          placeholder="#10b981"
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Accent Color</Label>
+                      <div className="flex gap-2">
+                        <Input 
+                          type="color"
+                          value={brandingConfig.accentColor}
+                          onChange={(e) => setBrandingConfig(prev => ({
+                            ...prev,
+                            accentColor: e.target.value
+                          }))}
+                          className="w-16 h-10 p-1"
+                        />
+                        <Input 
+                          value={brandingConfig.accentColor}
+                          onChange={(e) => setBrandingConfig(prev => ({
+                            ...prev,
+                            accentColor: e.target.value
+                          }))}
+                          placeholder="#059669"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <Separator />
+
+                  <div className="space-y-4">
+                    <h4 className="font-medium">Contact Information</h4>
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label>Email</Label>
+                        <Input 
+                          type="email"
+                          value={brandingConfig.contactEmail}
+                          onChange={(e) => setBrandingConfig(prev => ({
+                            ...prev,
+                            contactEmail: e.target.value
+                          }))}
+                          placeholder="info@company.ie"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Phone</Label>
+                        <Input 
+                          value={brandingConfig.contactPhone}
+                          onChange={(e) => setBrandingConfig(prev => ({
+                            ...prev,
+                            contactPhone: e.target.value
+                          }))}
+                          placeholder="+353 1 234 5678"
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Address</Label>
+                      <Input 
+                        value={brandingConfig.address}
+                        onChange={(e) => setBrandingConfig(prev => ({
+                          ...prev,
+                          address: e.target.value
+                        }))}
+                        placeholder="123 Main Street, Dublin, Ireland"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex justify-end">
+                    <Button onClick={() => toast.success('Branding settings saved (demo)')}>
+                      <Save className="h-4 w-4 mr-2" />
+                      Save Branding
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Preview</CardTitle>
+                  <CardDescription>See how your branding looks</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="p-6 border border-border rounded-lg bg-muted/30">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div 
+                        className="h-10 w-10 rounded-lg flex items-center justify-center"
+                        style={{ backgroundColor: brandingConfig.primaryColor }}
+                      >
+                        <span className="text-white font-bold">
+                          {brandingConfig.companyName[0]}
+                        </span>
+                      </div>
+                      <div>
+                        <h3 className="font-bold">{brandingConfig.companyName}</h3>
+                        <p className="text-sm text-muted-foreground">{brandingConfig.tagline}</p>
+                      </div>
+                    </div>
+                    <Button style={{ backgroundColor: brandingConfig.primaryColor }}>
+                      Get Your Free Quote
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            {/* Email Templates Tab */}
+            <TabsContent value="emails" className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Mail className="h-5 w-5" />
+                    Email Templates
+                  </CardTitle>
+                  <CardDescription>
+                    Customize automated email notifications sent to customers
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  {emailTemplates.map((template) => (
+                    <div key={template.id} className="border border-border rounded-lg p-4 space-y-4">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <h4 className="font-medium">{template.name}</h4>
+                          <Switch 
+                            checked={template.enabled}
+                            onCheckedChange={(checked) => 
+                              updateEmailTemplate(template.id, 'enabled', checked)
+                            }
+                          />
+                        </div>
+                        <Badge variant={template.enabled ? 'default' : 'secondary'}>
+                          {template.enabled ? 'Active' : 'Disabled'}
+                        </Badge>
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label>Subject Line</Label>
+                        <Input 
+                          value={template.subject}
+                          onChange={(e) => updateEmailTemplate(template.id, 'subject', e.target.value)}
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label>Email Body</Label>
+                        <Textarea 
+                          value={template.body}
+                          onChange={(e) => updateEmailTemplate(template.id, 'body', e.target.value)}
+                          rows={5}
+                          className="font-mono text-sm"
+                        />
+                      </div>
+
+                      <p className="text-xs text-muted-foreground">
+                        Available variables: {'{{customer_name}}'}, {'{{company_name}}'}, {'{{portal_link}}'}, {'{{amount}}'}, {'{{survey_date}}'}, {'{{install_date}}'}
+                      </p>
+                    </div>
+                  ))}
+
+                  <div className="flex justify-end">
+                    <Button onClick={() => toast.success('Email templates saved (demo)')}>
+                      <Save className="h-4 w-4 mr-2" />
+                      Save Templates
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </Tabs>
         </main>
       </div>
     </>
