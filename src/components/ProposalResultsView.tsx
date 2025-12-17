@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Zap, TrendingDown, Calendar, Shield, CheckCircle, FileText, Download, Send, ArrowLeft, Battery, Package, Sun, Eye } from 'lucide-react';
+import { Zap, TrendingDown, Calendar, Shield, CheckCircle, FileText, Download, Send, ArrowLeft, Battery, Package, Sun, Eye, CreditCard, QrCode } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import ProposalPreview from '@/components/proposal/ProposalPreview';
+import PaymentLinkGenerator from '@/components/payment/PaymentLinkGenerator';
 
 interface ProposalResultsViewProps {
   proposalId: string;
@@ -20,6 +21,7 @@ export default function ProposalResultsView({ proposalId, leadId, onBack }: Prop
   const [lead, setLead] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [showPreview, setShowPreview] = useState(false);
+  const [showPaymentGenerator, setShowPaymentGenerator] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -512,6 +514,47 @@ export default function ProposalResultsView({ proposalId, leadId, onBack }: Prop
                 <Eye className="mr-2 h-4 w-4" />
                 Preview & Send
               </Button>
+            </div>
+            
+            {/* In-Person Payment Section */}
+            <div className="mt-4 pt-4 border-t">
+              <div className="flex items-center justify-between mb-3">
+                <div>
+                  <h4 className="font-medium flex items-center gap-2">
+                    <CreditCard className="h-4 w-4" />
+                    In-Person Payment
+                  </h4>
+                  <p className="text-sm text-muted-foreground">
+                    Generate a QR code or payment link for instant deposit collection
+                  </p>
+                </div>
+                <Button 
+                  variant="default" 
+                  onClick={() => setShowPaymentGenerator(!showPaymentGenerator)}
+                  className="gap-2"
+                >
+                  <QrCode className="h-4 w-4" />
+                  {showPaymentGenerator ? 'Hide' : 'Generate Payment Link'}
+                </Button>
+              </div>
+              
+              {showPaymentGenerator && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                >
+                  <PaymentLinkGenerator
+                    proposalId={proposalId}
+                    leadId={leadId}
+                    customerName={lead.name}
+                    customerEmail={lead.email}
+                    customerPhone={lead.phone}
+                    totalAmount={proposal.net_cost || 0}
+                    inline
+                  />
+                </motion.div>
+              )}
             </div>
           </CardContent>
         </Card>

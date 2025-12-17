@@ -1,15 +1,18 @@
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Calendar as CalendarIcon, 
   Phone, 
   ClipboardList, 
   User, 
   Clock,
-  Plus,
   ChevronLeft,
   ChevronRight,
-  Mail
+  Mail,
+  MapPin,
+  LayoutGrid,
+  List,
+  CalendarDays
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -20,9 +23,26 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
-import { format, startOfMonth, endOfMonth, isSameDay, addMonths, subMonths } from 'date-fns';
+import { 
+  format, 
+  startOfMonth, 
+  endOfMonth, 
+  isSameDay, 
+  addMonths, 
+  subMonths,
+  startOfWeek,
+  endOfWeek,
+  eachDayOfInterval,
+  addWeeks,
+  subWeeks,
+  isToday,
+  isSameMonth,
+  addDays,
+  subDays
+} from 'date-fns';
 
 interface ScheduledEvent {
   id: string;
@@ -30,6 +50,7 @@ interface ScheduledEvent {
   lead_name: string;
   lead_email: string;
   lead_phone?: string;
+  lead_address?: string;
   type: 'call' | 'survey';
   date: Date;
   time?: string;
@@ -42,6 +63,7 @@ interface LeadNeedingAction {
   name: string;
   email: string;
   phone?: string;
+  address?: string;
   status: string;
   created_at: string;
   monthly_bill?: number;
@@ -50,12 +72,14 @@ interface LeadNeedingAction {
   source?: string;
 }
 
+type ViewMode = 'month' | 'week' | 'day';
+
 export default function ConsultantCalendar() {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
-  const [currentMonth, setCurrentMonth] = useState<Date>(new Date());
+  const [currentDate, setCurrentDate] = useState<Date>(new Date());
+  const [viewMode, setViewMode] = useState<ViewMode>('week');
   const [leadsNeedingCalls, setLeadsNeedingCalls] = useState<LeadNeedingAction[]>([]);
   const [scheduledEvents, setScheduledEvents] = useState<ScheduledEvent[]>([]);
-  const [surveys, setSurveys] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [showScheduleDialog, setShowScheduleDialog] = useState(false);
   const [selectedLead, setSelectedLead] = useState<LeadNeedingAction | null>(null);
@@ -68,7 +92,7 @@ export default function ConsultantCalendar() {
 
   useEffect(() => {
     fetchData();
-  }, [currentMonth]);
+  }, [currentDate]);
 
   const fetchData = async () => {
     setLoading(true);
@@ -91,7 +115,6 @@ export default function ConsultantCalendar() {
         if (daysSince > 3) urgency = 'high';
         else if (daysSince > 1) urgency = 'medium';
 
-        // Extract source from notes if it contains "AI Analysis"
         const source = lead.notes?.includes('AI Analysis') ? 'AI Analyser' : 'Manual';
 
         return {
@@ -104,13 +127,13 @@ export default function ConsultantCalendar() {
 
       setLeadsNeedingCalls(leadsWithUrgency);
 
-      // Fetch scheduled surveys for the month
-      const monthStart = startOfMonth(currentMonth);
-      const monthEnd = endOfMonth(currentMonth);
+      // Fetch scheduled surveys
+      const monthStart = startOfMonth(currentDate);
+      const monthEnd = endOfMonth(currentDate);
       
       const { data: surveysData, error: surveysError } = await supabase
         .from('site_surveys')
-        .select('*, leads(name, email, phone)')
+        .select('*, leads(name, email, phone, address)')
         .gte('survey_date', monthStart.toISOString())
         .lte('survey_date', monthEnd.toISOString())
         .order('survey_date', { ascending: true });
@@ -124,13 +147,14 @@ export default function ConsultantCalendar() {
         lead_name: survey.leads?.name || 'Unknown',
         lead_email: survey.leads?.email || '',
         lead_phone: survey.leads?.phone,
+        lead_address: survey.leads?.address,
         type: 'survey',
         date: new Date(survey.survey_date),
+        time: format(new Date(survey.survey_date), 'HH:mm'),
         status: survey.status === 'completed' ? 'completed' : 'scheduled',
         notes: survey.access_notes
       }));
 
-      setSurveys(surveysData || []);
       setScheduledEvents(surveyEvents);
     } catch (error) {
       console.error('Error fetching calendar data:', error);
@@ -156,18 +180,15 @@ export default function ConsultantCalendar() {
 
     try {
       if (scheduleForm.type === 'survey') {
-        // Get current user
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) throw new Error('Not authenticated');
 
-        // Get consultant profile for email
         const { data: profile } = await supabase
           .from('profiles')
           .select('full_name, phone')
           .eq('user_id', user.id)
           .single();
 
-        // Create survey
         const surveyDate = new Date(`${scheduleForm.date}T${scheduleForm.time || '09:00'}`);
         const { error } = await supabase
           .from('site_surveys')
@@ -181,13 +202,11 @@ export default function ConsultantCalendar() {
 
         if (error) throw error;
 
-        // Update lead status
         await supabase
           .from('leads')
           .update({ status: 'contacted', workflow_stage: 'survey' })
           .eq('id', selectedLead.id);
 
-        // Send email notification
         try {
           await supabase.functions.invoke('send-survey-notification', {
             body: {
@@ -202,7 +221,6 @@ export default function ConsultantCalendar() {
           });
         } catch (emailError) {
           console.error('Failed to send email notification:', emailError);
-          // Don't fail the whole operation if email fails
         }
 
         toast({
@@ -210,7 +228,6 @@ export default function ConsultantCalendar() {
           description: `Survey scheduled for ${selectedLead.name} on ${scheduleForm.date}. Email notification sent.`
         });
       } else {
-        // For calls, update lead status and add note
         const existingNotes = (selectedLead as any).notes || '';
         await supabase
           .from('leads')
@@ -240,9 +257,40 @@ export default function ConsultantCalendar() {
     }
   };
 
-  const eventsOnSelectedDate = scheduledEvents.filter(event => 
-    isSameDay(event.date, selectedDate)
-  );
+  // Navigation functions
+  const navigatePrevious = () => {
+    if (viewMode === 'month') setCurrentDate(subMonths(currentDate, 1));
+    else if (viewMode === 'week') setCurrentDate(subWeeks(currentDate, 1));
+    else setCurrentDate(subDays(currentDate, 1));
+  };
+
+  const navigateNext = () => {
+    if (viewMode === 'month') setCurrentDate(addMonths(currentDate, 1));
+    else if (viewMode === 'week') setCurrentDate(addWeeks(currentDate, 1));
+    else setCurrentDate(addDays(currentDate, 1));
+  };
+
+  const goToToday = () => {
+    setCurrentDate(new Date());
+    setSelectedDate(new Date());
+  };
+
+  // Get events for a specific day
+  const getEventsForDay = (day: Date) => {
+    return scheduledEvents.filter(event => isSameDay(event.date, day));
+  };
+
+  // Get week days
+  const weekDays = eachDayOfInterval({
+    start: startOfWeek(currentDate, { weekStartsOn: 1 }),
+    end: endOfWeek(currentDate, { weekStartsOn: 1 })
+  });
+
+  // Time slots for day/week view
+  const timeSlots = Array.from({ length: 12 }, (_, i) => {
+    const hour = i + 8; // 8am to 7pm
+    return `${hour.toString().padStart(2, '0')}:00`;
+  });
 
   const getUrgencyColor = (urgency: string) => {
     switch (urgency) {
@@ -250,6 +298,12 @@ export default function ConsultantCalendar() {
       case 'medium': return 'bg-orange-500/10 text-orange-600 dark:text-orange-400 border-orange-500/20';
       default: return 'bg-primary/10 text-primary border-primary/20';
     }
+  };
+
+  const getEventColor = (type: string, status: string) => {
+    if (status === 'completed') return 'bg-muted text-muted-foreground';
+    if (type === 'survey') return 'bg-primary text-primary-foreground';
+    return 'bg-blue-500 text-white';
   };
 
   if (loading) {
@@ -261,261 +315,374 @@ export default function ConsultantCalendar() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-xl sm:text-2xl font-bold text-foreground">Calendar</h2>
-        <Badge variant="outline" className="gap-1">
-          <CalendarIcon size={14} />
-          {format(currentMonth, 'MMMM yyyy')}
-        </Badge>
+    <div className="space-y-4">
+      {/* Header with View Toggle */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="icon" onClick={navigatePrevious}>
+            <ChevronLeft size={16} />
+          </Button>
+          <Button variant="outline" onClick={goToToday} className="text-sm">
+            Today
+          </Button>
+          <Button variant="outline" size="icon" onClick={navigateNext}>
+            <ChevronRight size={16} />
+          </Button>
+          <h2 className="text-lg font-semibold ml-2">
+            {viewMode === 'day' && format(currentDate, 'EEEE, MMMM d, yyyy')}
+            {viewMode === 'week' && `${format(weekDays[0], 'MMM d')} - ${format(weekDays[6], 'MMM d, yyyy')}`}
+            {viewMode === 'month' && format(currentDate, 'MMMM yyyy')}
+          </h2>
+        </div>
+        
+        <ToggleGroup type="single" value={viewMode} onValueChange={(v) => v && setViewMode(v as ViewMode)}>
+          <ToggleGroupItem value="day" aria-label="Day view" className="gap-1">
+            <CalendarDays size={14} />
+            <span className="hidden sm:inline">Day</span>
+          </ToggleGroupItem>
+          <ToggleGroupItem value="week" aria-label="Week view" className="gap-1">
+            <List size={14} />
+            <span className="hidden sm:inline">Week</span>
+          </ToggleGroupItem>
+          <ToggleGroupItem value="month" aria-label="Month view" className="gap-1">
+            <LayoutGrid size={14} />
+            <span className="hidden sm:inline">Month</span>
+          </ToggleGroupItem>
+        </ToggleGroup>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Calendar */}
-        <Card className="lg:col-span-2">
-          <CardHeader className="pb-2">
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-lg">Schedule</CardTitle>
-              <div className="flex items-center gap-2">
-                <Button 
-                  variant="outline" 
-                  size="icon"
-                  onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}
-                >
-                  <ChevronLeft size={16} />
-                </Button>
-                <Button 
-                  variant="outline" 
-                  size="icon"
-                  onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}
-                >
-                  <ChevronRight size={16} />
-                </Button>
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <Calendar
-              mode="single"
-              selected={selectedDate}
-              onSelect={(date) => date && setSelectedDate(date)}
-              month={currentMonth}
-              onMonthChange={setCurrentMonth}
-              className="rounded-md border w-full"
-              modifiers={{
-                hasEvent: scheduledEvents.map(e => e.date)
-              }}
-              modifiersClassNames={{
-                hasEvent: 'bg-primary/20 font-bold'
-              }}
-            />
-
-            {/* Events for selected date */}
-            <div className="mt-4">
-              <h4 className="font-medium text-sm text-muted-foreground mb-2">
-                {format(selectedDate, 'EEEE, MMMM d')}
-              </h4>
-              {eventsOnSelectedDate.length === 0 ? (
-                <p className="text-sm text-muted-foreground">No events scheduled</p>
-              ) : (
-                <div className="space-y-2">
-                  {eventsOnSelectedDate.map(event => (
-                    <motion.div
-                      key={event.id}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="p-3 bg-muted/50 rounded-lg border border-border"
-                    >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          {event.type === 'survey' ? (
-                            <ClipboardList size={16} className="text-primary" />
-                          ) : (
-                            <Phone size={16} className="text-blue-500" />
-                          )}
-                          <span className="font-medium">{event.lead_name}</span>
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
+        {/* Main Calendar Area */}
+        <div className="lg:col-span-3">
+          <Card>
+            <CardContent className="p-4">
+              <AnimatePresence mode="wait">
+                {/* Month View */}
+                {viewMode === 'month' && (
+                  <motion.div
+                    key="month"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                  >
+                    <Calendar
+                      mode="single"
+                      selected={selectedDate}
+                      onSelect={(date) => date && setSelectedDate(date)}
+                      month={currentDate}
+                      onMonthChange={setCurrentDate}
+                      className="rounded-md border w-full"
+                      modifiers={{
+                        hasEvent: scheduledEvents.map(e => e.date)
+                      }}
+                      modifiersClassNames={{
+                        hasEvent: 'bg-primary/20 font-bold'
+                      }}
+                    />
+                    
+                    {/* Selected day events */}
+                    <div className="mt-4 pt-4 border-t">
+                      <h4 className="font-medium text-sm text-muted-foreground mb-3">
+                        {format(selectedDate, 'EEEE, MMMM d')}
+                      </h4>
+                      {getEventsForDay(selectedDate).length === 0 ? (
+                        <p className="text-sm text-muted-foreground">No events scheduled</p>
+                      ) : (
+                        <div className="space-y-2">
+                          {getEventsForDay(selectedDate).map(event => (
+                            <EventCard key={event.id} event={event} />
+                          ))}
                         </div>
-                        <Badge variant={event.status === 'completed' ? 'default' : 'outline'}>
-                          {event.status}
-                        </Badge>
-                      </div>
-                      {event.time && (
-                        <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
-                          <Clock size={12} />
-                          {event.time}
-                        </p>
                       )}
-                    </motion.div>
-                  ))}
-                </div>
-              )}
-            </div>
-          </CardContent>
-        </Card>
+                    </div>
+                  </motion.div>
+                )}
 
-        {/* Leads Needing Calls */}
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-lg flex items-center gap-2">
-              <Phone size={18} />
-              Needs Follow-up
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3 max-h-[500px] overflow-y-auto">
-            {leadsNeedingCalls.length === 0 ? (
-              <p className="text-sm text-muted-foreground text-center py-4">
-                All leads have been contacted! 🎉
-              </p>
-            ) : (
-              leadsNeedingCalls.map(lead => (
-                <motion.div
-                  key={lead.id}
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  className={`p-3 rounded-lg border ${getUrgencyColor(lead.urgency)}`}
-                >
-                  <div className="flex items-start justify-between gap-2">
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center gap-2">
-                        <User size={14} />
-                        <span className="font-medium text-sm truncate">{lead.name}</span>
+                {/* Week View */}
+                {viewMode === 'week' && (
+                  <motion.div
+                    key="week"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="overflow-x-auto"
+                  >
+                    <div className="min-w-[700px]">
+                      {/* Day Headers */}
+                      <div className="grid grid-cols-7 gap-1 mb-2">
+                        {weekDays.map((day) => (
+                          <div
+                            key={day.toISOString()}
+                            className={`text-center p-2 rounded-lg cursor-pointer transition-colors ${
+                              isToday(day) ? 'bg-primary text-primary-foreground' : 
+                              isSameDay(day, selectedDate) ? 'bg-primary/10' : 'hover:bg-muted'
+                            }`}
+                            onClick={() => setSelectedDate(day)}
+                          >
+                            <div className="text-xs font-medium">{format(day, 'EEE')}</div>
+                            <div className="text-lg font-bold">{format(day, 'd')}</div>
+                          </div>
+                        ))}
                       </div>
-                      <p className="text-xs text-muted-foreground mt-1 truncate">{lead.email}</p>
-                      {lead.phone && (
-                        <p className="text-xs text-muted-foreground truncate">{lead.phone}</p>
-                      )}
-                      <div className="flex items-center gap-2 mt-2">
-                        <Badge variant="outline" className="text-[10px]">
-                          {lead.days_since_contact}d ago
-                        </Badge>
-                        {lead.source === 'AI Analyser' && (
-                          <Badge className="text-[10px] bg-primary/20 text-primary">
-                            AI Lead
-                          </Badge>
-                        )}
-                        {lead.monthly_bill && (
-                          <Badge variant="outline" className="text-[10px]">
-                            €{lead.monthly_bill}/mo
-                          </Badge>
-                        )}
+
+                      {/* Time Grid */}
+                      <div className="border rounded-lg overflow-hidden">
+                        {timeSlots.map((time) => (
+                          <div key={time} className="grid grid-cols-7 border-b last:border-b-0">
+                            <div className="col-span-7 grid grid-cols-7">
+                              {weekDays.map((day, dayIdx) => {
+                                const dayEvents = getEventsForDay(day).filter(
+                                  e => e.time?.startsWith(time.split(':')[0])
+                                );
+                                return (
+                                  <div 
+                                    key={day.toISOString()} 
+                                    className={`min-h-[60px] border-l first:border-l-0 p-1 relative ${
+                                      dayIdx === 0 ? '' : ''
+                                    }`}
+                                  >
+                                    {dayIdx === 0 && (
+                                      <span className="absolute -left-1 -top-2 text-[10px] text-muted-foreground bg-background px-1">
+                                        {time}
+                                      </span>
+                                    )}
+                                    {dayEvents.map(event => (
+                                      <div
+                                        key={event.id}
+                                        className={`text-[10px] p-1 rounded mb-1 truncate ${getEventColor(event.type, event.status)}`}
+                                        title={`${event.lead_name} - ${event.type}`}
+                                      >
+                                        {event.time} {event.lead_name}
+                                      </div>
+                                    ))}
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        ))}
                       </div>
                     </div>
-                  </div>
-                  <div className="flex gap-2 mt-3">
+                  </motion.div>
+                )}
+
+                {/* Day View */}
+                {viewMode === 'day' && (
+                  <motion.div
+                    key="day"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                  >
+                    <div className="space-y-2">
+                      {timeSlots.map((time) => {
+                        const hourEvents = getEventsForDay(currentDate).filter(
+                          e => e.time?.startsWith(time.split(':')[0])
+                        );
+                        return (
+                          <div key={time} className="flex gap-4 border-b pb-2">
+                            <div className="w-16 text-sm text-muted-foreground font-medium">
+                              {time}
+                            </div>
+                            <div className="flex-1 min-h-[60px]">
+                              {hourEvents.length === 0 ? (
+                                <div className="h-full bg-muted/30 rounded-lg border-2 border-dashed border-muted hover:border-primary/30 transition-colors cursor-pointer" />
+                              ) : (
+                                <div className="space-y-2">
+                                  {hourEvents.map(event => (
+                                    <EventCard key={event.id} event={event} detailed />
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Sidebar - Leads Needing Follow-up */}
+        <div className="lg:col-span-1">
+          <Card className="h-full">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base flex items-center gap-2">
+                <Phone size={16} />
+                Needs Follow-up
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-2 max-h-[500px] overflow-y-auto">
+              {leadsNeedingCalls.length === 0 ? (
+                <p className="text-sm text-muted-foreground text-center py-4">
+                  All leads have been contacted! 🎉
+                </p>
+              ) : (
+                leadsNeedingCalls.slice(0, 8).map(lead => (
+                  <motion.div
+                    key={lead.id}
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    className={`p-3 rounded-lg border text-sm ${getUrgencyColor(lead.urgency)}`}
+                  >
+                    <div className="flex items-center gap-2 mb-1">
+                      <User size={12} />
+                      <span className="font-medium truncate">{lead.name}</span>
+                    </div>
+                    <div className="flex items-center gap-2 mt-2 flex-wrap">
+                      <Badge variant="outline" className="text-[10px]">
+                        {lead.days_since_contact}d ago
+                      </Badge>
+                      {lead.source === 'AI Analyser' && (
+                        <Badge className="text-[10px] bg-primary/20 text-primary">
+                          AI
+                        </Badge>
+                      )}
+                    </div>
                     <Dialog open={showScheduleDialog && selectedLead?.id === lead.id} onOpenChange={(open) => {
                       setShowScheduleDialog(open);
                       if (open) setSelectedLead(lead);
                       else setSelectedLead(null);
                     }}>
                       <DialogTrigger asChild>
-                        <Button size="sm" variant="outline" className="flex-1 text-xs h-8">
-                          <Phone size={12} className="mr-1" />
-                          Call
+                        <Button size="sm" variant="outline" className="w-full mt-2 text-xs h-7">
+                          Schedule
                         </Button>
                       </DialogTrigger>
                       <DialogContent>
                         <DialogHeader>
                           <DialogTitle>Schedule for {lead.name}</DialogTitle>
                         </DialogHeader>
-                        <div className="space-y-4 mt-4">
-                          <div className="space-y-2">
-                            <Label>Type</Label>
-                            <Select 
-                              value={scheduleForm.type} 
-                              onValueChange={(v) => setScheduleForm({...scheduleForm, type: v as 'call' | 'survey'})}
-                            >
-                              <SelectTrigger>
-                                <SelectValue />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="call">Phone Call</SelectItem>
-                                <SelectItem value="survey">Site Survey</SelectItem>
-                              </SelectContent>
-                            </Select>
-                          </div>
-                          <div className="grid grid-cols-2 gap-4">
-                            <div className="space-y-2">
-                              <Label>Date</Label>
-                              <Input 
-                                type="date" 
-                                value={scheduleForm.date}
-                                onChange={(e) => setScheduleForm({...scheduleForm, date: e.target.value})}
-                              />
-                            </div>
-                            <div className="space-y-2">
-                              <Label>Time</Label>
-                              <Input 
-                                type="time" 
-                                value={scheduleForm.time}
-                                onChange={(e) => setScheduleForm({...scheduleForm, time: e.target.value})}
-                              />
-                            </div>
-                          </div>
-                          <div className="space-y-2">
-                            <Label>Notes</Label>
-                            <Textarea 
-                              placeholder="Add any notes..."
-                              value={scheduleForm.notes}
-                              onChange={(e) => setScheduleForm({...scheduleForm, notes: e.target.value})}
-                            />
-                          </div>
-                          <Button onClick={handleSchedule} className="w-full">
-                            <Plus size={16} className="mr-2" />
-                            Schedule {scheduleForm.type === 'call' ? 'Call' : 'Survey'}
-                          </Button>
-                        </div>
+                        <ScheduleForm 
+                          scheduleForm={scheduleForm}
+                          setScheduleForm={setScheduleForm}
+                          onSubmit={handleSchedule}
+                        />
                       </DialogContent>
                     </Dialog>
-                    <Button size="sm" variant="outline" className="flex-1 text-xs h-8" asChild>
-                      <a href={`mailto:${lead.email}`}>
-                        <Mail size={12} className="mr-1" />
-                        Email
-                      </a>
-                    </Button>
-                  </div>
-                </motion.div>
-              ))
-            )}
-          </CardContent>
-        </Card>
+                  </motion.div>
+                ))
+              )}
+            </CardContent>
+          </Card>
+        </div>
       </div>
+    </div>
+  );
+}
 
-      {/* Upcoming Surveys Summary */}
-      <Card>
-        <CardHeader className="pb-2">
-          <CardTitle className="text-lg flex items-center gap-2">
-            <ClipboardList size={18} />
-            Upcoming Surveys
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          {surveys.filter(s => s.status !== 'completed').length === 0 ? (
-            <p className="text-sm text-muted-foreground text-center py-4">
-              No upcoming surveys scheduled
-            </p>
+// Event Card Component
+function EventCard({ event, detailed = false }: { event: ScheduledEvent; detailed?: boolean }) {
+  const getEventColor = (type: string, status: string) => {
+    if (status === 'completed') return 'bg-muted border-muted';
+    if (type === 'survey') return 'bg-primary/10 border-primary';
+    return 'bg-blue-500/10 border-blue-500';
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      className={`p-3 rounded-lg border-l-4 ${getEventColor(event.type, event.status)}`}
+    >
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          {event.type === 'survey' ? (
+            <ClipboardList size={14} className="text-primary" />
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-              {surveys.filter(s => s.status !== 'completed').slice(0, 6).map(survey => (
-                <motion.div
-                  key={survey.id}
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  className="p-3 bg-muted/50 rounded-lg border border-border"
-                >
-                  <div className="flex items-center gap-2 mb-2">
-                    <CalendarIcon size={14} className="text-primary" />
-                    <span className="text-sm font-medium">
-                      {format(new Date(survey.survey_date), 'MMM d, h:mm a')}
-                    </span>
-                  </div>
-                  <p className="text-sm font-medium truncate">{survey.leads?.name}</p>
-                  <p className="text-xs text-muted-foreground truncate">{survey.leads?.email}</p>
-                </motion.div>
-              ))}
-            </div>
+            <Phone size={14} className="text-blue-500" />
           )}
-        </CardContent>
-      </Card>
+          <span className="font-medium text-sm">{event.lead_name}</span>
+        </div>
+        <Badge variant={event.status === 'completed' ? 'secondary' : 'default'} className="text-[10px]">
+          {event.status}
+        </Badge>
+      </div>
+      {event.time && (
+        <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
+          <Clock size={10} />
+          {event.time}
+        </p>
+      )}
+      {detailed && (
+        <>
+          {event.lead_address && (
+            <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
+              <MapPin size={10} />
+              {event.lead_address}
+            </p>
+          )}
+          {event.lead_email && (
+            <p className="text-xs text-muted-foreground flex items-center gap-1">
+              <Mail size={10} />
+              {event.lead_email}
+            </p>
+          )}
+        </>
+      )}
+    </motion.div>
+  );
+}
+
+// Schedule Form Component
+function ScheduleForm({ 
+  scheduleForm, 
+  setScheduleForm, 
+  onSubmit 
+}: { 
+  scheduleForm: any; 
+  setScheduleForm: (f: any) => void; 
+  onSubmit: () => void;
+}) {
+  return (
+    <div className="space-y-4 mt-4">
+      <div className="space-y-2">
+        <Label>Type</Label>
+        <Select 
+          value={scheduleForm.type} 
+          onValueChange={(v) => setScheduleForm({...scheduleForm, type: v})}
+        >
+          <SelectTrigger>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="call">Phone Call</SelectItem>
+            <SelectItem value="survey">Site Survey</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label>Date</Label>
+          <Input 
+            type="date" 
+            value={scheduleForm.date}
+            onChange={(e) => setScheduleForm({...scheduleForm, date: e.target.value})}
+          />
+        </div>
+        <div className="space-y-2">
+          <Label>Time</Label>
+          <Input 
+            type="time" 
+            value={scheduleForm.time}
+            onChange={(e) => setScheduleForm({...scheduleForm, time: e.target.value})}
+          />
+        </div>
+      </div>
+      <div className="space-y-2">
+        <Label>Notes</Label>
+        <Textarea 
+          placeholder="Add any notes..."
+          value={scheduleForm.notes}
+          onChange={(e) => setScheduleForm({...scheduleForm, notes: e.target.value})}
+        />
+      </div>
+      <Button onClick={onSubmit} className="w-full">
+        Schedule
+      </Button>
     </div>
   );
 }
