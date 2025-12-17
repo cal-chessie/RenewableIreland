@@ -184,6 +184,73 @@ export default function InstallationChecklist({ proposalId, leadId, leadName }: 
         .from('leads')
         .update({ workflow_stage: 'installed' })
         .eq('id', leadId);
+
+      // Fetch proposal to get pricing for invoice
+      const { data: proposal } = await supabase
+        .from('proposals')
+        .select('net_cost, system_cost, seai_grant')
+        .eq('id', proposalId)
+        .single();
+
+      // Check if invoice already exists
+      const { data: existingInvoice } = await supabase
+        .from('invoices')
+        .select('id')
+        .eq('proposal_id', proposalId)
+        .maybeSingle();
+
+      let invoiceId = existingInvoice?.id;
+
+      // Auto-generate invoice if it doesn't exist
+      if (!existingInvoice && proposal) {
+        const totalAmount = proposal.net_cost || proposal.system_cost || 0;
+        const depositAmount = Math.round(totalAmount * 0.3);
+        const finalAmount = totalAmount - depositAmount;
+        const invoiceNumber = `INV-${Date.now().toString(36).toUpperCase()}`;
+
+        const { data: newInvoice, error: invoiceError } = await supabase
+          .from('invoices')
+          .insert({
+            lead_id: leadId,
+            proposal_id: proposalId,
+            invoice_number: invoiceNumber,
+            total_amount: totalAmount,
+            deposit_amount: depositAmount,
+            final_amount: finalAmount,
+            deposit_paid: true,
+            deposit_paid_at: new Date().toISOString(),
+            status: 'pending_final'
+          })
+          .select()
+          .single();
+
+        if (invoiceError) {
+          console.error('Invoice creation error:', invoiceError);
+        } else {
+          invoiceId = newInvoice?.id;
+          
+          // Log invoice creation
+          await logActivity({
+            leadId,
+            actionType: 'invoice_created',
+            description: `Invoice ${invoiceNumber} auto-generated on installation completion`,
+            metadata: { invoice_id: newInvoice?.id, total_amount: totalAmount }
+          });
+        }
+      }
+
+      // Send installation completed email with payment link
+      try {
+        await supabase.functions.invoke('send-notification', {
+          body: {
+            type: 'installation_completed',
+            leadId,
+            invoiceId
+          }
+        });
+      } catch (emailError) {
+        console.error('Email notification error:', emailError);
+      }
       
       // Send stage change notification
       await sendStageChangeNotification(leadId, 'installation_scheduled', 'installed');
@@ -199,7 +266,7 @@ export default function InstallationChecklist({ proposalId, leadId, leadName }: 
       });
 
       setChecklist(prev => ({ ...prev, status: 'completed' }));
-      toast({ title: 'Installation Complete', description: 'The installation has been marked as complete.' });
+      toast({ title: 'Installation Complete', description: 'Invoice generated and payment link sent to customer.' });
     } catch (error: any) {
       toast({ title: 'Error', description: error.message, variant: 'destructive' });
     } finally {

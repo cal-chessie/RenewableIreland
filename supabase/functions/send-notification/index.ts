@@ -13,7 +13,7 @@ const BRAND_NAME = "AISOLAR";
 const BRAND_EMAIL = "onboarding@resend.dev";
 
 interface EmailRequest {
-  type: "invoice_created" | "deposit_paid" | "final_paid" | "installation_scheduled" | "stage_change";
+  type: "invoice_created" | "deposit_paid" | "final_paid" | "installation_scheduled" | "installation_completed" | "stage_change";
   leadId: string;
   invoiceId?: string;
   installationDate?: string;
@@ -212,6 +212,75 @@ serve(async (req) => {
               </ul>
               <p style="color: #6b7280; font-size: 14px; margin-top: 24px;">
                 Our team will arrive between 8:00 AM and 9:00 AM. Installation typically takes 1-2 days depending on system size.
+              </p>
+            </div>
+            <div style="padding: 24px; text-align: center; background: #111827; color: #9ca3af; font-size: 12px;">
+              <p style="margin: 0;">© ${new Date().getFullYear()} ${BRAND_NAME}. SEAI Registered | RECI Certified.</p>
+            </div>
+          </div>
+        `;
+        break;
+
+      case "installation_completed":
+        subject = "Installation Complete - Final Payment Due 🎉";
+        const paymentUrl = portalUrl ? `${portalUrl}#payment` : null;
+        const finalPaymentAmount = invoice?.final_amount || (invoice?.total_amount ? invoice.total_amount - (invoice.deposit_amount || 0) : 0);
+        html = `
+          <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto;">
+            <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); padding: 32px; text-align: center;">
+              <h1 style="color: white; margin: 0; font-size: 28px;">☀️ ${BRAND_NAME}</h1>
+            </div>
+            <div style="padding: 32px; background: #f9fafb;">
+              <h2 style="color: #111827; margin-top: 0;">Congratulations, ${lead.name}! 🎉</h2>
+              <p style="color: #4b5563; line-height: 1.6;">
+                Your solar installation has been <strong>successfully completed</strong>! Your system is now generating clean, renewable energy.
+              </p>
+              <div style="background: #ecfdf5; border: 1px solid #10b981; border-radius: 12px; padding: 24px; margin: 24px 0; text-align: center;">
+                <div style="font-size: 48px; margin-bottom: 12px;">☀️</div>
+                <h3 style="margin: 0; color: #065f46;">Installation Complete!</h3>
+                <p style="color: #047857; margin: 8px 0 0 0;">Your system is now live and generating power</p>
+              </div>
+              
+              <div style="background: white; border-radius: 12px; padding: 24px; margin: 24px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                <h3 style="margin-top: 0; color: #111827;">Final Payment Due</h3>
+                <table style="width: 100%; border-collapse: collapse;">
+                  <tr>
+                    <td style="padding: 8px 0; color: #6b7280;">Invoice Number:</td>
+                    <td style="padding: 8px 0; text-align: right; font-weight: 600;">${invoice?.invoice_number || "N/A"}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 8px 0; color: #6b7280;">Total Project Cost:</td>
+                    <td style="padding: 8px 0; text-align: right;">€${(invoice?.total_amount || 0).toLocaleString()}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 8px 0; color: #6b7280;">Deposit Paid:</td>
+                    <td style="padding: 8px 0; text-align: right; color: #10b981;">-€${(invoice?.deposit_amount || 0).toLocaleString()}</td>
+                  </tr>
+                  <tr style="border-top: 2px solid #e5e7eb;">
+                    <td style="padding: 12px 0 8px 0; color: #111827; font-weight: 600;">Balance Due:</td>
+                    <td style="padding: 12px 0 8px 0; text-align: right; font-weight: 700; font-size: 20px; color: #10b981;">€${finalPaymentAmount.toLocaleString()}</td>
+                  </tr>
+                </table>
+              </div>
+
+              ${paymentUrl ? `
+              <div style="text-align: center; margin: 32px 0;">
+                <a href="${paymentUrl}" style="display: inline-block; background: #10b981; color: white; padding: 16px 40px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 16px;">
+                  Pay Final Balance Now
+                </a>
+              </div>
+              ` : ""}
+              
+              <h3 style="color: #111827;">What's Next?</h3>
+              <ul style="color: #4b5563; line-height: 1.8; padding-left: 20px;">
+                <li>Complete your final payment to receive all documentation</li>
+                <li>We'll submit your SEAI grant application</li>
+                <li>Receive your warranty certificates and system documentation</li>
+                <li>Start enjoying free solar energy!</li>
+              </ul>
+              
+              <p style="color: #6b7280; font-size: 14px; margin-top: 24px;">
+                If you have any questions about your new solar system, please don't hesitate to contact us.
               </p>
             </div>
             <div style="padding: 24px; text-align: center; background: #111827; color: #9ca3af; font-size: 12px;">
