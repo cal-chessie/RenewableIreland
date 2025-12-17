@@ -11,6 +11,7 @@ import SurveyDetailsCard from './installer/SurveyDetailsCard';
 import InstallerMapView from './installer/InstallerMapView';
 import { DarkModeToggle } from '@/components/ui/DarkModeToggle';
 import { brand } from '@/config/brand';
+import { NotificationBell } from './notifications/NotificationBell';
 
 export default function InstallerDashboard() {
   const [assignments, setAssignments] = useState<any[]>([]);
@@ -265,6 +266,7 @@ export default function InstallerDashboard() {
             <p className="text-muted-foreground">Manage your installation assignments</p>
           </div>
           <div className="flex items-center gap-2">
+            <NotificationBell />
             <DarkModeToggle />
             <Button variant="outline" onClick={handleLogout} className="gap-2">
               <LogOut size={18} />
