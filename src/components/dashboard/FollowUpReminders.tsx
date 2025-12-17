@@ -291,42 +291,45 @@ export function FollowUpReminders({ onLeadClick, onStageClick, expanded = false,
       )}
 
       <Card className="border-orange-200 bg-orange-50/50 dark:border-orange-900 dark:bg-orange-950/20">
-        <CardHeader className="pb-3">
-          <div className="flex items-center justify-between">
-            <CardTitle className="flex items-center gap-2 text-lg">
-              <Bell className="h-5 w-5 text-orange-500" />
-              Follow-up Actions
-              <Badge variant={isDemo ? "secondary" : "destructive"} className="ml-2">
+        <CardHeader className="pb-2 px-3 sm:px-6">
+          <div className="flex items-center justify-between gap-2">
+            <CardTitle className="flex items-center gap-2 text-sm sm:text-lg">
+              <Bell className="h-4 w-4 sm:h-5 sm:w-5 text-orange-500" />
+              <span className="hidden xs:inline">Follow-up Actions</span>
+              <span className="xs:hidden">Actions</span>
+              <Badge variant={isDemo ? "secondary" : "destructive"} className="ml-1 text-[10px] sm:text-xs">
                 {isDemo ? 'Demo' : displayLeads.length}
               </Badge>
             </CardTitle>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1 sm:gap-2">
               {isDemo && (
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={() => setShowDemoData(false)}
-                  className="text-xs"
+                  className="text-[10px] sm:text-xs h-7 px-2"
                 >
-                  Hide Demo
+                  <span className="hidden sm:inline">Hide Demo</span>
+                  <span className="sm:hidden">Hide</span>
                 </Button>
               )}
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => setIsCollapsed(!isCollapsed)}
+                className="text-xs h-7 px-2"
               >
-                {isCollapsed ? 'Expand' : 'Collapse'}
+                {isCollapsed ? 'Show' : 'Hide'}
               </Button>
             </div>
           </div>
-          <p className="text-sm text-muted-foreground">
-            {isDemo ? 'Sample data to learn the interface - real leads will appear here' : 'Sales actions needed to move these leads forward'}
+          <p className="text-xs text-muted-foreground mt-1 hidden sm:block">
+            {isDemo ? 'Sample data to learn the interface' : 'Sales actions needed to move leads forward'}
           </p>
         </CardHeader>
         
         {!isCollapsed && (
-          <CardContent className="space-y-3">
+          <CardContent className="px-3 sm:px-6 space-y-2 sm:space-y-3">
           {displayLeads.slice(0, expanded ? 20 : 5).map((lead) => {
             const daysPastThreshold = lead.days_stale - lead.threshold;
             const ActionIcon = lead.suggestedAction.icon;
@@ -335,65 +338,67 @@ export function FollowUpReminders({ onLeadClick, onStageClick, expanded = false,
             return (
               <div
                 key={lead.id}
-                className={`flex items-center justify-between p-3 bg-background rounded-lg border ${isLeadDemo ? 'border-dashed border-muted-foreground/30' : ''}`}
+                className={`flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-2 sm:p-3 bg-background rounded-lg border ${isLeadDemo ? 'border-dashed border-muted-foreground/30' : ''}`}
               >
+                {/* Lead Info */}
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 flex-wrap">
                     <button
                       onClick={() => !isLeadDemo && onLeadClick?.(lead.id)}
-                      className={`font-medium truncate text-left ${isLeadDemo ? 'text-muted-foreground cursor-default' : 'text-foreground hover:text-primary'}`}
+                      className={`font-medium truncate text-left text-sm ${isLeadDemo ? 'text-muted-foreground cursor-default' : 'text-foreground hover:text-primary'}`}
                     >
                       {lead.name}
                     </button>
                     {isLeadDemo && (
-                      <Badge variant="outline" className="text-[10px] px-1.5 py-0">DEMO</Badge>
+                      <Badge variant="outline" className="text-[9px] px-1 py-0 h-4">DEMO</Badge>
                     )}
-                    <Badge variant={getUrgencyColor(daysPastThreshold)}>
-                      <Clock className="h-3 w-3 mr-1" />
+                    <Badge variant={getUrgencyColor(daysPastThreshold)} className="text-[10px] px-1.5 h-5">
+                      <Clock className="h-2.5 w-2.5 mr-0.5" />
                       {lead.days_stale}d
                     </Badge>
                   </div>
-                  <div className="flex items-center gap-3 mt-1 text-sm text-muted-foreground">
+                  <div className="flex items-center gap-2 mt-0.5 text-xs text-muted-foreground">
                     <span className="truncate">{getStageLabel(lead.workflow_stage)}</span>
-                    <span>•</span>
-                    <span className="truncate text-orange-600 dark:text-orange-400 font-medium">
+                    <span className="hidden sm:inline">•</span>
+                    <span className="text-orange-600 dark:text-orange-400 font-medium truncate">
                       {lead.suggestedAction.label}
                     </span>
                   </div>
                 </div>
                 
-                <div className="flex items-center gap-2 ml-4">
+                {/* Action Buttons - Mobile Optimized */}
+                <div className="flex items-center gap-1.5 sm:gap-2 justify-end">
                   {lead.phone && (
                     <Button
                       variant="outline"
                       size="icon"
-                      className="h-8 w-8"
+                      className="h-8 w-8 sm:h-9 sm:w-9 touch-manipulation"
                       onClick={() => !isLeadDemo && window.open(`tel:${lead.phone}`, '_blank')}
                       title="Call"
                       disabled={isLeadDemo}
                     >
-                      <Phone className="h-4 w-4" />
+                      <Phone className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                     </Button>
                   )}
                   <Button
                     variant="outline"
                     size="icon"
-                    className="h-8 w-8"
+                    className="h-8 w-8 sm:h-9 sm:w-9 touch-manipulation"
                     onClick={() => !isLeadDemo && window.open(`mailto:${lead.email}`, '_blank')}
                     title="Email"
                     disabled={isLeadDemo}
                   >
-                    <Mail className="h-4 w-4" />
+                    <Mail className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                   </Button>
                   <Button
                     variant={lead.suggestedAction.variant}
                     size="sm"
                     onClick={() => handleDemoAction(lead, lead.suggestedAction.action)}
-                    className="gap-1"
+                    className="gap-1 h-8 sm:h-9 px-2 sm:px-3 text-xs touch-manipulation"
                   >
-                    <ActionIcon className="h-3 w-3" />
+                    <ActionIcon className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
                     <span className="hidden sm:inline">{lead.suggestedAction.label}</span>
-                    <span className="sm:hidden">Action</span>
+                    <span className="sm:hidden">Go</span>
                   </Button>
                 </div>
               </div>
@@ -401,8 +406,8 @@ export function FollowUpReminders({ onLeadClick, onStageClick, expanded = false,
           })}
           {displayLeads.length > (expanded ? 20 : 5) && (
             <div className="text-center pt-2">
-              <Button variant="link" className="text-orange-600">
-                View all {displayLeads.length} leads needing action
+              <Button variant="link" className="text-orange-600 text-sm">
+                View all {displayLeads.length} leads
               </Button>
             </div>
           )}
