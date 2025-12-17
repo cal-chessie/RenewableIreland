@@ -1138,23 +1138,18 @@ All colors MUST be HSL.
   margin-top: 2rem;
 }
 
-.calculator-results.enhanced {
+.calculator-results-row {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: repeat(3, 1fr);
   gap: 1.5rem;
-  margin-top: 3rem;
+  margin-top: 2rem;
 }
 
-@media (min-width: 768px) {
-  .calculator-results.enhanced {
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem;
+@media (max-width: 768px) {
+  .calculator-results-row {
+    grid-template-columns: 1fr;
+    gap: 1rem;
   }
-}
-
-.secondary-results {
-  display: grid;
-  gap: 1rem;
 }
 
 .result-card-3d {

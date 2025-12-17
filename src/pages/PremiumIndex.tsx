@@ -718,71 +718,41 @@ function SavingsCalculatorSection({
             </div>
           </div>
 
-          {/* Results Grid with 3D Cards */}
-          <div className="calculator-results enhanced">
-            <Card3D className="result-card-3d primary" intensity={10}>
-              <div className="result-card primary glass">
-                <div className="result-icon-wrapper">
-                  <motion.div 
-                    className="result-icon"
-                    animate={{ 
-                      rotate: isInView ? [0, 10, -10, 0] : 0,
-                      scale: isInView ? [1, 1.1, 1] : 1
-                    }}
-                    transition={{ duration: 0.6, delay: 0.5 }}
-                  >
-                    <TrendingUp size={28} />
-                  </motion.div>
+          {/* Results Grid - 3 cards side by side */}
+          <div className="calculator-results-row">
+            <Card3D className="result-card-3d" intensity={8}>
+              <div className="result-card glass">
+                <div className="result-icon-mini">
+                  <TrendingUp size={20} />
                 </div>
-                <div className="result-content">
-                  <div className="result-label">Estimated Annual Savings</div>
-                  <motion.div 
-                    className="result-value large"
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.3 }}
-                  >
-                    €<AnimatedCounter value={annualSavings} isInView={isInView} />
-                  </motion.div>
+                <div className="result-label">Annual Savings</div>
+                <div className="result-value">
+                  €<AnimatedCounter value={annualSavings} isInView={isInView} />
                 </div>
-                <motion.div 
-                  className="result-sparkle"
-                  animate={{ 
-                    opacity: [0.5, 1, 0.5],
-                    scale: [0.9, 1.1, 0.9]
-                  }}
-                  transition={{ duration: 2, repeat: Infinity }}
-                >
-                  <Sparkles size={20} />
-                </motion.div>
               </div>
             </Card3D>
 
-            <div className="secondary-results">
-              <Card3D className="result-card-3d" intensity={8}>
-                <div className="result-card glass">
-                  <div className="result-icon-mini">
-                    <Calculator size={18} />
-                  </div>
-                  <div className="result-label">25-Year Savings</div>
-                  <div className="result-value">
-                    €<AnimatedCounter value={twentyFiveYearSavings} isInView={isInView} />
-                  </div>
+            <Card3D className="result-card-3d" intensity={8}>
+              <div className="result-card glass">
+                <div className="result-icon-mini">
+                  <Calculator size={20} />
                 </div>
-              </Card3D>
-
-              <Card3D className="result-card-3d" intensity={8}>
-                <div className="result-card glass">
-                  <div className="result-icon-mini">
-                    <Clock size={18} />
-                  </div>
-                  <div className="result-label">Payback Period</div>
-                  <div className="result-value">5-7 years</div>
+                <div className="result-label">25-Year Savings</div>
+                <div className="result-value">
+                  €<AnimatedCounter value={twentyFiveYearSavings} isInView={isInView} />
                 </div>
-              </Card3D>
+              </div>
+            </Card3D>
 
-            </div>
+            <Card3D className="result-card-3d" intensity={8}>
+              <div className="result-card glass">
+                <div className="result-icon-mini">
+                  <Clock size={20} />
+                </div>
+                <div className="result-label">Payback Period</div>
+                <div className="result-value">5-7 years</div>
+              </div>
+            </Card3D>
           </div>
         </motion.div>
       </div>
