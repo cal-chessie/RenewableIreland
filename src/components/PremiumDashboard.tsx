@@ -880,7 +880,26 @@ const LeadsPanel = ({ onLeadSelect, onStartSurvey, onLeadAdded, refreshKey }: Le
                       )}
                       <StarRating score={lead.score || 0} leadId={lead.id} />
                     </div>
-                    <p className="text-sm text-muted-foreground truncate">
+                    {/* Progress Indicator Dots */}
+                    <div className="flex items-center gap-1 mt-2">
+                      {['new', 'survey', 'proposal', 'approved', 'installed', 'completed'].map((stage, idx) => {
+                        const stageOrder = ['new', 'survey', 'proposal', 'approved', 'installed', 'completed'];
+                        const currentIdx = stageOrder.indexOf(lead.workflow_stage || 'new');
+                        const isCompleted = idx <= currentIdx;
+                        const isCurrent = idx === currentIdx;
+                        return (
+                          <div 
+                            key={stage}
+                            className={`w-2 h-2 rounded-full transition-all ${
+                              isCurrent ? 'w-4 bg-primary' :
+                              isCompleted ? 'bg-primary/60' : 'bg-muted-foreground/20'
+                            }`}
+                            title={stage.replace('_', ' ')}
+                          />
+                        );
+                      })}
+                    </div>
+                    <p className="text-sm text-muted-foreground truncate mt-1">
                       {lead.address || 'No address'} • €{lead.monthly_bill || 0}/month
                     </p>
                     <p className="text-xs text-muted-foreground/70 mt-1 truncate">{lead.email}</p>

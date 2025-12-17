@@ -33,16 +33,16 @@ export default function SiteNavigation() {
     <motion.header 
       className="sticky top-0 z-50 bg-background/80 backdrop-blur-lg border-b pt-safe"
       animate={{ 
-        paddingTop: isScrolled ? '0.25rem' : '0rem',
-        paddingBottom: isScrolled ? '0.25rem' : '0rem'
+        paddingTop: isScrolled ? '0rem' : '0rem',
+        paddingBottom: isScrolled ? '0rem' : '0rem'
       }}
-      transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+      transition={{ duration: 0.2 }}
     >
-      <div className="container mx-auto">
+      <div className="container mx-auto px-3 sm:px-4">
         <motion.div 
           className="flex justify-between items-center"
-          animate={{ padding: isScrolled ? '0.375rem 0' : '0.625rem 0' }}
-          transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+          animate={{ padding: isScrolled ? '0.25rem 0' : '0.5rem 0' }}
+          transition={{ duration: 0.2 }}
         >
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 min-h-[44px]">
