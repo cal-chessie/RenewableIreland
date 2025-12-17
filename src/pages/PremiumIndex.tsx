@@ -35,8 +35,8 @@ export default function PremiumIndex() {
   const [estimatedBill, setEstimatedBill] = useState(200);
   const heroRef = useRef(null);
   const { scrollYProgress } = useScroll();
-  const opacity = useTransform(scrollYProgress, [0, 0.1], [1, 0]);
-  const scale = useTransform(scrollYProgress, [0, 0.1], [1, 0.8]);
+  const opacity = useTransform(scrollYProgress, [0, 0.15, 0.25], [1, 1, 0]);
+  const scale = useTransform(scrollYProgress, [0, 0.2, 0.3], [1, 1, 0.9]);
 
   useEffect(() => {
     const handleScroll = () => {
