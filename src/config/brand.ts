@@ -57,7 +57,7 @@ export const brand = {
   
   // ===== SEAI GRANT INFO (Ireland-specific) =====
   grants: {
-    maxDomestic: 2400,
+    maxDomestic: 1800,
     maxCommercialSmall: 2700,
     perKwpDomestic: 900,
     perKwpCommercial: 450,
