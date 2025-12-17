@@ -711,11 +711,6 @@ function SavingsCalculatorSection({
                 <span className="period">/month</span>
               </motion.div>
             </div>
-            <div className="slider-labels">
-              <span>€50</span>
-              <span>€275</span>
-              <span>€500</span>
-            </div>
           </div>
 
           {/* Results Grid - 3 cards side by side */}
