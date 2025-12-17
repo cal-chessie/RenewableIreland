@@ -17,9 +17,9 @@ export default function ProposalResults({ onStartOver }: ProposalResultsProps) {
     projectedSavings: '€87',
     systemSize: '6.5 kW',
     paybackPeriod: '7.2 years',
-    seaiGrant: '€2,400',
+    seaiGrant: '€1,800',
     estimatedCost: '€12,500',
-    netCost: '€10,100'
+    netCost: '€10,700'
   };
 
   return (
