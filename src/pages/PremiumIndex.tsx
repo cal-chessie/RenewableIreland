@@ -11,16 +11,18 @@ import {
   Shield,
   Calculator,
   FileText,
-  MessageCircle,
   Calendar,
   Upload,
   Sparkles,
   Euro,
-  Quote
+  Quote,
+  MessageCircle
 } from 'lucide-react';
 import SEOHead from '@/components/SEOHead';
 import LeadCaptureForm from '@/components/LeadCaptureForm';
+import SiteNavigation from '@/components/layout/SiteNavigation';
 import { DarkModeToggle } from '@/components/ui/DarkModeToggle';
+import { brand } from '@/config/brand';
 
 export default function PremiumIndex() {
   const navigate = useNavigate();
@@ -45,27 +47,14 @@ export default function PremiumIndex() {
   return (
     <>
       <SEOHead
-        title="Save Up To 70% On Electricity Bills - Free Solar Analysis Ireland"
-        description="Upload your electricity bill and get an instant AI-powered solar proposal in 30 seconds. Discover your potential savings with certified solar experts. SEAI grants available."
-        keywords="solar savings Ireland, reduce electricity bills, solar calculator, instant solar proposal, SEAI grants, solar panel installation"
+        title={brand.seo.title}
+        description={brand.seo.description}
+        keywords={brand.seo.keywords}
       />
       
       <div className="premium-sales-page">
-        {/* Top Navigation Bar */}
-        <nav className="top-nav">
-          <div className="nav-content">
-            <div className="nav-logo">
-              <Zap size={24} />
-              <span>SolarPro</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <DarkModeToggle />
-              <button className="consultant-login-btn" onClick={() => navigate('/auth')}>
-                Consultant Login
-              </button>
-            </div>
-          </div>
-        </nav>
+        {/* Site Navigation */}
+        <SiteNavigation />
 
         {/* Sticky CTA Header */}
         <AnimatePresence>
@@ -325,7 +314,7 @@ function SocialProofSection() {
 
         <div className="trust-logos">
           <div className="logo-item">SEAI Approved</div>
-          <div className="logo-item">SEI Certified</div>
+          <div className="logo-item">RECI Certified</div>
           <div className="logo-item">SEAI Grants</div>
           <div className="logo-item">5-Star Reviews</div>
         </div>

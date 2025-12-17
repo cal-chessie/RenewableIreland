@@ -10,6 +10,7 @@ import { FileText, CheckCircle, Loader2 } from 'lucide-react';
 import { logActivity } from '@/lib/activityLog';
 import { sendStageChangeNotification } from '@/lib/stageNotifications';
 import SignatureCanvas from '@/components/ui/SignatureCanvas';
+import { brand } from '@/config/brand';
 
 interface ContractSignatureProps {
   proposalId: string;
@@ -38,9 +39,9 @@ export default function ContractSignature({
     signature: ''
   });
 
-  const GDPR_TEXT = `I consent to Solar Dublin processing my personal data for the purpose of this solar installation contract. 
+  const GDPR_TEXT = `I consent to ${brand.name} processing my personal data for the purpose of this solar installation contract. 
 I understand that my data will be stored securely and used only for contract fulfillment, installation scheduling, 
-warranty registration, and customer support. I can withdraw consent at any time by contacting support@solardublin.ie.`;
+warranty registration, and customer support. I can withdraw consent at any time by contacting ${brand.contact.email}.`;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
