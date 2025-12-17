@@ -1,20 +1,28 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Progress } from '@/components/ui/progress';
 import {
   MapPin, Navigation, Phone, Calendar, CheckCircle, Clock, AlertCircle,
-  Camera, FileText, Wrench, User, ChevronRight, ExternalLink, PhoneCall,
-  MessageSquare, Zap, Battery, Sun, ClipboardCheck, ArrowLeft, Home,
-  List, Settings, HelpCircle, RefreshCw
+  FileText, Wrench, User, ChevronRight, PhoneCall,
+  MessageSquare, Zap, Battery, Sun, ClipboardCheck, ArrowLeft,
+  List, HelpCircle, RefreshCw, WifiOff, Wifi, CloudOff
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
 import InstallationChecklist from './InstallationChecklist';
+import { 
+  cacheAssignmentsOffline, 
+  getCachedAssignments, 
+  isOnline, 
+  setupConnectivityListeners,
+  queueOfflineAction,
+  getOfflineQueue,
+  removeFromQueue
+} from '@/lib/offlineSupport';
 
 interface Assignment {
   id: string;
@@ -63,20 +71,84 @@ export default function MobileInstallerCompanion() {
   const [refreshing, setRefreshing] = useState(false);
   const [activeTab, setActiveTab] = useState('jobs');
   const [showChecklist, setShowChecklist] = useState(false);
+  const [online, setOnline] = useState(isOnline());
+  const [offlineMode, setOfflineMode] = useState(false);
+  const [pendingSync, setPendingSync] = useState(0);
 
-  useEffect(() => {
+  // Sync offline queue when back online
+  const syncOfflineQueue = useCallback(async () => {
+    const queue = getOfflineQueue();
+    if (queue.length === 0) return;
+
+    for (const item of queue) {
+      try {
+        if (item.action === 'update_status') {
+          await supabase.from('assignments').update(item.data).eq('id', item.data.assignmentId);
+          removeFromQueue(item.id);
+        }
+      } catch (error) {
+        console.error('Failed to sync item:', item.id);
+      }
+    }
+    setPendingSync(getOfflineQueue().length);
     loadAssignments();
-    
-    // Real-time subscription
-    const channel = supabase
-      .channel('mobile-installer')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'assignments' }, () => loadAssignments())
-      .subscribe();
-
-    return () => { supabase.removeChannel(channel); };
+    toast.success('Offline changes synced!');
   }, []);
 
+  useEffect(() => {
+    // Check for cached data first
+    const cached = getCachedAssignments();
+    if (cached && !isOnline()) {
+      setAssignments(cached.assignments);
+      setOfflineMode(true);
+      setLoading(false);
+    }
+    
+    loadAssignments();
+    setPendingSync(getOfflineQueue().length);
+    
+    // Real-time subscription (only when online)
+    let channel: any = null;
+    if (isOnline()) {
+      channel = supabase
+        .channel('mobile-installer')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'assignments' }, () => loadAssignments())
+        .subscribe();
+    }
+
+    // Setup connectivity listeners
+    const cleanup = setupConnectivityListeners(
+      () => {
+        setOnline(true);
+        setOfflineMode(false);
+        toast.success('Back online!');
+        syncOfflineQueue();
+      },
+      () => {
+        setOnline(false);
+        setOfflineMode(true);
+        toast.warning('You are offline. Changes will sync when connected.');
+      }
+    );
+
+    return () => {
+      cleanup();
+      if (channel) supabase.removeChannel(channel);
+    };
+  }, [syncOfflineQueue]);
+
   const loadAssignments = async () => {
+    if (!isOnline()) {
+      const cached = getCachedAssignments();
+      if (cached) {
+        setAssignments(cached.assignments);
+        setOfflineMode(true);
+      }
+      setLoading(false);
+      setRefreshing(false);
+      return;
+    }
+
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
@@ -96,9 +168,20 @@ export default function MobileInstallerCompanion() {
         .in('status', ['pending', 'accepted', 'in_progress'])
         .order('scheduled_date', { ascending: true });
 
-      setAssignments(data || []);
+      const assignmentData = data || [];
+      setAssignments(assignmentData);
+      setOfflineMode(false);
+      
+      // Cache for offline use
+      cacheAssignmentsOffline(assignmentData);
     } catch (error) {
       console.error('Error:', error);
+      // Fallback to cached data
+      const cached = getCachedAssignments();
+      if (cached) {
+        setAssignments(cached.assignments);
+        setOfflineMode(true);
+      }
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -117,6 +200,25 @@ export default function MobileInstallerCompanion() {
   const updateStatus = async (id: string, status: string) => {
     const updateData: Record<string, string> = { status };
     if (status === 'completed') updateData.completed_date = new Date().toISOString();
+
+    // If offline, queue the action
+    if (!isOnline()) {
+      queueOfflineAction({
+        id: `status-${id}-${Date.now()}`,
+        action: 'update_status',
+        data: { assignmentId: id, ...updateData },
+        timestamp: Date.now(),
+      });
+      setPendingSync(getOfflineQueue().length);
+      toast.info('Status change saved offline. Will sync when connected.');
+      
+      // Update local state immediately
+      setAssignments(prev => prev.map(a => a.id === id ? { ...a, status } : a));
+      if (selectedAssignment?.id === id) {
+        setSelectedAssignment({ ...selectedAssignment, status });
+      }
+      return;
+    }
 
     const { error } = await supabase.from('assignments').update(updateData).eq('id', id);
     if (error) {
@@ -466,18 +568,41 @@ export default function MobileInstallerCompanion() {
 
   return (
     <div className="min-h-screen bg-background pb-20">
+      {/* Offline Banner */}
+      <AnimatePresence>
+        {offlineMode && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            className="bg-yellow-500 text-yellow-950 px-4 py-2 text-center text-sm font-medium flex items-center justify-center gap-2"
+          >
+            <WifiOff className="h-4 w-4" />
+            Offline Mode - {pendingSync > 0 ? `${pendingSync} changes pending sync` : 'Using cached data'}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Header */}
       <div className="sticky top-0 bg-background/95 backdrop-blur-sm border-b z-10 px-4 py-3 safe-area-inset-top">
         <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-xl font-bold">Field Companion</h1>
-            <p className="text-xs text-muted-foreground">{assignments.length} active jobs</p>
+          <div className="flex items-center gap-2">
+            <div>
+              <h1 className="text-xl font-bold">Field Companion</h1>
+              <p className="text-xs text-muted-foreground">{assignments.length} active jobs</p>
+            </div>
+            {online ? (
+              <Wifi className="h-4 w-4 text-green-500" />
+            ) : (
+              <CloudOff className="h-4 w-4 text-yellow-500" />
+            )}
           </div>
           <Button 
             variant="ghost" 
             size="icon" 
             onClick={() => { setRefreshing(true); loadAssignments(); }}
             className={refreshing ? 'animate-spin' : ''}
+            disabled={!online}
           >
             <RefreshCw className="h-5 w-5" />
           </Button>
