@@ -642,7 +642,7 @@ function SavingsCalculatorSection({
 
             <div className="result-card">
               <div className="result-label">Payback Period</div>
-              <div className="result-value">7-9 years</div>
+              <div className="result-value">5-7 years</div>
             </div>
           </div>
         </div>
