@@ -163,7 +163,7 @@ export default function PremiumIndex() {
           </motion.div>
 
           {/* Hero Visual - Live Product Preview */}
-          <div className="hero-visual">
+          <div className="hero-visual self-start mt-0">
             <div className="flex flex-col gap-4 w-full max-w-md">
               {/* Card 1: Project Snapshot */}
               <motion.div
@@ -225,28 +225,55 @@ export default function PremiumIndex() {
               >
                 <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-200 mb-4">Next Steps</h3>
                 <div className="space-y-3">
-                  <div className="flex items-center gap-3">
-                    <div className="w-5 h-5 rounded-full bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center">
-                      <Check size={12} className="text-emerald-600 dark:text-emerald-400" />
-                    </div>
-                    <span className="text-sm text-slate-500 dark:text-slate-400 line-through">Upload electricity bill</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="w-5 h-5 rounded-full bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center">
-                      <Check size={12} className="text-emerald-600 dark:text-emerald-400" />
-                    </div>
-                    <span className="text-sm text-slate-500 dark:text-slate-400 line-through">AI analysis complete</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="w-5 h-5 rounded-full border-2 border-emerald-500 flex items-center justify-center">
-                      <div className="w-2 h-2 rounded-full bg-emerald-500" />
-                    </div>
-                    <span className="text-sm text-slate-800 dark:text-slate-100 font-medium">Review savings proposal</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="w-5 h-5 rounded-full border-2 border-slate-200 dark:border-slate-700" />
-                    <span className="text-sm text-slate-400 dark:text-slate-500">Schedule site survey</span>
-                  </div>
+                  {[
+                    { text: 'Upload electricity bill', completed: true, delay: 0.8 },
+                    { text: 'AI analysis complete', completed: true, delay: 1.0 },
+                    { text: 'Review savings proposal', completed: false, current: true, delay: 1.2 },
+                    { text: 'Schedule site survey', completed: false, delay: 1.4 },
+                  ].map((item, index) => (
+                    <motion.div
+                      key={index}
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: item.delay, duration: 0.3 }}
+                      className="flex items-center gap-3"
+                    >
+                      <motion.div
+                        initial={item.completed ? { scale: 0 } : {}}
+                        animate={item.completed ? { scale: 1 } : {}}
+                        transition={{ delay: item.delay + 0.15, duration: 0.2, type: 'spring' }}
+                        className={`w-5 h-5 rounded-full flex items-center justify-center ${
+                          item.completed
+                            ? 'bg-emerald-100 dark:bg-emerald-900/50'
+                            : item.current
+                            ? 'border-2 border-emerald-500'
+                            : 'border-2 border-slate-200 dark:border-slate-700'
+                        }`}
+                      >
+                        {item.completed && (
+                          <motion.div
+                            initial={{ scale: 0 }}
+                            animate={{ scale: 1 }}
+                            transition={{ delay: item.delay + 0.2, duration: 0.2 }}
+                          >
+                            <Check size={12} className="text-emerald-600 dark:text-emerald-400" />
+                          </motion.div>
+                        )}
+                        {item.current && <div className="w-2 h-2 rounded-full bg-emerald-500" />}
+                      </motion.div>
+                      <span
+                        className={`text-sm ${
+                          item.completed
+                            ? 'text-slate-500 dark:text-slate-400 line-through'
+                            : item.current
+                            ? 'text-slate-800 dark:text-slate-100 font-medium'
+                            : 'text-slate-400 dark:text-slate-500'
+                        }`}
+                      >
+                        {item.text}
+                      </span>
+                    </motion.div>
+                  ))}
                 </div>
               </motion.div>
             </div>
