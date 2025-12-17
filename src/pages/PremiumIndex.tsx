@@ -294,6 +294,28 @@ export default function PremiumIndex() {
                 </div>
               </motion.div>
             </div>
+
+            {/* Bottom corner trust element */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 1.6, duration: 0.5 }}
+              className="mt-6 flex items-center gap-3 p-3 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm"
+            >
+              <div className="flex -space-x-2">
+                <div className="w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center text-xs">👤</div>
+                <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center text-xs">👤</div>
+                <div className="w-8 h-8 rounded-full bg-amber-100 dark:bg-amber-900/50 flex items-center justify-center text-xs">👤</div>
+              </div>
+              <div>
+                <div className="text-sm font-semibold text-slate-800 dark:text-slate-100">
+                  500+ Irish homes
+                </div>
+                <div className="text-xs text-slate-500 dark:text-slate-400">
+                  switched to solar this year
+                </div>
+              </div>
+            </motion.div>
           </div>
         </section>
 
