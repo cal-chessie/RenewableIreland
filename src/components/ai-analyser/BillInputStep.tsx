@@ -154,16 +154,22 @@ export function BillInputStep({ onAnalyse }: BillInputStepProps) {
             </TabsContent>
 
             <TabsContent value="upload" className="space-y-4">
-              {/* Mobile Camera Button - shown prominently on mobile */}
+              {/* Camera Button - visible on all devices */}
               <Button
                 type="button"
                 variant="outline"
-                className="w-full h-14 sm:hidden gap-2 text-base"
+                className="w-full h-14 gap-2 text-base border-primary/30 hover:bg-primary/5"
                 onClick={handleCameraCapture}
               >
-                <Camera className="w-5 h-5" />
-                Take Photo of Bill
+                <Camera className="w-5 h-5 text-primary" />
+                📷 Take Photo of Your Bill
               </Button>
+
+              <div className="flex items-center gap-3 text-muted-foreground text-sm">
+                <div className="flex-1 h-px bg-border"></div>
+                <span>or</span>
+                <div className="flex-1 h-px bg-border"></div>
+              </div>
 
               <div
                 {...getRootProps()}

@@ -15,7 +15,8 @@ import {
   Search,
   FileCheck,
   Settings,
-  Phone
+  Phone,
+  Plus
 } from 'lucide-react';
 import { DarkModeToggle } from '@/components/ui/DarkModeToggle';
 import { toast } from '@/components/ui/use-toast';
@@ -23,6 +24,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
+import { brand } from '@/config/brand';
 import { useAuth } from '@/hooks/useAuth';
 import LeadDetailView from './LeadDetailView';
 import ProposalQuestionnaire from './ProposalQuestionnaire';
@@ -285,17 +287,17 @@ export default function PremiumDashboard({ onBackToClient }: { onBackToClient?: 
         <div className="max-w-7xl mx-auto px-4 sm:px-8 py-4 sm:py-6">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-foreground">Solar Dublin</h1>
+              <h1 className="text-2xl sm:text-3xl font-bold text-foreground">{brand.name}</h1>
               <p className="text-muted-foreground mt-1 text-sm sm:text-base">Consultant Portal</p>
             </div>
             <div className="flex items-center gap-2 sm:gap-4">
               <button 
                 className="gradient-primary text-white px-3 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold flex items-center gap-2 hover:shadow-lg transition-all text-sm sm:text-base"
-                onClick={() => setShowLeadSelector(true)}
-                aria-label="Create new proposal"
+                onClick={() => setShowAddLead(true)}
+                aria-label="Add new lead"
               >
-                <Zap size={20} />
-                <span className="hidden sm:inline">New Proposal</span>
+                <Plus size={20} />
+                <span className="hidden sm:inline">New Lead</span>
               </button>
               <DarkModeToggle />
               <Button
