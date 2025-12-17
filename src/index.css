@@ -1344,54 +1344,103 @@ All colors MUST be HSL.
   }
 }
 
-/* Tablets (640px-767px) */
-@media (min-width: 640px) and (max-width: 767px) {
+/* Tablets (640px-1023px) - Two column hero layout */
+@media (min-width: 640px) and (max-width: 1023px) {
   .hero-section {
-    grid-template-columns: 1fr;
-    text-align: center;
-    padding: 3rem 1.5rem;
-    gap: 2.5rem;
+    grid-template-columns: 1fr 1fr;
+    text-align: left;
+    padding: 6rem 1.5rem 4rem;
+    gap: 2rem;
+    align-items: start;
   }
 
   .hero-title {
-    font-size: 2.25rem;
+    font-size: 2rem;
   }
 
   .hero-subtitle {
-    font-size: 1rem;
-    max-width: 500px;
-    margin: 0 auto 2.5rem;
+    font-size: 0.9375rem;
+    max-width: 100%;
+    margin-bottom: 1.5rem;
+  }
+
+  .hero-badge {
+    margin-bottom: 1rem;
   }
 
   .hero-stats {
-    justify-content: center;
-    gap: 1rem;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
   }
 
   .stat {
-    padding: 1rem;
+    padding: 0.75rem;
     background: hsl(var(--card));
-    border-radius: 12px;
+    border-radius: 10px;
     border: 1px solid hsl(var(--border));
   }
 
   .stat-number {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
+  }
+
+  .stat-label {
+    font-size: 0.6875rem;
   }
 
   .hero-cta {
-    align-items: center;
-    max-width: 400px;
-    margin: 0 auto 2rem;
+    max-width: 100%;
+    margin-bottom: 1.5rem;
+  }
+
+  .primary-cta {
+    padding: 1rem 1.5rem;
+    font-size: 0.9375rem;
+  }
+
+  .secondary-cta {
+    padding: 0.875rem 1.25rem;
+    font-size: 0.875rem;
   }
 
   .trust-pills {
-    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .trust-pill {
+    font-size: 0.6875rem;
+    padding: 0.375rem 0.625rem;
+  }
+
+  .hero-visual {
+    display: flex;
+    margin-top: 0;
+  }
+
+  .hero-visual > div {
+    gap: 0.75rem;
+  }
+
+  .hero-visual .bg-white,
+  .hero-visual .bg-gradient-to-br {
+    padding: 1rem;
+  }
+
+  .hero-visual h3 {
+    font-size: 0.75rem;
+  }
+
+  .hero-visual .text-xs {
+    font-size: 0.6875rem;
+  }
+
+  .hero-visual .text-sm {
+    font-size: 0.75rem;
   }
 }
 
-/* General tablet and mobile (max-width: 768px) */
-@media (max-width: 768px) {
+/* General mobile only (max-width: 639px) - hide hero visual */
+@media (max-width: 639px) {
   .hero-visual {
     display: none;
   }
