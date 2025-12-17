@@ -47,6 +47,7 @@ import { DashboardStatsSkeleton, LeadCardsSkeleton } from './ui/skeletons';
 import ErrorBoundary from './ui/ErrorBoundary';
 import { PaginationControls, usePagination } from './ui/PaginationControls';
 import { EmptyLeadsState, EmptyProposalsState, EmptySearchResultsState } from './ui/EmptyState';
+import { NotificationBell } from './notifications/NotificationBell';
 
 interface StatCardProps {
   icon: React.ReactNode;
@@ -310,6 +311,7 @@ export default function PremiumDashboard({ onBackToClient }: { onBackToClient?: 
                 <Plus size={18} className="flex-shrink-0" />
                 <span className="hidden sm:inline">New Lead</span>
               </Button>
+              <NotificationBell />
               <DarkModeToggle />
               {isAdmin && (
                 <Button
