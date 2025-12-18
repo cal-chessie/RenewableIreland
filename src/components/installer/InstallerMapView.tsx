@@ -24,6 +24,11 @@ interface Assignment {
   } | null;
 }
 
+interface InstallerMapViewProps {
+  assignments?: Assignment[];
+  showDemo?: boolean;
+}
+
 // Demo installation with training walkthrough
 const DEMO_INSTALLATION: Assignment = {
   id: 'demo-training',
@@ -108,17 +113,28 @@ const TRAINING_STEPS = [
   },
 ];
 
-export default function InstallerMapView() {
-  const [assignments, setAssignments] = useState<Assignment[]>([]);
-  const [loading, setLoading] = useState(true);
+export default function InstallerMapView({ 
+  assignments: propAssignments, 
+  showDemo: propShowDemo 
+}: InstallerMapViewProps) {
+  const [localAssignments, setLocalAssignments] = useState<Assignment[]>([]);
+  const [loading, setLoading] = useState(!propAssignments);
   const [selectedAssignment, setSelectedAssignment] = useState<Assignment | null>(null);
-  const [showDemo, setShowDemo] = useState(true);
+  const [showDemoState, setShowDemoState] = useState(propShowDemo ?? true);
   const [trainingMode, setTrainingMode] = useState(false);
   const [currentTrainingStep, setCurrentTrainingStep] = useState(0);
 
+  // Use props if provided, otherwise use local state
+  const assignments = propAssignments ?? localAssignments;
+  const showDemo = propShowDemo !== undefined ? propShowDemo : showDemoState;
+  const setShowDemo = propShowDemo !== undefined ? () => {} : setShowDemoState;
+
   useEffect(() => {
-    loadAssignments();
-  }, []);
+    // Only fetch locally if no props provided
+    if (!propAssignments) {
+      loadAssignments();
+    }
+  }, [propAssignments]);
 
   const loadAssignments = async () => {
     try {
@@ -155,10 +171,10 @@ export default function InstallerMapView() {
           )
         `)
         .eq('installer_id', installer.id)
-        .in('status', ['pending', 'accepted', 'in_progress']);
+        .in('status', ['pending', 'accepted', 'in_progress', 'scheduled']);
 
       if (error) throw error;
-      setAssignments(data || []);
+      setLocalAssignments(data || []);
     } catch (error) {
       console.error('Error loading assignments:', error);
     } finally {
