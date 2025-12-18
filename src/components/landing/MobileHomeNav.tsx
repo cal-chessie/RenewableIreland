@@ -44,19 +44,10 @@ export function MobileHomeNav() {
       initial={{ y: 100 }}
       animate={{ y: 0 }}
       transition={{ delay: 0.5, type: 'spring', stiffness: 100 }}
-      className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-background/95 backdrop-blur-lg border-t border-border"
-      style={{ paddingBottom: 'max(4px, env(safe-area-inset-bottom))' }}
+      className="fixed bottom-2 left-1/2 -translate-x-1/2 z-50 md:hidden bg-background/95 backdrop-blur-lg border border-border rounded-full shadow-lg px-1"
+      style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
     >
-      {/* Collapse handle */}
-      <button 
-        onClick={() => setIsExpanded(false)}
-        className="absolute -top-3 left-1/2 -translate-x-1/2 bg-muted rounded-full p-1 border border-border shadow-sm"
-        aria-label="Collapse navigation"
-      >
-        <ChevronDown className="h-3 w-3 text-muted-foreground" />
-      </button>
-
-      <div className="flex items-center justify-around px-1 py-0.5">
+      <div className="flex items-center gap-0.5 py-1">
         {navItems.map((item) => {
           const Icon = item.icon;
           const active = isActive(item.path);
@@ -66,14 +57,9 @@ export function MobileHomeNav() {
               <button
                 key={item.label}
                 onClick={() => navigate(item.path)}
-                className="flex flex-col items-center justify-center -mt-2"
+                className="w-9 h-9 rounded-full bg-primary flex items-center justify-center mx-0.5"
               >
-                <div className="w-8 h-8 rounded-full bg-primary shadow-md flex items-center justify-center">
-                  <Icon className="h-3.5 w-3.5 text-primary-foreground" />
-                </div>
-                <span className="text-[8px] font-medium text-primary mt-0.5">
-                  {item.label}
-                </span>
+                <Icon className="h-4 w-4 text-primary-foreground" />
               </button>
             );
           }
@@ -82,16 +68,13 @@ export function MobileHomeNav() {
             <button
               key={item.label}
               onClick={() => navigate(item.path)}
-              className={`flex flex-col items-center justify-center py-1.5 px-2 min-h-[48px] min-w-[48px] transition-colors ${
+              className={`w-9 h-9 rounded-full flex items-center justify-center transition-colors ${
                 active 
-                  ? 'text-primary' 
-                  : 'text-muted-foreground'
+                  ? 'text-primary bg-primary/10' 
+                  : 'text-muted-foreground hover:bg-muted'
               }`}
             >
               <Icon className="h-4 w-4" />
-              <span className="text-[9px] font-medium mt-0.5">
-                {item.label}
-              </span>
             </button>
           );
         })}
