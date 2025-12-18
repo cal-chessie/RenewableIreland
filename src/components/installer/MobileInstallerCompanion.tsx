@@ -8,8 +8,9 @@ import {
   MapPin, Navigation, Phone, Calendar, CheckCircle, Clock, AlertCircle,
   FileText, Wrench, User, ChevronRight, PhoneCall,
   MessageSquare, Zap, Battery, Sun, ClipboardCheck, ArrowLeft,
-  List, HelpCircle, RefreshCw, WifiOff, Wifi, CloudOff, Loader2
+  List, HelpCircle, RefreshCw, WifiOff, Wifi, CloudOff, Loader2, Map
 } from 'lucide-react';
+import InstallerMapView from './InstallerMapView';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -798,7 +799,7 @@ export default function MobileInstallerCompanion() {
       </div>
 
       {/* Today Summary */}
-      {todayJobs.length > 0 && (
+      {activeTab !== 'map' && todayJobs.length > 0 && (
         <div className="px-4 py-3 bg-primary/5 border-b">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
@@ -818,30 +819,39 @@ export default function MobileInstallerCompanion() {
       )}
 
       {/* Job List */}
-      <div className="p-4 space-y-3">
-        {displayAssignments.length === 0 ? (
-          <div className="text-center py-12">
-            <CheckCircle className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
-            <p className="font-medium">No active jobs</p>
-            <p className="text-sm text-muted-foreground mb-4">Pull down to refresh or check back later</p>
-            {!showDemo && (
-              <Button variant="outline" onClick={() => setShowDemo(true)}>
-                <Zap className="h-4 w-4 mr-2" />
-                View Demo Data
-              </Button>
-            )}
-          </div>
-        ) : (
-          displayAssignments.map((assignment) => (
-            <JobCard key={assignment.id} assignment={assignment} />
-          ))
-        )}
-      </div>
+      {activeTab !== 'map' && (
+        <div className="p-4 space-y-3">
+          {displayAssignments.length === 0 ? (
+            <div className="text-center py-12">
+              <CheckCircle className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
+              <p className="font-medium">No active jobs</p>
+              <p className="text-sm text-muted-foreground mb-4">Pull down to refresh or check back later</p>
+              {!showDemo && (
+                <Button variant="outline" onClick={() => setShowDemo(true)}>
+                  <Zap className="h-4 w-4 mr-2" />
+                  View Demo Data
+                </Button>
+              )}
+            </div>
+          ) : (
+            displayAssignments.map((assignment) => (
+              <JobCard key={assignment.id} assignment={assignment} />
+            ))
+          )}
+        </div>
+      )}
 
       {/* Job Detail View */}
       <AnimatePresence>
         {selectedAssignment && <JobDetailView />}
       </AnimatePresence>
+
+      {/* Map View */}
+      {activeTab === 'map' && (
+        <div className="pb-20">
+          <InstallerMapView />
+        </div>
+      )}
 
       {/* Bottom Navigation - Enhanced Touch Targets */}
       <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t pb-safe z-20">
@@ -853,6 +863,14 @@ export default function MobileInstallerCompanion() {
           >
             <List className={`h-6 w-6 ${activeTab === 'jobs' ? 'text-primary' : 'text-muted-foreground'}`} />
             <span className={`text-xs ${activeTab === 'jobs' ? 'text-primary font-medium' : 'text-muted-foreground'}`}>Jobs</span>
+          </Button>
+          <Button 
+            variant="ghost" 
+            className={`flex-col h-16 w-full gap-0.5 rounded-none ${activeTab === 'map' ? 'bg-primary/10' : ''}`} 
+            onClick={() => setActiveTab('map')}
+          >
+            <Map className={`h-6 w-6 ${activeTab === 'map' ? 'text-primary' : 'text-muted-foreground'}`} />
+            <span className={`text-xs ${activeTab === 'map' ? 'text-primary font-medium' : 'text-muted-foreground'}`}>Map</span>
           </Button>
           <Button 
             variant="ghost" 
