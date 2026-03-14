@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Loader2, Sun, Mail, ArrowRight, FileText, Clock, CheckCircle2 } from 'lucide-react';
+import { Loader2, Sun, Mail, ArrowRight, FileText, Clock, CheckCircle2, LogIn } from 'lucide-react';
 import { toast } from '@/components/ui/use-toast';
 import { Helmet } from 'react-helmet-async';
 import { motion } from 'framer-motion';

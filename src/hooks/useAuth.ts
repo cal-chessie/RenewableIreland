@@ -96,6 +96,9 @@ export function useAuth() {
     if (authState.roles.length === 1 && authState.roles.includes('installer')) {
       return '/installer';
     }
+    if (authState.roles.length === 1 && authState.roles.includes('customer')) {
+      return '/my-projects';
+    }
     // Otherwise go to consultant dashboard (unified for owners and consultants)
     return '/consultant';
   };

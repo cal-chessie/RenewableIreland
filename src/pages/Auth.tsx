@@ -462,7 +462,9 @@ export default function Auth() {
                         ? 'Full access to leads, surveys, proposals, and installations' 
                         : role === 'consultant'
                         ? 'Manage leads, surveys, and proposals'
-                        : 'View assigned installations and surveys'}
+                        : role === 'installer'
+                        ? 'View assigned installations and surveys'
+                        : 'View your solar projects, proposals, and invoices'}
                     </p>
                   </div>
                   <Button
