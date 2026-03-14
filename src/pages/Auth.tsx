@@ -16,7 +16,7 @@ import { motion } from 'framer-motion';
 const emailSchema = z.string().email('Invalid email address').max(255);
 const passwordSchema = z.string().min(8, 'Password must be at least 8 characters').max(100);
 
-type RoleType = 'owner' | 'consultant' | 'installer';
+type RoleType = 'owner' | 'consultant' | 'installer' | 'customer';
 
 export default function Auth() {
   const navigate = useNavigate();
