@@ -455,6 +455,7 @@ export default function Auth() {
                       <option value="owner">Owner / Solo Operator (full access)</option>
                       <option value="consultant">Consultant</option>
                       <option value="installer">Installer</option>
+                      <option value="customer">Customer</option>
                     </select>
                     <p className="text-xs text-muted-foreground mt-1">
                       {role === 'owner' 
