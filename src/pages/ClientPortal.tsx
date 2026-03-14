@@ -200,6 +200,14 @@ export default function ClientPortal() {
                 </Card>
 
                 {/* Features */}
+                <div className="mt-6 text-center">
+                  <p className="text-sm text-muted-foreground mb-2">Want full access to your projects?</p>
+                  <Button variant="outline" onClick={() => navigate('/auth')} className="gap-2">
+                    <LogIn className="h-4 w-4" />
+                    Sign in for full access
+                  </Button>
+                </div>
+
                 <div className="mt-8 grid grid-cols-3 gap-4 text-center">
                   {[
                     { icon: FileText, label: 'View Proposals' },
