@@ -124,7 +124,7 @@ export default function CalculatorClient({ isNI, countyName }: CalculatorClientP
         <div className={styles.calcSavings}>
           {cur}{annualSaving.toLocaleString()}
         </div>
-        <div style={{ color: "var(--white)", fontWeight: 600, marginBottom: 8 }}>
+        <div style={{ color: "var(--black)", fontWeight: 600, marginBottom: 8, fontFamily: "var(--font-display)", textTransform: "uppercase", letterSpacing: ".04em" }}>
           Estimated Annual Savings
         </div>
         <div className={styles.calcDetail}>

@@ -400,12 +400,12 @@ export default async function CountyHomePage({ params }: Props) {
           <div className={styles.grantGrid}>
             <div>
               <div className={styles.sectionLabel}>Government Support</div>
-              <h2 id="grant-heading" style={{ fontFamily: "var(--font-display)", fontSize: "clamp(1.6rem, 3.5vw, 2.5rem)", marginBottom: 16, letterSpacing: "-0.3px", color: "var(--white-pure)" }}>
+              <h2 id="grant-heading" style={{ fontFamily: "var(--font-display)", fontSize: "clamp(1.6rem, 3.5vw, 2.5rem)", marginBottom: 16, letterSpacing: "-0.3px", color: "var(--white)" }}>
                 {isNI
                   ? "Smart Export Guarantee for Northern Ireland"
                   : `Understanding the ${county.accreditation} Grant for Solar Panels`}
               </h2>
-              <p style={{ color: "var(--grey-light)", fontSize: "0.95rem", marginBottom: 24, lineHeight: 1.8 }}>
+              <p style={{ color: "rgba(255,255,255,.55)", fontSize: "0.95rem", marginBottom: 24, lineHeight: 1.8 }}>
                 {isNI
                   ? `The Smart Export Guarantee (SEG) allows homeowners in Northern Ireland to earn money from excess solar energy exported to the grid. Licensed electricity suppliers must offer a tariff for exported energy, typically 5-15p per kWh. Combined with reduced electricity bills, solar panels in ${county.name} can deliver significant long-term savings.`
                   : `The ${county.accreditation} offers generous grants for solar photovoltaic panel installations. This covers everything you need to know about eligibility, the application process, and how we make it completely hassle-free.`}
@@ -441,7 +441,7 @@ export default async function CountyHomePage({ params }: Props) {
               <div className={styles.grantAmount}>
                 {isNI ? "\u00a3800+" : "\u00a31,800"}<span> {isNI ? "Annual Savings" : "Government Grant"}</span>
               </div>
-              <p style={{ color: "var(--grey-light)", fontSize: "1rem", marginBottom: 32 }}>
+              <p style={{ color: "rgba(255,255,255,.55)", fontSize: "1rem", marginBottom: 32 }}>
                 {isNI
                   ? "Typical annual savings for a 6kWp solar system in Northern Ireland. Plus export earnings on top."
                   : "Deducted directly from your installation cost. No waiting, no paperwork, no hassle."}

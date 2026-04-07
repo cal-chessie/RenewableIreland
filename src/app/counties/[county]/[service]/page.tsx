@@ -196,7 +196,7 @@ export default async function ServicePage({ params }: Props) {
             fontSize: "clamp(2rem, 5vw, 3.5rem)",
             fontWeight: 800,
             letterSpacing: "-1px",
-            color: "var(--white-pure)",
+            color: "var(--white)",
             marginBottom: 16,
             lineHeight: 1.15,
           }}>
@@ -204,7 +204,7 @@ export default async function ServicePage({ params }: Props) {
             <span style={{ color: "var(--accent)" }}>{county.name}</span>
           </h1>
           <p style={{
-            color: "var(--grey-light)",
+            color: "rgba(255,255,255,.55)",
             maxWidth: 700,
             fontSize: "1.15rem",
             lineHeight: 1.8,

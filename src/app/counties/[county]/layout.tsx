@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getCounty, countySlugs, getAccentCSSVars } from "@/data/counties";
+import CountyBodyStyles from "@/components/county/CountyBodyStyles";
 
 type Props = {
   children: React.ReactNode;
@@ -61,8 +62,11 @@ export default async function CountyLayout({ children, params }: Props) {
   const accentVars = getAccentCSSVars(county.accentColor, county.accentHover);
 
   return (
-    <div id="county-root" style={accentVars as React.CSSProperties}>
-      {children}
-    </div>
+    <>
+      <CountyBodyStyles />
+      <div id="county-root" style={accentVars as React.CSSProperties}>
+        {children}
+      </div>
+    </>
   );
 }
