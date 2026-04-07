@@ -158,3 +158,57 @@ One page per category with:
 - **Metadata:** Z.ai author/creator/producer via add_zai_metadata.py
 - **Page decoration:** Green accent bar at top, navy header/footer with page numbers
 - **Script sanitized** using sanitize_code.py before execution
+
+---
+
+## Task ID: 4 — Convert Static HTML to Next.js 16 Application
+**Date:** 2025-04-07
+**Status:** Completed
+
+### Summary
+Converted the static HTML file at `/home/z/my-project/download/index.html` (2,560 lines) into a working Next.js 16 App Router application with full React interactivity, so the preview at the provided URL renders the complete Renewable Ireland site instead of the default placeholder page.
+
+### Files Modified
+- **`/home/z/my-project/src/app/globals.css`** — 753 lines: Replaced default shadcn/ui theme with all custom CSS from the HTML file (CSS custom properties, reset/base styles, header, hero, stats bar, trust badges, features grid, process steps, grant section, content sections, calculator, comparison table, team, certifications, areas, guarantee, reviews, FAQ accordion, CTA, modal, cookie banner, footer, scroll animations, responsive breakpoints, print styles). Kept Tailwind import for compatibility.
+- **`/home/z/my-project/src/app/layout.tsx`** — 242 lines: Updated metadata (title, description, OG, Twitter), added Barlow Condensed font via `next/font/google`, added 4 JSON-LD schemas (Organization, LocalBusiness, WebSite, BreadcrumbList) via `dangerouslySetInnerHTML`, added preconnect/dns-prefetch links, set `lang="en-IE"`, dark body background (#050505) and text color (#f0f0f0), removed Geist fonts and Toaster component.
+- **`/home/z/my-project/src/app/page.tsx`** — 1,934 lines: Complete React 'use client' component converting the entire HTML body and vanilla JavaScript into React patterns.
+
+### JavaScript Conversion Details
+
+#### State Management (useState)
+- `mobileMenuOpen` — hamburger menu toggle
+- `activeFaq` — FAQ accordion active item ID
+- `calcSystem`, `calcRate`, `calcUsage`, `calcExport` — calculator form values
+- `showCalcResult`, `calcSavingsValue`, `calcDetails` — calculator results
+- `modalOpen` — SolarPilot modal visibility
+- `headerBorder` — header border color change on scroll
+
+#### Effects (useEffect)
+- **Cookie consent check** — reads cookie on mount, adds 'active' class via ref
+- **IntersectionObserver** — scroll reveal animations on `.reveal` elements
+- **Scroll handler** — debounced header border color change
+- **Modal focus trap** — Escape key + Tab cycling when modal is open
+- **Mobile menu body overflow** — prevents scroll when menu is open
+
+#### Event Handlers (useCallback)
+- `toggleMobileMenu` / `closeMobileMenu` — mobile navigation
+- `toggleFaq` — FAQ accordion with maxHeight animation via ref
+- `openModal` / `closeModal` — SolarPilot modal with focus management
+- `scrollToCalculator` — smooth scroll to calculator section
+- `handleSmoothScroll` — anchor link scrolling with header offset
+- `calculateSavings` — solar savings calculator logic (sanitized inputs, currency formatting)
+- `acceptCookies` — cookie consent with Secure/SameSite=Strict
+
+#### Refs (useRef)
+- `headerRef` — header element for scroll effect and offset calculation
+- `faqAnswerRefs` — FAQ answer divs for maxHeight animation
+- `modalRef` — modal overlay for focus trap
+- `cookieBannerRef` — cookie banner for class manipulation
+- `lastFocusedRef` — tracks previously focused element for modal focus restoration
+- `scrollTimerRef` — debounce timer for scroll handler
+
+### All Sections Present
+Hero, Stats Bar, Trust Badges, Features Grid (6), 5-Step Process, Why Solar Guide, Irish Weather Guide, SEAI Grant Section, Solar Savings Calculator, Cost Section, Battery Storage Guide, Comparison Table (11 features × 3 companies), Team (3 members), Certifications (5), Areas Covered (16 counties), Guarantee & Warranty (4 cards), Customer Reviews (6), FAQ Accordion (16 questions), Final CTA, SolarPilot Modal, Cookie Banner, Footer
+
+### Lint Status
+All ESLint checks pass with zero errors.
