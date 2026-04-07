@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import styles from "@/app/counties/[county]/page.module.css";
 import type { FAQ } from "@/data/counties";
 
@@ -7,14 +10,21 @@ interface FAQProps {
 }
 
 export default function FAQ({ faqs, countyName }: FAQProps) {
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
+
+  const toggle = (index: number) => {
+    setOpenIndex(openIndex === index ? null : index);
+  };
+
   return (
     <section
-      className={styles.faqSection}
+      className={`${styles.section} ${styles.faqSection}`}
       id="faq"
       aria-labelledby="faq-heading"
     >
       <div className="container">
         <div className={styles.sectionHeader}>
+          <div className={styles.sectionLabel}>Got Questions?</div>
           <h2 id="faq-heading">
             Frequently Asked Questions About Solar in {countyName}
           </h2>
@@ -26,26 +36,30 @@ export default function FAQ({ faqs, countyName }: FAQProps) {
 
         <div className={styles.faqList}>
           {faqs.map((faq, index) => (
-            <div key={index} className={styles.faqItem}>
-              <details>
-                <summary>
-                  <span>{faq.question}</span>
-                  <svg
-                    className={styles.faqToggle}
-                    aria-hidden="true"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <line x1="12" y1="5" x2="12" y2="19" />
-                    <line x1="5" y1="12" x2="19" y2="12" />
-                  </svg>
-                </summary>
-                <div className={styles.faqAnswer}>{faq.answer}</div>
-              </details>
+            <div
+              key={index}
+              className={`${styles.faqItem} ${openIndex === index ? styles.faqItemActive : ""}`}
+            >
+              <button
+                className={styles.faqQuestion}
+                onClick={() => toggle(index)}
+                aria-expanded={openIndex === index}
+                aria-controls={`faq-answer-${index}`}
+              >
+                <span>{faq.question}</span>
+                <span className={styles.faqIcon} aria-hidden="true">+</span>
+              </button>
+              <div
+                className={styles.faqAnswer}
+                id={`faq-answer-${index}`}
+                role="region"
+                style={{
+                  maxHeight: openIndex === index ? `${300}px` : "0",
+                  transition: "max-height 0.4s ease",
+                }}
+              >
+                <div className={styles.faqAnswerInner}>{faq.answer}</div>
+              </div>
             </div>
           ))}
         </div>

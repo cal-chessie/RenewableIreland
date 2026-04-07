@@ -70,11 +70,11 @@ export default async function CountyLayout({ children, params }: Props) {
         />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         <link
-          href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800&display=swap"
           rel="stylesheet"
         />
       </head>
-      <body style={{ margin: 0, padding: 0, background: "#FFFFFF", color: "#1A1A1A" }}>
+      <body style={{ margin: 0, padding: 0, background: "#050505", color: "#f0f0f0" }}>
         {children}
       </body>
     </html>

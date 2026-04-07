@@ -1,5 +1,6 @@
 import { MetadataRoute } from "next";
 import { counties, services } from "@/data/counties";
+import { allBlogPosts } from "@/data/blog-posts";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date().toISOString();
@@ -60,19 +61,24 @@ export default function sitemap(): MetadataRoute.Sitemap {
     entries.push({
       url: `https://${county.domain}/blog`,
       lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.6,
+      changeFrequency: "weekly",
+      priority: 0.7,
     });
   }
 
-  // 7. Blog article page per county
+  // 7. All blog article pages per county
   for (const county of Object.values(counties)) {
-    entries.push({
-      url: `https://${county.domain}/blog/solar-panels-${county.slug}-guide`,
-      lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.6,
-    });
+    for (const post of allBlogPosts) {
+      // Only include posts relevant to this county (county-specific + general)
+      if (!post.county || post.county === county.slug) {
+        entries.push({
+          url: `https://${county.domain}/blog/${post.slug}`,
+          lastModified: post.dateModified,
+          changeFrequency: "monthly",
+          priority: 0.6,
+        });
+      }
+    }
   }
 
   return entries;

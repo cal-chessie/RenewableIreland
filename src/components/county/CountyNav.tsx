@@ -6,9 +6,10 @@ import styles from "@/app/counties/[county]/page.module.css";
 interface CountyNavProps {
   countyName: string;
   countySlug: string;
+  phone?: string;
 }
 
-export default function CountyNav({ countyName, countySlug }: CountyNavProps) {
+export default function CountyNav({ countyName, countySlug, phone }: CountyNavProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const hamburgerRef = useRef<HTMLButtonElement>(null);
@@ -23,7 +24,6 @@ export default function CountyNav({ countyName, countySlug }: CountyNavProps) {
     setMenuOpen((prev) => !prev);
   };
 
-  // Close on Escape key
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === "Escape" && menuOpen) {
@@ -34,7 +34,6 @@ export default function CountyNav({ countyName, countySlug }: CountyNavProps) {
     return () => document.removeEventListener("keydown", handleEscape);
   }, [menuOpen, closeMenu]);
 
-  // Body scroll lock
   useEffect(() => {
     if (menuOpen) {
       document.body.classList.add(styles.bodyScrollLocked);
@@ -46,7 +45,6 @@ export default function CountyNav({ countyName, countySlug }: CountyNavProps) {
     };
   }, [menuOpen]);
 
-  // Focus trap
   useEffect(() => {
     if (menuOpen && menuRef.current) {
       const focusableElements = menuRef.current.querySelectorAll<HTMLElement>(
@@ -58,7 +56,6 @@ export default function CountyNav({ countyName, countySlug }: CountyNavProps) {
     }
   }, [menuOpen]);
 
-  // Focus trap cycle
   useEffect(() => {
     if (!menuOpen || !menuRef.current) return;
 
@@ -86,7 +83,6 @@ export default function CountyNav({ countyName, countySlug }: CountyNavProps) {
     return () => document.removeEventListener("keydown", handleTabKey);
   }, [menuOpen]);
 
-  // Close on click outside
   useEffect(() => {
     if (!menuOpen) return;
 
@@ -106,13 +102,14 @@ export default function CountyNav({ countyName, countySlug }: CountyNavProps) {
   }, [menuOpen, closeMenu]);
 
   const navLinks = [
-    { href: `/counties/${countySlug}`, label: "Home" },
-    { href: `/counties/${countySlug}/home-solar-panels`, label: "Services" },
-    { href: `/counties/${countySlug}/blog`, label: "Blog" },
-    { href: "#trust", label: "About" },
+    { href: "#features", label: "Services" },
+    { href: "#process", label: "Process" },
+    { href: "#grant", label: "Grants" },
+    { href: "#calculator", label: "Savings" },
     { href: "#faq", label: "FAQ" },
-    { href: "#contact", label: "Contact" },
   ];
+
+  const phoneHref = phone ? `tel:${phone.replace(/[^+\d]/g, "")}` : "#contact";
 
   return (
     <nav className={styles.nav} aria-label="Main navigation">
@@ -127,12 +124,17 @@ export default function CountyNav({ countyName, countySlug }: CountyNavProps) {
               {link.label}
             </a>
           ))}
-          <a
-            href={`tel:${countySlug === "tyrone" ? "+44-28-8224-5900" : "+353-1-514-3200"}`}
-            className={styles.btnPrimary}
-            style={{ padding: "10px 20px", borderRadius: "4px", fontSize: "13px", fontWeight: 600, color: "#FFFFFF", background: "#E10600", textDecoration: "none", minWidth: "48px", minHeight: "48px", display: "inline-flex", alignItems: "center", justifyContent: "center" }}
-          >
-            Get a Quote
+          <a href={phoneHref} className={styles.btnPrimary} style={{
+            padding: "10px 24px",
+            borderRadius: "var(--radius)",
+            fontWeight: 700,
+            fontSize: "0.9rem",
+            textDecoration: "none",
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}>
+            Get Free Quote
           </a>
         </div>
 
@@ -163,6 +165,19 @@ export default function CountyNav({ countyName, countySlug }: CountyNavProps) {
             {link.label}
           </a>
         ))}
+        <a href={phoneHref} className={styles.btnPrimary} onClick={closeMenu} style={{
+          padding: "16px 36px",
+          borderRadius: "var(--radius)",
+          fontWeight: 700,
+          fontSize: "1rem",
+          textDecoration: "none",
+          display: "inline-flex",
+          alignItems: "center",
+          justifyContent: "center",
+          textAlign: "center",
+        }}>
+          Call Now
+        </a>
       </div>
     </nav>
   );

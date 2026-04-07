@@ -5,32 +5,35 @@ interface HeroProps {
   countySlug: string;
   subtitle: string;
   phone: string;
+  accreditation: string;
 }
 
-export default function Hero({ countyName, subtitle, phone }: HeroProps) {
+export default function Hero({ countyName, countySlug, subtitle, accreditation }: HeroProps) {
   return (
-    <header
+    <section
       className={styles.hero}
       id="main-content"
       role="banner"
       aria-labelledby="hero-heading"
     >
-      <div className={styles.heroOverlay} />
-      <div className={`container ${styles.heroContent}`}>
+      <div className="container">
+        <div className={styles.heroBadge} aria-label={`${accreditation} accredited installers`}>
+          {accreditation} Accredited Installers Serving County {countyName}
+        </div>
         <h1 id="hero-heading">
-          Solar Panel Installers in{" "}
-          <span>{countyName}</span>
+          Solar Panels {countyName}.<br />
+          <span className={styles.heroHighlight}>Done Right.</span>
         </h1>
         <p className={styles.heroSubtitle}>{subtitle}</p>
         <div className={styles.heroButtons}>
-          <a href="#bill-upload" className={styles.btnPrimary}>
-            Get Your Free Quote
+          <a href="#calculator" className={`${styles.btn} ${styles.btnPrimary}`}>
+            Get Free Savings Estimate
           </a>
-          <a href="#bill-upload" className={styles.btnSecondary}>
+          <a href="#bill-upload" className={`${styles.btn} ${styles.btnSecondary}`}>
             Upload Your Bill
           </a>
         </div>
       </div>
-    </header>
+    </section>
   );
 }

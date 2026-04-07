@@ -29,11 +29,12 @@ interface TestimonialsProps {
 export default function Testimonials({ testimonials, countyName }: TestimonialsProps) {
   return (
     <section
-      className={styles.testimonialsSection}
+      className={`${styles.section} ${styles.testimonialsSection}`}
       aria-labelledby="testimonials-heading"
     >
       <div className="container">
         <div className={styles.sectionHeader}>
+          <div className={styles.sectionLabel}>Customer Reviews</div>
           <h2 id="testimonials-heading">
             What Our Customers in {countyName} Say
           </h2>

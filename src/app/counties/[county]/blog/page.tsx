@@ -1,6 +1,15 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getCounty, countySlugs } from "@/data/counties";
+import {
+  getPostsByCounty,
+  getCountySpecificPosts,
+  blogCategories,
+} from "@/data/blog-posts";
+import {
+  generateBreadcrumbSchema,
+  generateCollectionPageSchema,
+} from "@/lib/jsonld";
 import styles from "./page.module.css";
 import sharedStyles from "../page.module.css";
 import TopBar from "@/components/county/TopBar";
@@ -9,6 +18,7 @@ import Footer from "@/components/county/Footer";
 
 type Props = {
   params: Promise<{ county: string }>;
+  searchParams: Promise<{ page?: string; category?: string }>;
 };
 
 export async function generateStaticParams() {
@@ -38,96 +48,91 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-interface BlogArticle {
-  title: string;
-  slug: string;
-  excerpt: string;
-  date: string;
-  readTime: string;
-  category: string;
-  published: boolean;
-}
+const POSTS_PER_PAGE = 12;
 
-function getBlogArticles(countyName: string): BlogArticle[] {
-  return [
-    {
-      title: `The Complete Guide to Solar Panels in ${countyName}`,
-      slug: `solar-panels-${countyName.toLowerCase()}-guide`,
-      excerpt: `Everything you need to know about installing solar panels in ${countyName} — costs, savings, grants, installation process, and how to choose the right system for your home.`,
-      date: "15 January 2025",
-      readTime: "8 min read",
-      category: "Installation Guides",
-      published: true,
-    },
-    {
-      title: "SEAI Solar PV Grants Explained: How to Claim Up to €1,800",
-      slug: "seai-solar-grant-guide",
-      excerpt: "A step-by-step guide to applying for the SEAI Domestic Solar PV Grant. Learn about eligibility requirements, the application process, and how much you could receive.",
-      date: "8 January 2025",
-      readTime: "6 min read",
-      category: "Grants & Funding",
-      published: false,
-    },
-    {
-      title: "Battery Storage vs Grid Export: What Makes Financial Sense?",
-      slug: "battery-storage-vs-export",
-      excerpt: "Should you store your surplus solar energy in a battery or export it to the grid? We compare the financial returns of both options using real data.",
-      date: "2 January 2025",
-      readTime: "7 min read",
-      category: "Cost & Savings",
-      published: false,
-    },
-    {
-      title: "How Much Do Solar Panels Really Save in 2025?",
-      slug: "solar-panel-savings-2025",
-      excerpt: "We break down the actual savings our customers are seeing in 2025, factoring in rising electricity prices, Smart Export Guarantee rates, and grant availability.",
-      date: "20 December 2024",
-      readTime: "5 min read",
-      category: "Cost & Savings",
-      published: false,
-    },
-    {
-      title: "Tier-1 Solar Panels: What They Are and Why They Matter",
-      slug: "tier-1-solar-panels-explained",
-      excerpt: "Not all solar panels are created equal. We explain what tier-1 certification means, why it matters for your investment, and which brands we recommend.",
-      date: "12 December 2024",
-      readTime: "6 min read",
-      category: "Technology",
-      published: false,
-    },
-    {
-      title: "Solar Panel Installation: A Customer's Story from the Region",
-      slug: "customer-installation-story",
-      excerpt: "Follow one local family's journey from initial enquiry to installation day. See real photos, genuine savings figures, and hear about their experience.",
-      date: "5 December 2024",
-      readTime: "7 min read",
-      category: "Case Studies",
-      published: false,
-    },
-  ];
-}
-
-export default async function BlogPage({ params }: Props) {
+export default async function BlogPage({ params, searchParams }: Props) {
   const { county: slug } = await params;
+  const { page: pageParam, category: categoryParam } = await searchParams;
   const county = getCounty(slug);
   if (!county) notFound();
 
-  const articles = getBlogArticles(county.name);
+  // Get all posts relevant to this county
+  const allPosts = getPostsByCounty(county.slug);
+
+  // Filter by category
+  const activeCategory = categoryParam || "all";
+  const filteredPosts =
+    activeCategory === "all"
+      ? allPosts
+      : allPosts.filter((p) => p.category === activeCategory);
+
+  // Pagination
+  const currentPage = Math.max(1, parseInt(pageParam || "1", 10));
+  const totalPages = Math.ceil(filteredPosts.length / POSTS_PER_PAGE);
+  const paginatedPosts = filteredPosts.slice(
+    (currentPage - 1) * POSTS_PER_PAGE,
+    currentPage * POSTS_PER_PAGE
+  );
+
+  // Featured post (latest county-specific)
+  const countyPosts = getCountySpecificPosts(county.slug);
+  const featuredPost = countyPosts[0] || allPosts[0];
+
+  const domain = `https://${county.domain}`;
+  const blogUrl = `${domain}/blog`;
+
+  const breadcrumbSchema = generateBreadcrumbSchema([
+    { name: "Home", url: "https://renewableireland.ie/" },
+    { name: county.name, url: `${domain}/` },
+    { name: "Blog", url: blogUrl },
+  ]);
+
+  const collectionSchema = generateCollectionPageSchema({
+    name: `Solar Energy News & Guides — Solar ${county.name}`,
+    description: `Expert solar energy advice, installation guides, grant information, and cost-saving tips for homeowners in ${county.name}.`,
+    url: blogUrl,
+    about: `Solar Energy in ${county.name}`,
+  });
+
+  function formatDate(isoDate: string): string {
+    const d = new Date(isoDate);
+    return d.toLocaleDateString("en-GB", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    });
+  }
+
+  function getCategoryLabel(cat: string): string {
+    const found = blogCategories.find((c) => c.slug === cat);
+    return found ? found.label : cat;
+  }
 
   return (
     <div className={sharedStyles.countySite}>
       <a href="#main-content" className={sharedStyles.skipLink}>
         Skip to main content
       </a>
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionSchema) }}
+      />
+
       <TopBar phone={county.phone} email={county.email} accreditation={county.accreditation} />
       <CountyNav countyName={county.name} countySlug={county.slug} />
 
+      {/* Hero */}
       <header className={styles.blogHero} id="main-content" role="banner" aria-labelledby="blog-heading">
         <div className="container">
-          <h1 id="blog-heading" className={sharedStyles.headingH1} style={{ color: "var(--secondary-dark)" }}>
+          <h1 id="blog-heading" className={sharedStyles.headingH1}>
             Solar Energy News &amp; Guides
           </h1>
-          <p className={sharedStyles.heroSubtitle} style={{ color: "var(--text-mid)", maxWidth: 600 }}>
+          <p className={sharedStyles.heroSubtitle}>
             Expert advice, installation guides, and the latest solar energy news for homeowners and businesses in {county.name}.
           </p>
         </div>
@@ -135,19 +140,81 @@ export default async function BlogPage({ params }: Props) {
 
       <section className={styles.blogPage} aria-labelledby="blog-articles-heading">
         <div className="container">
+          {/* Featured Post */}
+          {featuredPost && currentPage === 1 && activeCategory === "all" && (
+            <article className={styles.featuredPost}>
+              <div className={styles.featuredImage}>
+                <span className={styles.featuredCategory}>{getCategoryLabel(featuredPost.category)}</span>
+                <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="rgba(225,6,0,0.5)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <circle cx="12" cy="12" r="5" />
+                  <line x1="12" y1="1" x2="12" y2="3" />
+                  <line x1="12" y1="21" x2="12" y2="23" />
+                  <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+                  <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+                  <line x1="1" y1="12" x2="3" y2="12" />
+                  <line x1="21" y1="12" x2="23" y2="12" />
+                  <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+                  <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+                </svg>
+              </div>
+              <div className={styles.featuredContent}>
+                <div className={styles.featuredMeta}>
+                  <span>{formatDate(featuredPost.datePublished)}</span>
+                  <span>{featuredPost.readTime}</span>
+                </div>
+                <h2 className={styles.featuredTitle}>
+                  <a href={`/counties/${county.slug}/blog/${featuredPost.slug}`}>
+                    {featuredPost.title}
+                  </a>
+                </h2>
+                <p className={styles.featuredExcerpt}>{featuredPost.excerpt}</p>
+                <a href={`/counties/${county.slug}/blog/${featuredPost.slug}`} className={styles.featuredReadMore}>
+                  Read Article
+                  <svg className={styles.readMoreArrow} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                    <polyline points="12 5 19 12 12 19" />
+                  </svg>
+                </a>
+              </div>
+            </article>
+          )}
+
           <h2 id="blog-articles-heading" className={sharedStyles.headingH2} style={{ textAlign: "center", marginBottom: 8 }}>
             Latest Articles
           </h2>
-          <p className={styles.blogIntro}>
-            Stay up to date with the latest in solar energy technology, grants, cost-saving strategies, and installation advice from our team of certified experts.
-          </p>
 
+          {/* Category Filters */}
+          <nav className={styles.categoryFilters} aria-label="Filter articles by category">
+            {blogCategories.map((cat) => {
+              const isActive = activeCategory === cat.slug;
+              const count =
+                cat.slug === "all"
+                  ? allPosts.length
+                  : allPosts.filter((p) => p.category === cat.slug).length;
+              const href = `/counties/${county.slug}/blog?category=${cat.slug}`;
+              return (
+                <a
+                  key={cat.slug}
+                  href={href}
+                  className={`${styles.filterBtn} ${isActive ? styles.filterBtnActive : ""}`}
+                  aria-current={isActive ? "page" : undefined}
+                >
+                  {cat.label}
+                  <span className={styles.filterCount}>{count}</span>
+                </a>
+              );
+            })}
+          </nav>
+
+          {/* Blog Grid */}
           <div className={styles.blogGrid}>
-            {articles.map((article) => (
-              <article key={article.slug} className={styles.blogCard}>
+            {paginatedPosts.map((post) => (
+              <article key={post.slug} className={styles.blogCard}>
                 <div className={styles.blogCardImage}>
-                  <span className={styles.blogCardCategory}>{article.category}</span>
-                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#999" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <span className={styles.blogCardCategory}>
+                    {getCategoryLabel(post.category)}
+                  </span>
+                  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.15)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                     <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
                     <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
                   </svg>
@@ -161,46 +228,76 @@ export default async function BlogPage({ params }: Props) {
                         <line x1="8" y1="2" x2="8" y2="6" />
                         <line x1="3" y1="10" x2="21" y2="10" />
                       </svg>
-                      {article.date}
+                      {formatDate(post.datePublished)}
                     </span>
                     <span>
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
                         <circle cx="12" cy="12" r="10" />
                         <polyline points="12 6 12 12 16 14" />
                       </svg>
-                      {article.readTime}
+                      {post.readTime}
                     </span>
                   </div>
                   <h3 className={styles.blogCardTitle}>
-                    {article.published ? (
-                      <a href={`/counties/${county.slug}/blog/${article.slug}`}>{article.title}</a>
-                    ) : (
-                      article.title
-                    )}
-                  </h3>
-                  <p className={styles.blogCardExcerpt}>{article.excerpt}</p>
-                  {article.published ? (
-                    <a href={`/counties/${county.slug}/blog/${article.slug}`} className={styles.blogCardReadMore}>
-                      Read Article
-                      <svg className={styles.blogCardReadMoreArrow} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                        <line x1="5" y1="12" x2="19" y2="12" />
-                        <polyline points="12 5 19 12 12 19" />
-                      </svg>
+                    <a href={`/counties/${county.slug}/blog/${post.slug}`}>
+                      {post.title}
                     </a>
-                  ) : (
-                    <span className={styles.blogComingSoonBadge}>
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-                        <circle cx="12" cy="12" r="10" />
-                        <polyline points="12 6 12 12 16 14" />
-                      </svg>
-                      Coming Soon
-                    </span>
-                  )}
+                  </h3>
+                  <p className={styles.blogCardExcerpt}>{post.excerpt}</p>
+                  <a href={`/counties/${county.slug}/blog/${post.slug}`} className={styles.blogCardReadMore}>
+                    Read Article
+                    <svg className={styles.blogCardReadMoreArrow} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <line x1="5" y1="12" x2="19" y2="12" />
+                      <polyline points="12 5 19 12 12 19" />
+                    </svg>
+                  </a>
                 </div>
               </article>
             ))}
           </div>
 
+          {paginatedPosts.length === 0 && (
+            <p className={styles.noResults}>No articles found in this category.</p>
+          )}
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <nav className={styles.pagination} aria-label="Blog pagination">
+              {currentPage > 1 && (
+                <a
+                  href={`/counties/${county.slug}/blog?page=${currentPage - 1}${activeCategory !== "all" ? `&category=${activeCategory}` : ""}`}
+                  className={styles.pageBtn}
+                  aria-label="Previous page"
+                >
+                  ← Previous
+                </a>
+              )}
+              <div className={styles.pageNumbers}>
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+                  <a
+                    key={p}
+                    href={`/counties/${county.slug}/blog?page=${p}${activeCategory !== "all" ? `&category=${activeCategory}` : ""}`}
+                    className={`${styles.pageBtn} ${p === currentPage ? styles.pageBtnActive : ""}`}
+                    aria-label={`Page ${p}`}
+                    aria-current={p === currentPage ? "page" : undefined}
+                  >
+                    {p}
+                  </a>
+                ))}
+              </div>
+              {currentPage < totalPages && (
+                <a
+                  href={`/counties/${county.slug}/blog?page=${currentPage + 1}${activeCategory !== "all" ? `&category=${activeCategory}` : ""}`}
+                  className={styles.pageBtn}
+                  aria-label="Next page"
+                >
+                  Next →
+                </a>
+              )}
+            </nav>
+          )}
+
+          {/* CTA */}
           <div className={styles.blogCtaSection}>
             <h2 className={sharedStyles.headingH2}>Ready to Go Solar?</h2>
             <p>Get a free, no-obligation quote for solar panels in {county.name}. Our experts will show you exactly how much you could save.</p>

@@ -26,7 +26,7 @@ export default function BillUpload({ countyName, countySlug }: BillUploadProps) 
 
   const validateFile = (file: File) => {
     const validTypes = ["application/pdf", "image/jpeg", "image/jpg", "image/png"];
-    const maxSize = 10 * 1024 * 1024; // 10MB
+    const maxSize = 10 * 1024 * 1024;
 
     if (!validTypes.includes(file.type)) {
       setFormStatus("error");
@@ -63,7 +63,6 @@ export default function BillUpload({ countyName, countySlug }: BillUploadProps) 
     e.preventDefault();
     setFormStatus("submitting");
 
-    // Simulate form submission
     await new Promise((resolve) => setTimeout(resolve, 1500));
     setFormStatus("success");
   };
@@ -75,60 +74,61 @@ export default function BillUpload({ countyName, countySlug }: BillUploadProps) 
       aria-labelledby="bill-upload-heading"
     >
       <div className="container">
-        <div className={styles.billUploadGrid}>
-          <div className={styles.billUploadInfo}>
-            <h2 id="bill-upload-heading">
-              Get a Personalised Solar Quote for {countyName}
-            </h2>
-            <p>
-              Upload your electricity bill and we&apos;ll calculate exactly how
-              much you could save with solar panels on your {countyName} home.
-              No obligation, no pressure — just honest figures.
-            </p>
+        <div className={styles.sectionHeader}>
+          <div className={styles.sectionLabel}>Upload Your Bill</div>
+          <h2 id="bill-upload-heading">
+            Get a Personalised Solar Quote for {countyName}
+          </h2>
+          <p>
+            Upload your electricity bill and we&apos;ll calculate exactly how
+            much you could save with solar panels on your {countyName} home.
+            No obligation, no pressure.
+          </p>
+        </div>
 
-            <div
-              className={styles.uploadZone}
-              role="button"
-              tabIndex={0}
-              aria-label="Upload your electricity bill — accepts PDF, JPG or PNG up to 10MB"
-              onClick={handleFileSelect}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
-                  e.preventDefault();
-                  handleFileSelect();
-                }
-              }}
-              onDragOver={handleDragOver}
-              onDragLeave={handleDragLeave}
-              onDrop={handleDrop}
-              style={isDragging ? { borderColor: "#E10600", background: "#fafafa" } : undefined}
-            >
-              <svg className={styles.uploadZoneIcon} aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
-                <polyline points="17 8 12 3 7 8" />
-                <line x1="12" y1="3" x2="12" y2="15" />
-              </svg>
-              <span className={styles.uploadZoneText}>
-                {fileName ? (
-                  <>
-                    <strong>{fileName}</strong> selected
-                  </>
-                ) : (
-                  "Drag & drop your electricity bill here"
-                )}
-              </span>
-              <span className={styles.uploadZoneHint}>
-                or click to browse — PDF, JPG or PNG (max 10MB)
-              </span>
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept=".pdf,.jpg,.jpeg,.png"
-                style={{ display: "none" }}
-                aria-label="Select bill file"
-                onChange={handleFileChange}
-              />
-            </div>
+        <div className={styles.billUploadGrid}>
+          <div
+            className={styles.uploadZone}
+            role="button"
+            tabIndex={0}
+            aria-label="Upload your electricity bill — accepts PDF, JPG or PNG up to 10MB"
+            onClick={handleFileSelect}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                handleFileSelect();
+              }
+            }}
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
+            style={isDragging ? { borderColor: "var(--accent)" } : undefined}
+          >
+            <svg className={styles.uploadZoneIcon} aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+              <polyline points="17 8 12 3 7 8" />
+              <line x1="12" y1="3" x2="12" y2="15" />
+            </svg>
+            <span className={styles.uploadZoneText}>
+              {fileName ? (
+                <>
+                  <strong>{fileName}</strong> selected
+                </>
+              ) : (
+                "Drag & drop your electricity bill here"
+              )}
+            </span>
+            <span className={styles.uploadZoneHint}>
+              or click to browse — PDF, JPG or PNG (max 10MB)
+            </span>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".pdf,.jpg,.jpeg,.png"
+              style={{ display: "none" }}
+              aria-label="Select bill file"
+              onChange={handleFileChange}
+            />
           </div>
 
           <form
@@ -159,7 +159,7 @@ export default function BillUpload({ countyName, countySlug }: BillUploadProps) 
                 type="tel"
                 id={`bill-phone-${countySlug}`}
                 name="phone"
-                placeholder="e.g. 01 234 5678"
+                placeholder="e.g. 028 8224 5900"
                 required
                 autoComplete="tel"
                 pattern="[0-9+\s\-()]+"
@@ -191,17 +191,17 @@ export default function BillUpload({ countyName, countySlug }: BillUploadProps) 
             <p className={styles.formPrivacy}>
               We keep your details private. We never pass them on to third
               parties. See our{" "}
-              <a href="#privacy">privacy policy</a>.
+              <a href={`/counties/${countySlug}/privacy-policy`}>privacy policy</a>.
             </p>
 
             {formStatus === "success" ? (
-              <div style={{ padding: "16px", background: "#e8f5e9", borderRadius: "4px", color: "#2e7d32", textAlign: "center", fontWeight: 600 }}>
+              <div className={styles.formSuccess}>
                 Thank you! We&apos;ll be in touch within 60 minutes during business hours.
               </div>
             ) : (
               <button
                 type="submit"
-                className={styles.btnPrimary}
+                className={`${styles.btn} ${styles.btnPrimary}`}
                 disabled={formStatus === "submitting"}
                 style={{ width: "100%" }}
               >

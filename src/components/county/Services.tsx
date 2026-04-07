@@ -85,26 +85,26 @@ interface ServicesProps {
 export default function Services({ countyName, countySlug }: ServicesProps) {
   return (
     <section
-      className={styles.servicesSection}
-      id="services"
+      className={`${styles.section} ${styles.sectionAlt}`}
+      id="features"
       aria-labelledby="services-heading"
     >
       <div className="container">
         <div className={styles.sectionHeader}>
-          <h2 id="services-heading">
-            Solar Energy Services in {countyName}
-          </h2>
+          <div className={styles.sectionLabel}>Why Solar {countyName}</div>
+          <h2 id="services-heading">Solar Energy Services in {countyName}</h2>
           <p>
-            From residential rooftop panels to large-scale agricultural
-            installations — we design, install, and maintain solar systems
-            across {countyName}.
+            Complete solar solutions for homes, businesses and farms across{" "}
+            {countyName}. MCS accredited, fully insured, and installed in a single day.
           </p>
         </div>
 
-        <div className={styles.servicesGrid}>
+        <div className={styles.featuresGrid}>
           {services.map((service: ServiceData) => (
-            <article key={service.slug} className={styles.serviceCard}>
-              <ServiceIcon icon={service.icon} className={styles.serviceIcon} />
+            <article key={service.slug} className={styles.featureCard}>
+              <div className={styles.featureIcon}>
+                <ServiceIcon icon={service.icon} className={styles.featureIcon} />
+              </div>
               <h3>{service.title}</h3>
               <p>{service.shortDescription}</p>
               <a
@@ -112,7 +112,7 @@ export default function Services({ countyName, countySlug }: ServicesProps) {
                 className={styles.serviceLink}
               >
                 Learn More
-                <svg className={styles.serviceLinkArrow} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <svg className={styles.serviceLinkArrow} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                   <line x1="5" y1="12" x2="19" y2="12" />
                   <polyline points="12 5 19 12 12 19" />
                 </svg>

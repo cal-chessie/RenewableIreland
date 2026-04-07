@@ -13,6 +13,17 @@ export interface FAQ {
   answer: string;
 }
 
+export interface CountyAccentVars {
+  accent: string;
+  accentHover: string;
+  accentGlow: string;
+  accentFaint: string;
+  accentSubtle: string;
+  accentBorder: string;
+  accentBorderStrong: string;
+  accentBorderFaint: string;
+}
+
 export interface CountyData {
   slug: string;
   name: string;
@@ -34,6 +45,27 @@ export interface CountyData {
   faqs: FAQ[];
   avgSystemCost: string;
   avgPaybackYears: string;
+  accentColor: string;
+  accentHover: string;
+}
+
+/** Convert hex (#RRGGBB) to CSS custom properties for all accent variants */
+export function getAccentCSSVars(hex: string, hover: string): Record<string, string> {
+  // Parse hex to RGB
+  const h = hex.replace('#', '');
+  const r = parseInt(h.substring(0, 2), 16);
+  const g = parseInt(h.substring(2, 4), 16);
+  const b = parseInt(h.substring(4, 6), 16);
+  return {
+    '--accent': hex,
+    '--accent-hover': hover,
+    '--accent-glow': `rgba(${r}, ${g}, ${b}, 0.25)`,
+    '--accent-faint': `rgba(${r}, ${g}, ${b}, 0.1)`,
+    '--accent-subtle': `rgba(${r}, ${g}, ${b}, 0.05)`,
+    '--accent-border': `rgba(${r}, ${g}, ${b}, 0.08)`,
+    '--accent-border-strong': `rgba(${r}, ${g}, ${b}, 0.15)`,
+    '--accent-border-faint': `rgba(${r}, ${g}, ${b}, 0.07)`,
+  };
 }
 
 // ========================
@@ -143,11 +175,9 @@ const tyrone: CountyData = {
   ],
   avgSystemCost: "£6,000 – £9,000",
   avgPaybackYears: "6–8 years",
+  accentColor: "#E10600",
+  accentHover: "#ff1a1a",
 };
-
-// ========================
-// NORTHERN IRELAND COUNTIES
-// ========================
 
 const antrim: CountyData = {
   slug: "antrim",
@@ -220,6 +250,8 @@ const antrim: CountyData = {
   ],
   avgSystemCost: "£6,000 – £9,000",
   avgPaybackYears: "6–8 years",
+  accentColor: "#448aff",
+  accentHover: "#6aa0ff",
 };
 
 const armagh: CountyData = {
@@ -293,6 +325,8 @@ const armagh: CountyData = {
   ],
   avgSystemCost: "£6,000 – £9,000",
   avgPaybackYears: "6–8 years",
+  accentColor: "#536dfe",
+  accentHover: "#758bfe",
 };
 
 const down: CountyData = {
@@ -366,6 +400,8 @@ const down: CountyData = {
   ],
   avgSystemCost: "£6,000 – £9,000",
   avgPaybackYears: "6–8 years",
+  accentColor: "#2979ff",
+  accentHover: "#5291ff",
 };
 
 const fermanagh: CountyData = {
@@ -439,6 +475,8 @@ const fermanagh: CountyData = {
   ],
   avgSystemCost: "£6,000 – £9,000",
   avgPaybackYears: "6–8 years",
+  accentColor: "#304ffe",
+  accentHover: "#5570ff",
 };
 
 const londonderry: CountyData = {
@@ -512,6 +550,8 @@ const londonderry: CountyData = {
   ],
   avgSystemCost: "£6,000 – £9,000",
   avgPaybackYears: "6–8 years",
+  accentColor: "#2962ff",
+  accentHover: "#4f84ff",
 };
 
 // ========================
@@ -554,6 +594,8 @@ const carlow: CountyData = {
   ],
   avgSystemCost: "€4,500 – €6,500",
   avgPaybackYears: "5–7 years",
+  accentColor: "#aeea00",
+  accentHover: "#c0f040",
 };
 
 const cavan: CountyData = {
@@ -592,6 +634,8 @@ const cavan: CountyData = {
   ],
   avgSystemCost: "€4,500 – €6,500",
   avgPaybackYears: "5–7 years",
+  accentColor: "#9ccc65",
+  accentHover: "#b8d98d",
 };
 
 const clare: CountyData = {
@@ -630,6 +674,8 @@ const clare: CountyData = {
   ],
   avgSystemCost: "€4,500 – €6,500",
   avgPaybackYears: "5–7 years",
+  accentColor: "#ff6d00",
+  accentHover: "#ff8f33",
 };
 
 const cork: CountyData = {
@@ -668,6 +714,8 @@ const cork: CountyData = {
   ],
   avgSystemCost: "€4,500 – €6,500",
   avgPaybackYears: "5–7 years",
+  accentColor: "#00c853",
+  accentHover: "#33d475",
 };
 
 const donegal: CountyData = {
@@ -706,6 +754,8 @@ const donegal: CountyData = {
   ],
   avgSystemCost: "€4,500 – €6,500",
   avgPaybackYears: "5–7 years",
+  accentColor: "#00c853",
+  accentHover: "#33d475",
 };
 
 const dublin: CountyData = {
@@ -744,6 +794,8 @@ const dublin: CountyData = {
   ],
   avgSystemCost: "€4,500 – €6,500",
   avgPaybackYears: "5–7 years",
+  accentColor: "#c8ff00",
+  accentHover: "#d4ff4d",
 };
 
 const galway: CountyData = {
@@ -782,6 +834,8 @@ const galway: CountyData = {
   ],
   avgSystemCost: "€4,500 – €6,500",
   avgPaybackYears: "5–7 years",
+  accentColor: "#00bfa5",
+  accentHover: "#33ccb8",
 };
 
 const kerry: CountyData = {
@@ -820,6 +874,8 @@ const kerry: CountyData = {
   ],
   avgSystemCost: "€4,500 – €6,500",
   avgPaybackYears: "5–7 years",
+  accentColor: "#00bfa5",
+  accentHover: "#33ccb8",
 };
 
 const kildare: CountyData = {
@@ -858,6 +914,8 @@ const kildare: CountyData = {
   ],
   avgSystemCost: "€4,500 – €6,500",
   avgPaybackYears: "5–7 years",
+  accentColor: "#69f0ae",
+  accentHover: "#8ff4c4",
 };
 
 const kilkenny: CountyData = {
@@ -896,6 +954,8 @@ const kilkenny: CountyData = {
   ],
   avgSystemCost: "€4,500 – €6,500",
   avgPaybackYears: "5–7 years",
+  accentColor: "#ffd600",
+  accentHover: "#ffde33",
 };
 
 const laois: CountyData = {
@@ -934,6 +994,8 @@ const laois: CountyData = {
   ],
   avgSystemCost: "€4,500 – €6,500",
   avgPaybackYears: "5–7 years",
+  accentColor: "#dce775",
+  accentHover: "#e5ee9a",
 };
 
 const leitrim: CountyData = {
@@ -972,6 +1034,8 @@ const leitrim: CountyData = {
   ],
   avgSystemCost: "€4,500 – €6,500",
   avgPaybackYears: "5–7 years",
+  accentColor: "#7cb342",
+  accentHover: "#96c366",
 };
 
 const limerick: CountyData = {
@@ -1010,6 +1074,8 @@ const limerick: CountyData = {
   ],
   avgSystemCost: "€4,500 – €6,500",
   avgPaybackYears: "5–7 years",
+  accentColor: "#76ff03",
+  accentHover: "#93ff3d",
 };
 
 const longford: CountyData = {
@@ -1048,6 +1114,8 @@ const longford: CountyData = {
   ],
   avgSystemCost: "€4,500 – €6,500",
   avgPaybackYears: "5–7 years",
+  accentColor: "#aed581",
+  accentHover: "#c2dfa0",
 };
 
 const louth: CountyData = {
@@ -1086,6 +1154,8 @@ const louth: CountyData = {
   ],
   avgSystemCost: "€4,500 – €6,500",
   avgPaybackYears: "5–7 years",
+  accentColor: "#18ffff",
+  accentHover: "#4fffff",
 };
 
 const meath: CountyData = {
@@ -1124,6 +1194,8 @@ const meath: CountyData = {
   ],
   avgSystemCost: "€4,500 – €6,500",
   avgPaybackYears: "5–7 years",
+  accentColor: "#b2ff59",
+  accentHover: "#c5ff82",
 };
 
 const monaghan: CountyData = {
@@ -1162,6 +1234,8 @@ const monaghan: CountyData = {
   ],
   avgSystemCost: "€4,500 – €6,500",
   avgPaybackYears: "5–7 years",
+  accentColor: "#4db6ac",
+  accentHover: "#76c8c0",
 };
 
 const offaly: CountyData = {
@@ -1200,6 +1274,8 @@ const offaly: CountyData = {
   ],
   avgSystemCost: "€4,500 – €6,500",
   avgPaybackYears: "5–7 years",
+  accentColor: "#c5e1a5",
+  accentHover: "#d5eabd",
 };
 
 const roscommon: CountyData = {
@@ -1238,6 +1314,8 @@ const roscommon: CountyData = {
   ],
   avgSystemCost: "€4,500 – €6,500",
   avgPaybackYears: "5–7 years",
+  accentColor: "#8bc34a",
+  accentHover: "#a3d16d",
 };
 
 const sligo: CountyData = {
@@ -1276,6 +1354,8 @@ const sligo: CountyData = {
   ],
   avgSystemCost: "€4,500 – €6,500",
   avgPaybackYears: "5–7 years",
+  accentColor: "#4db6ac",
+  accentHover: "#76c8c0",
 };
 
 const tipperary: CountyData = {
@@ -1314,6 +1394,8 @@ const tipperary: CountyData = {
   ],
   avgSystemCost: "€4,500 – €6,500",
   avgPaybackYears: "5–7 years",
+  accentColor: "#ffab00",
+  accentHover: "#ffbd40",
 };
 
 const waterford: CountyData = {
@@ -1352,6 +1434,8 @@ const waterford: CountyData = {
   ],
   avgSystemCost: "€4,500 – €6,500",
   avgPaybackYears: "5–7 years",
+  accentColor: "#00e676",
+  accentHover: "#33ed91",
 };
 
 const westmeath: CountyData = {
@@ -1390,6 +1474,8 @@ const westmeath: CountyData = {
   ],
   avgSystemCost: "€4,500 – €6,500",
   avgPaybackYears: "5–7 years",
+  accentColor: "#64dd17",
+  accentHover: "#84e54d",
 };
 
 const wexford: CountyData = {
@@ -1428,6 +1514,8 @@ const wexford: CountyData = {
   ],
   avgSystemCost: "€4,500 – €6,500",
   avgPaybackYears: "5–7 years",
+  accentColor: "#00e5ff",
+  accentHover: "#33ecff",
 };
 
 const wicklow: CountyData = {
@@ -1466,6 +1554,8 @@ const wicklow: CountyData = {
   ],
   avgSystemCost: "€4,500 – €6,500",
   avgPaybackYears: "5–7 years",
+  accentColor: "#1de9b6",
+  accentHover: "#4eedc7",
 };
 
 // ========================
