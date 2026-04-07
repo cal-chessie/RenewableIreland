@@ -77,5 +77,60 @@ A complete 32-county solar lead generation website system for Ireland and Northe
 - Connect bill upload form to real backend API
 - Add rate limiting on form submissions
 - Create real OG images per county
-- Build privacy policy page
-- Add blog/content pages per county
+- Expand blog with additional articles
+
+---
+
+## 2026-04-07 — Audit Remediation: Privacy, Terms, Sitemap, 404, Blog
+
+### What was built
+
+All remaining critical audit recommendations implemented across the county site system.
+
+### Files Created
+
+**Privacy Policy (GDPR Compliance)**
+- `src/app/counties/[county]/privacy-policy/page.tsx` — Comprehensive GDPR-compliant privacy policy with 15 sections covering data collection, processing legal bases (Article 6 citations), data sharing, retention periods (leads 12 months, customer data 7 years, analytics 26 months), all 7 data subject rights, cookies, breach notification, DPIA, international transfers, DPC/ICO complaint rights. Dynamically references county data (name, phone, email, address) and jurisdiction (IE vs GB). Server component with full SEO metadata.
+- `src/app/counties/[county]/privacy-policy/page.module.css` — Legal page styles with tables, responsive layout.
+
+**Terms & Conditions (CCPC Compliance)**
+- `src/app/counties/[county]/terms/page.tsx` — Comprehensive terms covering 21 sections: company info, definitions, scope of services, quotation & pricing, 14-day cooling-off period, contract formation, payment terms (deposit/milestone/final), installation timeline, customer obligations, warranty terms (25yr panels, 10yr workmanship, 10yr inverter, 10yr battery, 3yr EV), guarantee claims process, cancellation & refund, limitation of liability, force majeure, dispute resolution, SEAI/SEG grant terms, IP rights, data protection reference, governing law (IE vs GB based on county.country). Server component with full SEO metadata.
+- `src/app/counties/[county]/terms/page.module.css` — Legal page styles.
+
+**XML Sitemap (SEO)**
+- `src/app/sitemap.ts` — Next.js built-in sitemap generation. Includes: 1 main site URL (priority 1.0), 32 county homepages (0.8), 192 service sub-pages (0.6), 32 privacy policy pages (0.4), 32 terms pages (0.4), 32 blog index pages (0.6), 32 blog article pages (0.6). Total: 353 URLs.
+
+**Custom 404 Page**
+- `src/app/counties/[county]/not-found.tsx` — Branded 404 with large "404" display, friendly message, links to homepage and popular services, phone CTA, follows county design system.
+
+**Blog Content Hub**
+- `src/app/counties/[county]/blog/page.tsx` — Blog index with 6 article cards (1 live, 5 coming soon), categories (Grants & Funding, Installation Guides, Cost & Savings, Technology, Case Studies), date/read time metadata, CTA section.
+- `src/app/counties/[county]/blog/page.module.css` — Blog grid layout styles with responsive 1/2/3 column grid.
+- `src/app/counties/[county]/blog/[slug]/page.tsx` — Individual blog article template. Shows full article for `solar-panels-[county]-guide` slug (900+ words with 9 content sections). Includes: table of contents, author byline, date, read time, category tag, social sharing (Facebook, X, LinkedIn, WhatsApp), related articles section, Article JSON-LD schema, CTA. All other slugs show "coming soon" state.
+- `src/app/counties/[county]/blog/[slug]/page.module.css` — Article page styles.
+
+### Files Modified
+
+**CountyNav.tsx** — Added "Blog" link to navigation (desktop and mobile menu).
+
+**Footer.tsx** — Updated footer bottom with proper links to Privacy Policy, Terms & Conditions, and Blog. Removed placeholder `#privacy` link.
+
+### Routes Verified Working (all 200 OK)
+- `/counties/tyrone/privacy-policy`
+- `/counties/tyrone/terms`
+- `/counties/tyrone/blog`
+- `/counties/tyrone/blog/solar-panels-tyrone-guide`
+- `/counties/dublin/privacy-policy`
+- `/counties/dublin/terms`
+- `/counties/cork/blog/solar-panels-cork-guide`
+- `/sitemap.xml` — 353 URLs generated
+
+### Content Quality
+- Privacy Policy: 2,500+ words, cites GDPR Article 6, covers all 7 data subject rights, includes DPC/ICO complaint rights
+- Terms & Conditions: 2,500+ words, covers cooling-off, warranties, liability, force majeure, dispute resolution, jurisdiction-specific law
+- Blog Article: 900+ words, covers costs, grants, climate suitability, installation process, savings, battery storage
+
+### Not Modified
+- `src/app/route.ts` — Main site route handler (untouched)
+- `src/app/layout.tsx` — Main site layout (untouched)
+- `public/original.html` — Main site HTML (untouched)

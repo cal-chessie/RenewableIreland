@@ -1,0 +1,119 @@
+/* ================================
+   TERMS & CONDITIONS PAGE
+   ================================ */
+
+.legalPage {
+  padding: 52px 0;
+  background: var(--support-white);
+}
+
+.legalHero {
+  background: linear-gradient(135deg, #f0f0f0 0%, #e8e8e8 100%);
+  padding: 60px 0 52px;
+}
+
+.legalContent {
+  max-width: 820px;
+  margin: 0 auto;
+}
+
+.legalContent p {
+  color: var(--text-mid);
+  font-size: 15px;
+  line-height: 1.8;
+  margin-bottom: 16px;
+}
+
+.legalContent h2 {
+  margin-top: 40px;
+  margin-bottom: 14px;
+}
+
+.legalContent h3 {
+  margin-top: 28px;
+  margin-bottom: 10px;
+}
+
+.legalContent ul,
+.legalContent ol {
+  padding-left: 24px;
+  margin-bottom: 16px;
+}
+
+.legalContent ul {
+  list-style: disc;
+}
+
+.legalContent ol {
+  list-style: decimal;
+}
+
+.legalContent li {
+  color: var(--text-mid);
+  font-size: 15px;
+  line-height: 1.8;
+  margin-bottom: 6px;
+}
+
+.legalContent strong {
+  color: var(--text-dark);
+  font-weight: 600;
+}
+
+.legalContent a {
+  color: var(--accent-red);
+  text-decoration: underline;
+}
+
+.legalContent a:hover {
+  color: var(--accent-red-hover);
+}
+
+.legalContent table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+.legalContent table th,
+.legalContent table td {
+  padding: 10px 14px;
+  text-align: left;
+  border: 1px solid var(--border-color);
+}
+
+.legalContent table th {
+  background: var(--primary-bg);
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.legalContent table td {
+  color: var(--text-mid);
+}
+
+.lastUpdated {
+  font-size: 13px;
+  color: var(--text-light);
+  font-style: italic;
+  margin-bottom: 32px;
+}
+
+/* ================================
+   RESPONSIVE — TABLET
+   ================================ */
+@media (min-width: 769px) {
+  .legalHero {
+    padding: 80px 0 64px;
+  }
+}
+
+/* ================================
+   RESPONSIVE — DESKTOP
+   ================================ */
+@media (min-width: 1025px) {
+  .legalHero {
+    padding: 100px 0 76px;
+  }
+}

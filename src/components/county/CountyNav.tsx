@@ -108,6 +108,7 @@ export default function CountyNav({ countyName, countySlug }: CountyNavProps) {
   const navLinks = [
     { href: `/counties/${countySlug}`, label: "Home" },
     { href: `/counties/${countySlug}/home-solar-panels`, label: "Services" },
+    { href: `/counties/${countySlug}/blog`, label: "Blog" },
     { href: "#trust", label: "About" },
     { href: "#faq", label: "FAQ" },
     { href: "#contact", label: "Contact" },

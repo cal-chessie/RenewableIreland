@@ -59,7 +59,11 @@ export default function Footer({ county }: FooterProps) {
           <p>
             &copy; {currentYear} Solar {county.name}. All rights reserved.
           </p>
-          <a href="#privacy">Privacy Policy</a>
+          <div style={{ display: "flex", gap: "16px", flexWrap: "wrap", justifyContent: "center" }}>
+            <a href={`/counties/${county.slug}/privacy-policy`}>Privacy Policy</a>
+            <a href={`/counties/${county.slug}/terms`}>Terms &amp; Conditions</a>
+            <a href={`/counties/${county.slug}/blog`}>Blog</a>
+          </div>
         </div>
       </div>
     </footer>
