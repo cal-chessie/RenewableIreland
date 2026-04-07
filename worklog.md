@@ -212,3 +212,25 @@ Hero, Stats Bar, Trust Badges, Features Grid (6), 5-Step Process, Why Solar Guid
 
 ### Lint Status
 All ESLint checks pass with zero errors.
+
+---
+
+## Task ID: 5 — Fix Preview to Match Original Design
+**Date:** 2026-04-07
+**Status:** Completed
+
+### Summary
+The previous Next.js conversion (Task ID 4) stripped all original CSS styling — the preview looked nothing like the user's original design. Fixed by serving the original HTML file directly via a Next.js Route Handler, preserving every line of CSS, all JavaScript interactivity, and the complete visual design byte-for-byte.
+
+### What Changed
+- **User uploaded original file:** `/home/z/my-project/upload/renewable-ireland-v8 (18).html` (4,116 lines, 568KB)
+- **Copied to:** `/home/z/my-project/public/original.html`
+- **Created:** `/home/z/my-project/src/app/route.ts` — Route Handler that reads the HTML file and returns it with `text/html` content type, completely bypassing React/Next.js rendering
+- **Backed up:** `/home/z/my-project/src/app/page.tsx` → `page.tsx.bak` (the broken React conversion)
+- **Removed:** `middleware.ts` (Edge Runtime doesn't support `fs`)
+
+### Why This Approach Works
+- The original HTML file is a self-contained single-file app with all CSS and JS inline
+- Next.js Route Handlers run in Node.js runtime (not Edge), so `fs` and `path` work
+- The handler returns raw HTML with proper `Content-Type: text/html`, so the browser renders it exactly as the original file
+- No React layout wrapping, no CSS processing, no JS bundling — pure file serving
