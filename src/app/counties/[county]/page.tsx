@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { getCounty, countySlugs, getAccentCSSVars } from "@/data/counties";
+import { getCounty, countySlugs } from "@/data/counties";
 import {
   generateServiceSchema,
   generateFAQSchema,
@@ -254,11 +254,8 @@ export default async function CountyHomePage({ params }: Props) {
   const statPayback = county.avgPaybackYears || "6\u20138 Years";
   const statInstall = "1 Day";
 
-  // Per-county accent CSS custom properties
-  const accentVars = getAccentCSSVars(county.accentColor, county.accentHover);
-
   return (
-    <div className={styles.countySite} style={accentVars}>
+    <div className={styles.countySite}>
       {/* Skip link */}
       <a href="#main-content" className={styles.skipLink}>
         Skip to main content

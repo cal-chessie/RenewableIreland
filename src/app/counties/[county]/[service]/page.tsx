@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { getCounty, countySlugs, getService, services, getAccentCSSVars } from "@/data/counties";
+import { getCounty, countySlugs, getService, services } from "@/data/counties";
 import {
   generateServiceSchema,
   generateHowToSchema,
@@ -147,11 +147,10 @@ export default async function ServicePage({ params }: Props) {
     });
   }
 
-  // Per-county accent CSS custom properties
-  const accentVars = getAccentCSSVars(county.accentColor, county.accentHover);
+  // Per-county accent CSS custom properties are set by the parent layout
 
   return (
-    <div className={styles.countySite} style={accentVars}>
+    <div className={styles.countySite}>
       {/* Skip link */}
       <a href="#main-content" className={styles.skipLink}>
         Skip to main content

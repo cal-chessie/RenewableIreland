@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getCounty, countySlugs } from "@/data/counties";
-import "./page.module.css";
+import { getCounty, countySlugs, getAccentCSSVars } from "@/data/counties";
 
 type Props = {
   children: React.ReactNode;
@@ -49,7 +48,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       images: [`https://${county.domain}/images/og-image.jpg`],
     },
     other: {
-      "theme-color": "#E10600",
+      "theme-color": county.accentColor,
     },
   };
 }
@@ -59,24 +58,11 @@ export default async function CountyLayout({ children, params }: Props) {
   const county = getCounty(slug);
   if (!county) notFound();
 
+  const accentVars = getAccentCSSVars(county.accentColor, county.accentHover);
+
   return (
-    <html lang="en-GB" suppressHydrationWarning>
-      <head>
-        <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.googleapis.com"
-          crossOrigin=""
-        />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800&display=swap"
-          rel="stylesheet"
-        />
-      </head>
-      <body style={{ margin: 0, padding: 0, background: "#050505", color: "#f0f0f0" }}>
-        {children}
-      </body>
-    </html>
+    <div id="county-root" style={accentVars as React.CSSProperties}>
+      {children}
+    </div>
   );
 }
