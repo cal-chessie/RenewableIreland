@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getCounty, countySlugs, getAccentCSSVars } from "@/data/counties";
-import CountyBodyStyles from "@/components/county/CountyBodyStyles";
 
 type Props = {
   children: React.ReactNode;
@@ -63,7 +62,6 @@ export default async function CountyLayout({ children, params }: Props) {
 
   return (
     <>
-      <CountyBodyStyles />
       <div id="county-root" style={{ background: '#F7F7F2', minHeight: '100vh', ...accentVars as React.CSSProperties }}>
         {children}
       </div>
