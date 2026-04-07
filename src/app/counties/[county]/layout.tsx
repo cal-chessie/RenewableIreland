@@ -64,7 +64,7 @@ export default async function CountyLayout({ children, params }: Props) {
   return (
     <>
       <CountyBodyStyles />
-      <div id="county-root" style={accentVars as React.CSSProperties}>
+      <div id="county-root" style={{ background: '#F7F7F2', minHeight: '100vh', ...accentVars as React.CSSProperties }}>
         {children}
       </div>
     </>

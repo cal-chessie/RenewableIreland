@@ -232,8 +232,8 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={barlowCondensed.variable}
-        style={{ background: "#050505", color: "#f0f0f0", margin: 0 }}
+        className={`${barlowCondensed.variable} main-site`}
+        style={{ margin: 0 }}
       >
         {children}
       </body>
