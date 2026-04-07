@@ -232,7 +232,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${barlowCondensed.variable} antialiased`}
+        className={barlowCondensed.variable}
         style={{ background: "#050505", color: "#f0f0f0", margin: 0 }}
       >
         {children}
