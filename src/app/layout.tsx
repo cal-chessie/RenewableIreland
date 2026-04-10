@@ -193,6 +193,12 @@ export default function RootLayout({
         />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         <link rel="preconnect" href="https://solarpilot.ie" crossOrigin="" />
+        {/* Cursor elements injected via JS so React never tries to hydrate them */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: "(function(){var d=document,c=function(id){var e=d.createElement('div');e.id=id;d.body.appendChild(e)};if(d.readyState==='loading'){d.addEventListener('DOMContentLoaded',function(){c('ricur');c('ritrail')})}else{c('ricur');c('ritrail')}})();",
+          }}
+        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -217,8 +223,6 @@ export default function RootLayout({
         style={{ margin: 0, background: '#F7F7F2', color: '#111', colorScheme: 'light' }}
       >
         {children}
-        <div id="ricur" />
-        <div id="ritrail" />
         <Suspense fallback={null}>
           <WhatsAppWidgetLoader />
         </Suspense>
