@@ -13,6 +13,9 @@ const barlowCondensed = Barlow_Condensed({
 });
 
 export const metadata: Metadata = {
+  icons: {
+    icon: "/favicon.svg",
+  },
   title: "Solar Panels Ireland | Renewable Ireland | SEAI Grant €1,800",
   description:
     "Ireland's trusted solar panel installers. 2,847+ installs, 4.9★ rating, 1-day install from €4,500. SEAI €1,800 grant handled. Get your free quote today.",
