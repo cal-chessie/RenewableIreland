@@ -515,7 +515,7 @@ footer{background:var(--black);border-top:var(--bd);padding:48px 64px 26px}
   .hero-actions .btn-p,.hero-actions .btn-o{width:100%;text-align:center;justify-content:center}
 
   /* HERO */
-  .hero{grid-template-columns:1fr;height:auto;max-height:none;overflow:hidden}
+  .hero{grid-template-columns:1fr;height:auto;max-height:100vh;overflow:hidden}
   .hero-left{padding:24px 20px 20px;border-right:none;border-bottom:var(--bd)}
   .hero-right{min-height:0;padding:12px 16px 12px;background:var(--white)}
   .hero-logo-wrap{max-height:200px;justify-content:center}
