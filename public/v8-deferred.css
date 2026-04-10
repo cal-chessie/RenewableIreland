@@ -500,7 +500,7 @@ footer{background:var(--black);border-top:var(--bd);padding:48px 64px 26px}
 .nav-ham[aria-expanded="true"] span{background:transparent}
 .nav-ham[aria-expanded="true"] span::before{top:0;transform:rotate(45deg)}
 .nav-ham[aria-expanded="true"] span::after{top:0;transform:rotate(-45deg)}
-.nav-mobile{display:none;position:fixed;top:68px;left:0;right:0;bottom:0;background:var(--white);z-index:999;padding:24px 20px;flex-direction:column;gap:0;overflow-y:auto;border-bottom:var(--bd)}
+.nav-mobile{display:none;position:fixed;top:72px;left:0;right:0;bottom:0;background:var(--white);z-index:999;padding:24px 20px;flex-direction:column;gap:0;overflow-y:auto;border-bottom:var(--bd)}
 .nav-mobile.open{display:flex}
 .nav-mobile a{display:flex;align-items:center;gap:8px;color:var(--black);font-family:'Barlow Condensed',sans-serif;font-size:1.2rem;font-weight:700;padding:14px 0;border-bottom:2px solid var(--gray-lt);text-decoration:none;text-transform:uppercase;letter-spacing:.02em;transition:color .15s;min-height:48px}
 .nav-mobile a:hover{color:var(--lime-dk)}

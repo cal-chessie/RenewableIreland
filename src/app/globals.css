@@ -10,7 +10,7 @@
 /* Force light mode — prevent any dark-mode overrides */
 @media(prefers-color-scheme:dark){html,body{color-scheme:light!important;background:#F7F7F2!important;color:#111!important}}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{color-scheme:light;scroll-behavior:smooth;scroll-padding-top:72px;min-height:100vh;display:flex;flex-direction:column}
+html{color-scheme:light;scroll-behavior:smooth;scroll-padding-top:76px;min-height:100vh;display:flex;flex-direction:column}
 body{font-family:'Barlow',sans-serif;background:var(--off);color:var(--black);font-size:16px;line-height:1.65;letter-spacing:.012em;overflow-x:hidden;flex:1;display:flex;flex-direction:column;cursor:default}
 *,*::before,*::after{cursor:inherit}
 a[href],a[role='button'],button,[role='button'],summary,details,input[type='submit'],input[type='button'],input[type='text'],input[type='email'],input[type='tel'],input[type='number'],input[type='search'],select,textarea,label[for],[tabindex='0']{cursor:pointer!important}
