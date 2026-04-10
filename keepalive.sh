@@ -1,7 +1,0 @@
-#!/bin/bash
-while true; do
-  cd /home/z/my-project
-  node --max-old-space-size=4096 node_modules/.bin/next dev -p 3000 >> /home/z/my-project/dev.log 2>&1
-  echo "Server died at $(date). Restarting in 3s..." >> /home/z/my-project/dev.log
-  sleep 3
-done
