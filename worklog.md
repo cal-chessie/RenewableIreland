@@ -385,3 +385,22 @@ Stage Summary:
 - County pages show "Renewable" (white) + county name (dark/black) in nav
 - County pages show "Renewable" (white) + county name (accent color) in footer
 - Files changed: src/lib/v8-body-content.ts, src/components/county/CountyNav.tsx, src/components/county/Footer.tsx, src/app/counties/[county]/page.module.css
+
+---
+Task ID: 1
+Agent: Main Agent
+Task: Fix invisible hero content on mobile preview
+
+Work Log:
+- Analyzed user screenshot - nav visible but hero section was solid black with only "GET STARTED" text
+- Root cause: Hero elements (.hero-tag, h1, .hero-sub, .hero-actions, .hero-trust, .hstat) used animation:fu .5s ease BOTH / animation:spop .6s ease BOTH
+- fill-mode:both starts elements at opacity:0 before animation fires
+- Through the platform proxy, animations weren't firing, leaving all content at opacity:0 permanently
+- Removed ALL animation properties from hero elements in v8-critical.css and v8-styles.css
+- Left animations only on interactive elements (.pmodal, .rv.pop) which are fine
+- Verified fix on mobile viewport - hero now renders immediately without animation dependency
+
+Stage Summary:
+- Hero section now visible immediately on all connections including slow proxies
+- All hero text, buttons, chips, and stats render without waiting for animation
+- Files changed: public/v8-critical.css, public/v8-styles.css
