@@ -91,7 +91,7 @@ export default function Services({ countyName, countySlug }: ServicesProps) {
     >
       <div className="container">
         <div className={styles.sectionHeader}>
-          <div className={styles.sectionLabel}>Why Solar {countyName}</div>
+          <div className={styles.sectionLabel}>Why Renewable {countyName}</div>
           <h2 id="services-heading">Solar Energy Services in {countyName}</h2>
           <p>
             Complete solar solutions for homes, businesses and farms across{" "}

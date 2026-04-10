@@ -49,7 +49,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: post.metaTitle,
       description: post.metaDescription,
       url,
-      siteName: `Solar ${county.name}`,
+      siteName: `Renewable ${county.name}`,
       publishedTime: post.datePublished,
       modifiedTime: post.dateModified,
       authors: [post.author],
@@ -73,7 +73,8 @@ function getCategoryLabel(cat: string): string {
 }
 
 function extractHeadings(html: string): Array<{ id: string; text: string; level: number }> {
-  const headingRegex = /<h([23])>([^<]+)<\/h[23]>/g;
+  // Regex handles headings with or without attributes (e.g. <h2 id="section-1">)
+  const headingRegex = /<h([23])\s[^>]*>([^<]+)<\/h[23]>/g;
   const headings: Array<{ id: string; text: string; level: number }> = [];
   let match;
   let counter = 0;
@@ -103,37 +104,7 @@ export default async function BlogArticlePage({ params }: Props) {
   const post = getPostBySlug(articleSlug);
 
   if (!post) {
-    return (
-      <div className={sharedStyles.countySite}>
-        <a href="#main-content" className={sharedStyles.skipLink}>
-          Skip to main content
-        </a>
-        <TopBar phone={county.phone} email={county.email} accreditation={county.accreditation} />
-        <CountyNav countyName={county.name} countySlug={county.slug} />
-
-        <header className={styles.articleHero} id="main-content" role="banner">
-          <div className="container">
-            <h1 className={sharedStyles.headingH1}>
-              Article Not Found
-            </h1>
-          </div>
-        </header>
-
-        <section className={styles.comingSoon} aria-labelledby="not-found-heading">
-          <h2 id="not-found-heading" className={sharedStyles.headingH2}>
-            This Article Doesn&apos;t Exist
-          </h2>
-          <p>
-            The article you&apos;re looking for doesn&apos;t exist. Browse our other guides or get in touch for a free solar quote.
-          </p>
-          <a href={`/counties/${county.slug}/blog`} className={sharedStyles.btnPrimary}>
-            Back to All Articles
-          </a>
-        </section>
-
-        <Footer county={county} />
-      </div>
-    );
+    notFound();
   }
 
   // Process content: add heading IDs
@@ -156,7 +127,7 @@ export default async function BlogArticlePage({ params }: Props) {
     datePublished: post.datePublished,
     dateModified: post.dateModified,
     author: post.author,
-    publisherName: `Solar ${county.name}`,
+    publisherName: `Renewable ${county.name}`,
     publisherUrl: `https://${county.domain}`,
     wordCount: Math.floor(post.content.length / 6),
   });
@@ -182,7 +153,7 @@ export default async function BlogArticlePage({ params }: Props) {
 
       {/* Breadcrumb */}
       <nav className={styles.breadcrumb} aria-label="Breadcrumb">
-        <div className="container">
+        <div className={sharedStyles.container}>
           <ol className={styles.breadcrumbList}>
             <li><a href={`https://renewableireland.ie/`}>Home</a></li>
             <li><a href={`https://${county.domain}/`}>{county.name}</a></li>
@@ -194,7 +165,7 @@ export default async function BlogArticlePage({ params }: Props) {
 
       {/* Article Hero */}
       <header className={styles.articleHero} id="main-content" role="banner" aria-labelledby="article-heading">
-        <div className="container">
+        <div className={sharedStyles.container}>
           <a href={`/counties/${county.slug}/blog`} className={styles.backToBlog}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" width="16" height="16">
               <line x1="19" y1="12" x2="5" y2="12" />
@@ -203,6 +174,9 @@ export default async function BlogArticlePage({ params }: Props) {
             Back to Blog
           </a>
           <span className={styles.articleCategory}>{getCategoryLabel(post.category)}</span>
+          <h1 id="article-heading" style={{ fontFamily: 'var(--font-body)', fontSize: 'clamp(1.4rem, 3.8vw, 2rem)', fontWeight: 700, textTransform: 'none', letterSpacing: '-0.01em', lineHeight: 1.3, color: 'var(--white-pure)', margin: '0 0 12px' }}>
+            {post.title}
+          </h1>
           <div className={styles.articleMeta}>
             <span className={styles.articleMetaAuthor}>{post.author}</span>
             <span>
@@ -222,9 +196,6 @@ export default async function BlogArticlePage({ params }: Props) {
               {post.readTime}
             </span>
           </div>
-          <h1 id="article-heading" className={sharedStyles.headingH1}>
-            {post.title}
-          </h1>
         </div>
       </header>
 
@@ -246,8 +217,8 @@ export default async function BlogArticlePage({ params }: Props) {
       ))}
 
       <section className={styles.articlePage} aria-labelledby="article-content-heading">
-        <div className="container">
-          <div className={styles.articleLayout}>
+        <div className={styles.articleInner}>
+          <div className={`${styles.articleLayout}${headings.length === 0 ? ` ${styles.articleLayoutFull}` : ''}`}>
             {/* Table of Contents (Sidebar) */}
             {headings.length > 0 && (
               <aside className={styles.toc} aria-label="Table of contents">
@@ -275,7 +246,7 @@ export default async function BlogArticlePage({ params }: Props) {
               {/* FAQ Section */}
               {post.faqs && post.faqs.length > 0 && (
                 <div className={styles.faqSection}>
-                  <h2 className={sharedStyles.headingH2}>Frequently Asked Questions</h2>
+                  <h2 style={{ fontFamily: 'var(--font-body)', fontSize: 'clamp(1.2rem, 3vw, 1.5rem)', fontWeight: 700, textTransform: 'none', color: 'var(--white-pure)', margin: '0 0 8px', letterSpacing: 0, lineHeight: 1.35 }}>Frequently Asked Questions</h2>
                   <div className={styles.faqList}>
                     {post.faqs.map((faq, i) => (
                       <details key={i} className={styles.faqItem}>
@@ -351,7 +322,7 @@ export default async function BlogArticlePage({ params }: Props) {
           {/* Related Articles */}
           {relatedPosts.length > 0 && (
             <div className={styles.relatedSection}>
-              <h2 className={sharedStyles.headingH2}>Related Articles</h2>
+              <h2 style={{ fontFamily: 'var(--font-body)', fontSize: 'clamp(1.2rem, 3vw, 1.5rem)', fontWeight: 700, textTransform: 'none', color: 'var(--white-pure)', margin: '0 0 8px', letterSpacing: 0, lineHeight: 1.35 }}>Related Articles</h2>
               <div className={styles.relatedGrid}>
                 {relatedPosts.map((rp) => (
                   <article key={rp.slug} className={styles.relatedCard}>
@@ -373,14 +344,14 @@ export default async function BlogArticlePage({ params }: Props) {
 
           {/* CTA */}
           <div className={styles.articleCta}>
-            <h2 className={sharedStyles.headingH2}>Ready to Switch to Solar?</h2>
+            <h2 style={{ fontFamily: 'var(--font-body)', fontSize: 'clamp(1.2rem, 3vw, 1.5rem)', fontWeight: 700, textTransform: 'none', color: 'var(--white-pure)', margin: '0 0 14px', letterSpacing: 0, lineHeight: 1.35 }}>Ready to Switch to Solar?</h2>
             <p>Get a free, no-obligation quote for solar panels in {county.name}. Our experts will show you exactly how much you could save.</p>
             <div style={{ display: "flex", flexDirection: "column", gap: 14, alignItems: "center" }}>
-              <a href={`tel:${county.phone}`} className={sharedStyles.btnPrimary}>
+              <a href={`tel:${county.phone}`} className={`${sharedStyles.btn} ${sharedStyles.btnPrimary}`}>
                 Call {county.phone}
               </a>
-              <a href={`/counties/${county.slug}`} className={sharedStyles.btnSecondary} style={{ color: "var(--white)", borderColor: "rgba(255,255,255,0.3)" }}>
-                Back to Solar {county.name}
+              <a href={`/counties/${county.slug}`} className={`${sharedStyles.btn} ${sharedStyles.btnSecondary}`} style={{ color: "var(--white)", borderColor: "rgba(255,255,255,0.3)" }}>
+                Back to Renewable {county.name}
               </a>
             </div>
           </div>

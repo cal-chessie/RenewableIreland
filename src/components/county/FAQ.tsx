@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useCallback } from "react";
 import styles from "@/app/counties/[county]/page.module.css";
 import type { FAQ } from "@/data/counties";
 
@@ -11,10 +11,18 @@ interface FAQProps {
 
 export default function FAQ({ faqs, countyName }: FAQProps) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const answerRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   const toggle = (index: number) => {
     setOpenIndex(openIndex === index ? null : index);
   };
+
+  const setAnswerRef = useCallback(
+    (el: HTMLDivElement | null, index: number) => {
+      answerRefs.current[index] = el;
+    },
+    []
+  );
 
   return (
     <section
@@ -35,33 +43,42 @@ export default function FAQ({ faqs, countyName }: FAQProps) {
         </div>
 
         <div className={styles.faqList}>
-          {faqs.map((faq, index) => (
-            <div
-              key={index}
-              className={`${styles.faqItem} ${openIndex === index ? styles.faqItemActive : ""}`}
-            >
-              <button
-                className={styles.faqQuestion}
-                onClick={() => toggle(index)}
-                aria-expanded={openIndex === index}
-                aria-controls={`faq-answer-${index}`}
-              >
-                <span>{faq.question}</span>
-                <span className={styles.faqIcon} aria-hidden="true">+</span>
-              </button>
+          {faqs.map((faq, index) => {
+            const isOpen = openIndex === index;
+            const contentHeight = answerRefs.current[index]?.scrollHeight || 0;
+
+            return (
               <div
-                className={styles.faqAnswer}
-                id={`faq-answer-${index}`}
-                role="region"
-                style={{
-                  maxHeight: openIndex === index ? `${300}px` : "0",
-                  transition: "max-height 0.4s ease",
-                }}
+                key={index}
+                className={`${styles.faqItem} ${isOpen ? styles.faqItemActive : ""}`}
               >
-                <div className={styles.faqAnswerInner}>{faq.answer}</div>
+                <button
+                  className={styles.faqQuestion}
+                  onClick={() => toggle(index)}
+                  aria-expanded={isOpen}
+                  aria-controls={`faq-answer-${index}`}
+                >
+                  <span>{faq.question}</span>
+                  <span className={styles.faqIcon} aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="6 9 12 15 18 9" />
+                    </svg>
+                  </span>
+                </button>
+                <div
+                  className={styles.faqAnswer}
+                  id={`faq-answer-${index}`}
+                  role="region"
+                  ref={(el) => setAnswerRef(el, index)}
+                  style={{
+                    maxHeight: isOpen ? `${contentHeight}px` : "0",
+                  }}
+                >
+                  <div className={styles.faqAnswerInner}>{faq.answer}</div>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>

@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Barlow_Condensed } from "next/font/google";
+import { Suspense } from "react";
 import "./globals.css";
+import WhatsAppWidgetLoader from "@/components/whatsapp/WhatsAppWidgetLoader";
+
 
 const barlowCondensed = Barlow_Condensed({
   variable: "--font-display",
@@ -48,7 +51,7 @@ export const metadata: Metadata = {
     images: ["https://renewableireland.ie/og-image.jpg"],
   },
   other: {
-    "theme-color": "#050505",
+    "theme-color": "#F7F7F2",
   },
 };
 
@@ -172,25 +175,6 @@ const jsonLdWebSite = {
   },
 };
 
-const jsonLdBreadcrumb = {
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  itemListElement: [
-    {
-      "@type": "ListItem",
-      position: 1,
-      name: "Home",
-      item: "https://renewableireland.ie/",
-    },
-    {
-      "@type": "ListItem",
-      position: 2,
-      name: "Solar Panels Ireland",
-      item: "https://renewableireland.ie/",
-    },
-  ],
-};
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -199,12 +183,15 @@ export default function RootLayout({
   return (
     <html lang="en-IE" suppressHydrationWarning>
       <head>
+        <meta name="color-scheme" content="light" />
         <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+        <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
         <link
           rel="preconnect"
           href="https://fonts.googleapis.com"
           crossOrigin=""
         />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         <link rel="preconnect" href="https://solarpilot.ie" crossOrigin="" />
         <script
           type="application/ld+json"
@@ -224,18 +211,15 @@ export default function RootLayout({
             __html: JSON.stringify(jsonLdWebSite),
           }}
         />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(jsonLdBreadcrumb),
-          }}
-        />
       </head>
       <body
-        className={`${barlowCondensed.variable} main-site`}
-        style={{ margin: 0 }}
+        className={barlowCondensed.variable}
+        style={{ margin: 0, background: '#F7F7F2', color: '#111', colorScheme: 'light' }}
       >
         {children}
+        <Suspense fallback={null}>
+          <WhatsAppWidgetLoader />
+        </Suspense>
       </body>
     </html>
   );

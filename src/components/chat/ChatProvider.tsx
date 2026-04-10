@@ -44,6 +44,7 @@ interface ChatContextValue {
   isTyping: boolean;
   leadStep: LeadStep;
   leadData: LeadData;
+  lastBotMessage: string;
   openChat: () => void;
   closeChat: () => void;
   toggleChat: () => void;
@@ -73,6 +74,16 @@ function uid(): string {
   return `chat-msg-${Date.now()}-${++msgCounter}`;
 }
 
+/**
+ * Format a timestamp as clock time: "10:30 AM"
+ */
+function formatTime(ts: number): string {
+  return new Date(ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+}
+
+/**
+ * Legacy relative time – kept for potential external usage
+ */
 function relativeTime(ts: number): string {
   const diff = Math.floor((Date.now() - ts) / 1000);
   if (diff < 10) return 'Just now';
@@ -81,7 +92,7 @@ function relativeTime(ts: number): string {
   return `${Math.floor(diff / 3600)}h ago`;
 }
 
-export { relativeTime };
+export { relativeTime, formatTime };
 
 const STORAGE_KEY = 'solar_chat_history';
 const MAX_MESSAGES = 60;
@@ -114,7 +125,7 @@ const GREETING: ChatMessage = {
   id: 'greeting',
   role: 'bot',
   content:
-    "Hi! I'm SolarBot, Renewable Ireland's AI assistant. I can help you with solar panel pricing, SEAI grants, system sizing, or book a free roof survey. What would you like to know?",
+    "Hi there! 👋 Welcome to Renewable Ireland. I'm here to help with solar panels, grants, pricing, and more. What can I help you with today?",
   timestamp: Date.now(),
   card: null,
 };
@@ -143,6 +154,7 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
   const [isTyping, setIsTyping] = useState(false);
   const [leadStep, setLeadStep] = useState<LeadStep>('idle');
   const [leadData, setLeadData] = useState<LeadData>({ name: '', phone: '', email: '', county: '' });
+  const [lastBotMessage, setLastBotMessage] = useState('');
 
   const initialized = useRef(false);
 
@@ -209,6 +221,9 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
         const data = await res.json();
         const botContent: string = data.message ?? "Sorry, I couldn't process that. Please try again.";
 
+        /* Track last bot message for toast notifications */
+        setLastBotMessage(botContent);
+
         /* Determine card type from keywords */
         let card: ChatMessage['card'] = null;
         const lower = botContent.toLowerCase();
@@ -240,6 +255,7 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
             timestamp: Date.now(),
           };
           setMessages((prev) => [...prev, followUp]);
+          setLastBotMessage(followUp.content);
         }
 
         /* Track suggested actions */
@@ -254,6 +270,7 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
           timestamp: Date.now(),
         };
         setMessages((prev) => [...prev, errMsg]);
+        setLastBotMessage(errMsg.content);
       } finally {
         setIsTyping(false);
       }
@@ -281,6 +298,7 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
               timestamp: Date.now(),
             };
             setMessages((prev) => [...prev, msg]);
+            setLastBotMessage(msg.content);
             resolve();
           });
           break;
@@ -296,6 +314,7 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
               timestamp: Date.now(),
             };
             setMessages((prev) => [...prev, msg]);
+            setLastBotMessage(msg.content);
             resolve();
           });
           break;
@@ -311,6 +330,7 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
               timestamp: Date.now(),
             };
             setMessages((prev) => [...prev, msg]);
+            setLastBotMessage(msg.content);
             resolve();
           });
           break;
@@ -340,6 +360,7 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
               timestamp: Date.now(),
             };
             setMessages((prev) => [...prev, msg]);
+            setLastBotMessage(msg.content);
             resolve();
           });
           break;
@@ -384,6 +405,7 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
             timestamp: Date.now(),
           };
           setMessages((prev) => [...prev, msg]);
+          setLastBotMessage(msg.content);
         }
       } else {
         sendOrCapture(QUICK_ACTION_MAP[action]);
@@ -400,6 +422,7 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
     isTyping,
     leadStep,
     leadData,
+    lastBotMessage,
     openChat,
     closeChat,
     toggleChat,

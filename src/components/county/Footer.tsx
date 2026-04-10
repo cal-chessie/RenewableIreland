@@ -14,7 +14,7 @@ export default function Footer({ county }: FooterProps) {
         <div className={styles.footerGrid}>
           <div className={styles.footerBrand}>
             <div className={styles.footerLogo}>
-              Solar <span>{county.name}</span>
+              Renewable <span>{county.name}</span>
             </div>
             <p>
               {county.accreditation} accredited solar panel installers
@@ -48,16 +48,14 @@ export default function Footer({ county }: FooterProps) {
           <div className={styles.footerCol}>
             <h4>Areas We Serve</h4>
             {county.areaTowns.map((town) => (
-              <a key={town} href={`/counties/${county.slug}`}>
-                Solar Panels {town}
-              </a>
+              <span key={town}>Solar Panels {town}</span>
             ))}
           </div>
         </div>
 
         <div className={styles.footerBottom}>
           <p>
-            &copy; {currentYear} Solar {county.name}. All rights reserved.
+            &copy; {currentYear} Renewable {county.name}. All rights reserved.
           </p>
           <div style={{ display: "flex", gap: "16px", flexWrap: "wrap", justifyContent: "center" }}>
             <a href={`/counties/${county.slug}/privacy-policy`}>Privacy Policy</a>

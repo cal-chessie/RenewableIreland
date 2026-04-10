@@ -253,13 +253,13 @@ export const ALL_COUNTIES = [
   "Longford", "Louth", "Meath", "Monaghan", "Offaly", "Roscommon",
   "Sligo", "Tipperary", "Waterford", "Westmeath", "Wexford", "Wicklow",
   // Northern Ireland (6)
-  "Antrim", "Armagh", "Down", "Fermanagh", "Londonderry", "Tyrone",
+  "Antrim", "Armagh", "Down", "Fermanagh", "Derry", "Tyrone",
 ] as const;
 
 /**
  * Determine if a county is in the Republic of Ireland or Northern Ireland.
  */
 export function getCountryFromCounty(county: string): "IE" | "GB" {
-  const niCounties = ["Antrim", "Armagh", "Down", "Fermanagh", "Londonderry", "Tyrone"];
+  const niCounties = ["Antrim", "Armagh", "Down", "Fermanagh", "Derry", "Tyrone"];
   return niCounties.includes(county) ? "GB" : "IE";
 }

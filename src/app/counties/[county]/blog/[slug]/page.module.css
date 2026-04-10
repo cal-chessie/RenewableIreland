@@ -1,5 +1,6 @@
 /* ================================
    BLOG ARTICLE PAGE — Dark Theme
+   Optimised for readability
    ================================ */
 
 .articlePage {
@@ -7,15 +8,35 @@
   background: var(--black);
 }
 
+.articleInner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 40px;
+}
+
+@media (min-width: 1025px) {
+  .articleInner {
+    padding: 0 clamp(32px, 5vw, 64px);
+  }
+}
+
+@media (max-width: 480px) {
+  .articleInner {
+    padding: 0 20px;
+  }
+}
+
 .articleHero {
-  background: radial-gradient(ellipse at 50% 0%, rgba(225, 6, 0, 0.06) 0%, transparent 60%);
-  padding: 100px 0 48px;
+  background: var(--black);
+  background-image: radial-gradient(ellipse at 50% 0%, var(--accent-bg) 0%, transparent 60%);
+  padding: 90px 0 28px;
 }
 
 /* Breadcrumb */
 .breadcrumb {
-  padding: 16px 0;
-  border-bottom: 1px solid rgba(225, 6, 0, 0.07);
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  background: var(--black);
 }
 
 .breadcrumbList {
@@ -65,7 +86,7 @@
   font-size: 13px;
   font-weight: 600;
   text-decoration: none;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
   transition: color var(--transition);
   min-height: 40px;
 }
@@ -80,7 +101,7 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 16px;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
   font-size: 13px;
   color: var(--grey-light);
 }
@@ -106,8 +127,8 @@
 
 .articleCategory {
   display: inline-block;
-  background: rgba(225, 6, 0, 0.12);
-  border: 1px solid rgba(225, 6, 0, 0.25);
+  background: var(--accent-bg-strong);
+  border: 1px solid var(--accent-border-md);
   color: var(--accent);
   font-size: 11px;
   font-weight: 700;
@@ -115,23 +136,24 @@
   letter-spacing: 1px;
   padding: 4px 12px;
   border-radius: 3px;
-  margin-bottom: 16px;
+  margin-bottom: 18px;
 }
 
 /* Article Layout */
 .articleLayout {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 40px;
+  gap: 0;
   max-width: 1100px;
   margin: 0 auto;
-  padding-top: 40px;
+  padding-top: 32px;
 }
 
-/* Table of Contents */
+/* Table of Contents — HIDDEN on mobile */
 .toc {
+  display: none;
   background: var(--black-lighter);
-  border: 1px solid rgba(225, 6, 0, 0.08);
+  border: 1px solid var(--accent-bg-md);
   border-radius: var(--radius-lg);
   padding: 24px 28px;
   position: sticky;
@@ -140,7 +162,8 @@
   order: 0;
 }
 
-.toc h3 {
+/* Scoped under .articlePage to beat .countySite h3 specificity */
+.articlePage .toc h3 {
   font-family: var(--font-body);
   font-size: 12px;
   font-weight: 700;
@@ -148,6 +171,7 @@
   letter-spacing: 1.5px;
   color: var(--grey-lighter);
   margin-bottom: 14px;
+  line-height: 1.3;
 }
 
 .toc ol {
@@ -188,106 +212,137 @@
   min-width: 0;
 }
 
+/* Full-width layout when no TOC */
+.articleLayoutFull {
+ grid-template-columns: 1fr !important;
+}
+
+.articleLayoutFull .articleBody {
+ order: 1;
+}
+
 .articleContent {
-  max-width: 760px;
+  max-width: 720px;
+  width: 100%;
+  margin: 0 auto;
 }
 
-.articleContent h2 {
-  font-family: var(--font-display);
-  font-size: clamp(1.4rem, 3vw, 1.7rem);
-  color: var(--white-pure);
-  margin-top: 44px;
-  margin-bottom: 16px;
-  letter-spacing: -0.3px;
+/* ================================
+   ARTICLE CONTENT — Higher specificity
+   to override .countySite globals
+   Optimised for long-form readability
+   ================================ */
+
+.articlePage .articleContent h2 {
+  font-family: var(--font-body);
+  font-size: 1.45rem;
+  font-weight: 700;
+  color: var(--white) !important;
+  margin-top: 40px;
+  margin-bottom: 18px;
+  letter-spacing: 0;
+  line-height: 1.35;
+  text-transform: none !important;
   scroll-margin-top: 96px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
-.articleContent h3 {
-  font-family: var(--font-display);
+.articlePage .articleContent h3 {
+  font-family: var(--font-body);
   font-size: 1.15rem;
-  color: var(--white-pure);
+  font-weight: 700;
+  color: var(--grey-lighter) !important;
   margin-top: 32px;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
+  letter-spacing: 0;
+  line-height: 1.4;
+  text-transform: none !important;
   scroll-margin-top: 96px;
 }
 
-.articleContent p {
-  color: var(--grey-light);
-  font-size: 16px;
-  line-height: 1.85;
-  margin-bottom: 20px;
+.articlePage .articleContent p {
+  color: var(--grey-light) !important;
+  font-size: 17px;
+  line-height: 1.9;
+  margin-bottom: 24px;
 }
 
-.articleContent ul,
-.articleContent ol {
+.articlePage .articleContent ul,
+.articlePage .articleContent ol {
+  list-style: disc !important;
   padding-left: 24px;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
+  margin-top: 8px;
 }
 
-.articleContent ul {
-  list-style: disc;
+.articlePage .articleContent ol {
+  list-style: decimal !important;
 }
 
-.articleContent ol {
-  list-style: decimal;
-}
-
-.articleContent li {
-  color: var(--grey-light);
-  font-size: 16px;
+.articlePage .articleContent li {
+  color: var(--grey-light) !important;
+  font-size: 17px;
   line-height: 1.85;
   margin-bottom: 10px;
+  padding-left: 6px;
 }
 
-.articleContent li::marker {
+.articlePage .articleContent li::marker {
   color: var(--accent);
+  font-size: 0.9em;
 }
 
-.articleContent strong {
-  color: var(--white);
+.articlePage .articleContent strong {
+  color: var(--white) !important;
   font-weight: 600;
 }
 
-.articleContent a {
+.articlePage .articleContent a {
   color: var(--accent);
   text-decoration: underline;
+  text-decoration-color: var(--accent-text-muted);
+  text-underline-offset: 3px;
+  transition: all var(--transition);
 }
 
-.articleContent a:hover {
+.articlePage .articleContent a:hover {
   color: var(--accent-hover);
+  text-decoration-color: var(--accent-hover);
 }
 
-.articleContent blockquote {
-  border-left: 4px solid var(--accent);
-  padding: 16px 24px;
-  margin: 28px 0;
-  background: rgba(225, 6, 0, 0.04);
+.articlePage .articleContent blockquote {
+  border-left: 3px solid var(--accent);
+  padding: 20px 24px;
+  margin: 32px 0;
+  background: var(--accent-bg);
   border-radius: 0 var(--radius) var(--radius) 0;
   font-style: italic;
 }
 
-.articleContent blockquote p {
-  color: var(--grey-lighter);
+.articlePage .articleContent blockquote p {
+  color: var(--grey-lighter) !important;
   margin-bottom: 0;
+  line-height: 1.75;
 }
 
 /* FAQ Section */
 .faqSection {
-  margin-top: 52px;
-  padding-top: 40px;
-  border-top: 1px solid rgba(225, 6, 0, 0.1);
+  margin-top: 48px;
+  padding-top: 36px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .faqList {
-  margin-top: 24px;
+  margin-top: 20px;
 }
 
 .faqItem {
-  border-bottom: 1px solid rgba(225, 6, 0, 0.07);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .faqItem:first-child {
-  border-top: 1px solid rgba(225, 6, 0, 0.07);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .faqQuestion {
@@ -295,15 +350,18 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px 0;
+  padding: 18px 0;
   cursor: pointer;
-  font-family: var(--font-display);
-  font-size: 1.05rem;
+  font-family: var(--font-body);
+  font-size: 1rem;
   font-weight: 600;
-  color: var(--white-pure);
+  color: var(--white);
   list-style: none;
   transition: color var(--transition);
   min-height: 44px;
+  text-transform: none;
+  letter-spacing: 0;
+  line-height: 1.45;
 }
 
 .faqQuestion::-webkit-details-marker {
@@ -326,13 +384,13 @@ details[open] .faqIcon {
 }
 
 .faqAnswer {
-  padding-bottom: 20px;
+  padding-bottom: 18px;
 }
 
 .faqAnswer p {
   color: var(--grey-light);
-  font-size: 15px;
-  line-height: 1.75;
+  font-size: 16px;
+  line-height: 1.85;
   margin-bottom: 0;
 }
 
@@ -341,9 +399,9 @@ details[open] .faqIcon {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-top: 48px;
-  padding-top: 28px;
-  border-top: 1px solid rgba(225, 6, 0, 0.07);
+  margin-top: 40px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
   flex-wrap: wrap;
 }
 
@@ -358,14 +416,14 @@ details[open] .faqIcon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 42px;
-  height: 42px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   border: 1px solid var(--grey);
   background: transparent;
   transition: all var(--transition);
-  min-width: 42px;
-  min-height: 42px;
+  min-width: 40px;
+  min-height: 40px;
 }
 
 .shareButton:hover {
@@ -386,20 +444,20 @@ details[open] .faqIcon {
 
 /* Related Articles */
 .relatedSection {
-  margin-top: 60px;
-  padding-top: 48px;
-  border-top: 1px solid rgba(225, 6, 0, 0.07);
+  margin-top: 52px;
+  padding-top: 40px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .relatedGrid {
   display: grid;
   grid-template-columns: 1fr;
   gap: 20px;
-  margin-top: 24px;
+  margin-top: 20px;
 }
 
 .relatedCard {
-  border: 1px solid rgba(225, 6, 0, 0.08);
+  border: 1px solid var(--accent-bg-md);
   border-radius: var(--radius-lg);
   padding: 24px;
   background: var(--black-lighter);
@@ -407,7 +465,7 @@ details[open] .faqIcon {
 }
 
 .relatedCard:hover {
-  border-color: rgba(225, 6, 0, 0.25);
+  border-color: var(--accent-border-md);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
 }
 
@@ -421,27 +479,31 @@ details[open] .faqIcon {
   margin-bottom: 8px;
 }
 
-.relatedCardTitle {
-  font-family: var(--font-display);
-  font-size: 1.1rem;
-  color: var(--white-pure);
+/* Scoped under .articlePage to beat .countySite h3 specificity (0,2,0 > 0,1,1) */
+.articlePage .relatedCardTitle {
+  font-family: var(--font-body);
+  font-size: 1.05rem;
+  color: var(--white);
   margin-bottom: 8px;
-  line-height: 1.3;
+  line-height: 1.4;
+  font-weight: 700;
+  text-transform: none;
+  letter-spacing: 0;
 }
 
-.relatedCardTitle a {
+.articlePage .relatedCardTitle a {
   color: inherit;
   text-decoration: none;
 }
 
-.relatedCardTitle a:hover {
+.articlePage .relatedCardTitle a:hover {
   color: var(--accent);
 }
 
 .relatedCardExcerpt {
   color: var(--grey-light);
   font-size: 14px;
-  line-height: 1.6;
+  line-height: 1.65;
   margin-bottom: 10px;
 }
 
@@ -452,26 +514,20 @@ details[open] .faqIcon {
 
 /* CTA */
 .articleCta {
-  margin-top: 52px;
-  padding: 52px 0;
-  background: linear-gradient(135deg, rgba(225, 6, 0, 0.08) 0%, transparent 50%);
-  border-top: 1px solid rgba(225, 6, 0, 0.1);
+  margin-top: 48px;
+  padding: 48px 24px;
+  background: linear-gradient(135deg, var(--accent-bg-md) 0%, transparent 50%);
+  border-top: 1px solid var(--accent-bg-strong);
   text-align: center;
   border-radius: var(--radius-lg);
 }
 
-.articleCta h2 {
-  color: var(--white-pure);
-  font-size: clamp(1.5rem, 3vw, 2rem);
-  margin-bottom: 14px;
-}
-
 .articleCta p {
   color: var(--grey-light);
-  font-size: 15px;
+  font-size: 16px;
   max-width: 500px;
   margin: 0 auto 24px;
-  line-height: 1.7;
+  line-height: 1.75;
 }
 
 /* ================================
@@ -479,12 +535,21 @@ details[open] .faqIcon {
    ================================ */
 @media (min-width: 769px) {
   .articleHero {
-    padding: 130px 0 60px;
+    padding: 120px 0 48px;
   }
 
   .articleLayout {
-    grid-template-columns: 260px 1fr;
+    grid-template-columns: 1fr;
     gap: 48px;
+  }
+
+  /* Show TOC only on tablet+ */
+  .toc {
+    display: block;
+  }
+
+  .articleLayout {
+    grid-template-columns: 240px 1fr;
   }
 
   .toc {
@@ -509,12 +574,101 @@ details[open] .faqIcon {
    ================================ */
 @media (min-width: 1025px) {
   .articleHero {
-    padding: 150px 0 72px;
+    padding: 160px 0 64px;
   }
 
   .articleLayout {
     grid-template-columns: 280px 1fr;
-    gap: 56px;
+    gap: 64px;
+  }
+
+  .articleContent {
+    max-width: 800px;
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  .articleLayoutFull {
+    grid-template-columns: 1fr !important;
+  }
+
+  .articlePage .articleContent h2 {
+    font-size: 1.6rem;
+    margin-top: 48px;
+    margin-bottom: 20px;
+  }
+
+  .articlePage .articleContent h3 {
+    font-size: 1.25rem;
+    margin-top: 36px;
+    margin-bottom: 16px;
+  }
+
+  .articlePage .articleContent p,
+  .articlePage .articleContent li {
+    font-size: 18px;
+    line-height: 1.95;
+  }
+
+  .articlePage .articleContent p {
+    margin-bottom: 28px;
+  }
+
+  .toc {
+    padding: 28px 32px;
+  }
+
+  .toc a {
+    font-size: 15px;
+    line-height: 1.5;
+  }
+
+  .relatedSection {
+    margin-top: 64px;
+    padding-top: 48px;
+  }
+
+  .relatedCard {
+    padding: 28px;
+  }
+
+  .articlePage .relatedCardTitle {
+    font-size: 1.1rem;
+    line-height: 1.45;
+  }
+
+  .relatedCardExcerpt {
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  .articleCta {
+    margin-top: 56px;
+    padding: 56px 32px;
+  }
+
+  .articleCta p {
+    font-size: 17px;
+    max-width: 540px;
+  }
+
+  .faqSection {
+    margin-top: 56px;
+    padding-top: 40px;
+  }
+
+  .faqQuestion {
+    font-size: 1.05rem;
+    padding: 20px 0;
+  }
+
+  .faqAnswer p {
+    font-size: 17px;
+  }
+
+  .shareBar {
+    margin-top: 48px;
+    padding-top: 28px;
   }
 }
 
@@ -523,7 +677,7 @@ details[open] .faqIcon {
    ================================ */
 @media (max-width: 480px) {
   .articleHero {
-    padding: 100px 0 36px;
+    padding: 86px 0 20px;
   }
 
   .breadcrumbList {
@@ -533,4 +687,30 @@ details[open] .faqIcon {
   .relatedGrid {
     grid-template-columns: 1fr;
   }
+
+  .articlePage .articleContent h2 {
+    font-size: 1.25rem;
+    margin-top: 32px;
+    margin-bottom: 14px;
+  }
+
+  .articlePage .articleContent h3 {
+    font-size: 1.08rem;
+    margin-top: 28px;
+  }
+
+  .articlePage .articleContent p,
+  .articlePage .articleContent li {
+    font-size: 16px;
+    line-height: 1.8;
+  }
+
+  .articlePage .articleContent p {
+    margin-bottom: 20px;
+  }
+
+  .shareBar {
+    gap: 8px;
+  }
 }
+

@@ -30,8 +30,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const county = getCounty(slug);
   if (!county) return {};
 
-  const title = `Solar Energy News & Guides | Solar ${county.name}`;
-  const description = `Expert solar energy advice, installation guides, grant information, and cost-saving tips for homeowners in ${county.name}. Stay informed with Solar ${county.name}.`;
+  const title = `Solar Energy News & Guides | Renewable ${county.name}`;
+  const description = `Expert solar energy advice, installation guides, grant information, and cost-saving tips for homeowners in ${county.name}. Stay informed with Renewable ${county.name}.`;
   const url = `https://${county.domain}/blog`;
 
   return {
@@ -43,7 +43,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title,
       description,
       url,
-      siteName: `Solar ${county.name}`,
+      siteName: `Renewable ${county.name}`,
     },
   };
 }
@@ -88,7 +88,7 @@ export default async function BlogPage({ params, searchParams }: Props) {
   ]);
 
   const collectionSchema = generateCollectionPageSchema({
-    name: `Solar Energy News & Guides — Solar ${county.name}`,
+    name: `Solar Energy News & Guides — Renewable ${county.name}`,
     description: `Expert solar energy advice, installation guides, grant information, and cost-saving tips for homeowners in ${county.name}.`,
     url: blogUrl,
     about: `Solar Energy in ${county.name}`,
@@ -128,24 +128,24 @@ export default async function BlogPage({ params, searchParams }: Props) {
 
       {/* Hero */}
       <header className={styles.blogHero} id="main-content" role="banner" aria-labelledby="blog-heading">
-        <div className="container">
-          <h1 id="blog-heading" className={sharedStyles.headingH1}>
+        <div className={sharedStyles.container}>
+          <h1 id="blog-heading" style={{ fontFamily: 'var(--font-body)', fontSize: 'clamp(1.4rem, 4vw, 2rem)', fontWeight: 700, textTransform: 'none', letterSpacing: '-0.01em', lineHeight: 1.25, color: 'var(--white-pure)', margin: '0 0 10px' }}>
             Solar Energy News &amp; Guides
           </h1>
-          <p className={sharedStyles.heroSubtitle}>
+          <p style={{ color: 'var(--grey-light)', fontSize: '0.95rem', maxWidth: 520, lineHeight: 1.7, margin: 0 }}>
             Expert advice, installation guides, and the latest solar energy news for homeowners and businesses in {county.name}.
           </p>
         </div>
       </header>
 
       <section className={styles.blogPage} aria-labelledby="blog-articles-heading">
-        <div className="container">
+        <div className={styles.blogInner}>
           {/* Featured Post */}
           {featuredPost && currentPage === 1 && activeCategory === "all" && (
             <article className={styles.featuredPost}>
               <div className={styles.featuredImage}>
                 <span className={styles.featuredCategory}>{getCategoryLabel(featuredPost.category)}</span>
-                <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="rgba(225,6,0,0.5)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="rgba(109,201,58,0.5)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                   <circle cx="12" cy="12" r="5" />
                   <line x1="12" y1="1" x2="12" y2="3" />
                   <line x1="12" y1="21" x2="12" y2="23" />
@@ -179,7 +179,7 @@ export default async function BlogPage({ params, searchParams }: Props) {
             </article>
           )}
 
-          <h2 id="blog-articles-heading" className={sharedStyles.headingH2} style={{ textAlign: "center", marginBottom: 8 }}>
+          <h2 id="blog-articles-heading" style={{ fontFamily: 'var(--font-body)', fontSize: 'clamp(1.1rem, 3vw, 1.4rem)', fontWeight: 700, textTransform: 'none', letterSpacing: 0, lineHeight: 1.3, color: 'var(--white-pure)', textAlign: 'center', margin: '0 0 20px' }}>
             Latest Articles
           </h2>
 
@@ -299,9 +299,9 @@ export default async function BlogPage({ params, searchParams }: Props) {
 
           {/* CTA */}
           <div className={styles.blogCtaSection}>
-            <h2 className={sharedStyles.headingH2}>Ready to Go Solar?</h2>
+            <h2 style={{ fontFamily: 'var(--font-body)', fontSize: 'clamp(1.2rem, 3vw, 1.5rem)', fontWeight: 700, textTransform: 'none', color: 'var(--white-pure)', margin: '0 0 12px', letterSpacing: 0, lineHeight: 1.35 }}>Ready to Go Solar?</h2>
             <p>Get a free, no-obligation quote for solar panels in {county.name}. Our experts will show you exactly how much you could save.</p>
-            <a href={`tel:${county.phone}`} className={sharedStyles.btnPrimary}>
+            <a href={`tel:${county.phone}`} className={`${sharedStyles.btn} ${sharedStyles.btnPrimary}`}>
               Call {county.phone}
             </a>
           </div>

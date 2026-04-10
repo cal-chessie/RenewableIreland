@@ -41,6 +41,7 @@ export interface CountyData {
   accreditation: string;
   grants: string[];
   heroSubtitle: string;
+  heroTitle: string;
   testimonials: Testimonial[];
   faqs: FAQ[];
   avgSystemCost: string;
@@ -56,15 +57,32 @@ export function getAccentCSSVars(hex: string, hover: string): Record<string, str
   const r = parseInt(h.substring(0, 2), 16);
   const g = parseInt(h.substring(2, 4), 16);
   const b = parseInt(h.substring(4, 6), 16);
+
+  // Generate accent-tinted backgrounds (mix with white)
+  const ltR = Math.round(r + (255 - r) * 0.88);
+  const ltG = Math.round(g + (255 - g) * 0.88);
+  const ltB = Math.round(b + (255 - b) * 0.88);
+  const mdR = Math.round(r + (255 - r) * 0.68);
+  const mdG = Math.round(g + (255 - g) * 0.68);
+  const mdB = Math.round(b + (255 - b) * 0.68);
+
   return {
     '--accent': hex,
     '--accent-hover': hover,
     '--accent-glow': `rgba(${r}, ${g}, ${b}, 0.25)`,
-    '--accent-faint': `rgba(${r}, ${g}, ${b}, 0.1)`,
-    '--accent-subtle': `rgba(${r}, ${g}, ${b}, 0.05)`,
-    '--accent-border': `rgba(${r}, ${g}, ${b}, 0.08)`,
-    '--accent-border-strong': `rgba(${r}, ${g}, ${b}, 0.15)`,
-    '--accent-border-faint': `rgba(${r}, ${g}, ${b}, 0.07)`,
+    '--accent-glow-md': `rgba(${r}, ${g}, ${b}, 0.30)`,
+    '--accent-faint': `rgba(${r}, ${g}, ${b}, 0.20)`,
+    '--accent-subtle': `rgba(${r}, ${g}, ${b}, 0.10)`,
+    '--accent-bg': `rgba(${r}, ${g}, ${b}, 0.06)`,
+    '--accent-bg-md': `rgba(${r}, ${g}, ${b}, 0.08)`,
+    '--accent-bg-strong': `rgba(${r}, ${g}, ${b}, 0.12)`,
+    '--accent-border': `rgba(${r}, ${g}, ${b}, 0.30)`,
+    '--accent-border-strong': `rgba(${r}, ${g}, ${b}, 0.45)`,
+    '--accent-border-faint': `rgba(${r}, ${g}, ${b}, 0.15)`,
+    '--accent-border-md': `rgba(${r}, ${g}, ${b}, 0.20)`,
+    '--accent-text-muted': `rgba(${r}, ${g}, ${b}, 0.50)`,
+    '--accent-lt': `rgb(${ltR}, ${ltG}, ${ltB})`,
+    '--accent-mid': `rgb(${mdR}, ${mdG}, ${mdB})`,
   };
 }
 
@@ -78,8 +96,8 @@ const tyrone: CountyData = {
   province: "Ulster",
   country: "GB",
   phone: "+44-28-8224-5900",
-  email: "info@solartyrone.ie",
-  domain: "solartyrone.ie",
+  email: "info@renewabletyrone.ie",
+  domain: "renewabletyrone.ie",
   mainTown: "Omagh",
   areaTowns: ["Dungannon", "Cookstown", "Strabane", "Omagh", "Fivemiletown", "Dromore"],
   lat: "54.5965",
@@ -87,12 +105,13 @@ const tyrone: CountyData = {
   currency: "£",
   accreditation: "MCS",
   grants: [
-    "Smart Export Guarantee (SEG) — earn for excess energy exported to the grid",
-    "Northern Ireland Renewable Obligation Certificates (ROCs)",
+    "Significant energy savings — reduce electricity bills by up to 70%",
     "Energy Company Obligation (ECO) for qualifying households",
+    "MCS certified installations with 25-year panel warranty",
   ],
   heroSubtitle:
-    "MCS accredited solar panel installers serving homes, businesses and farms across County Tyrone — from Omagh to Dungannon, Cookstown to Strabane.",
+    "Helping Tyrone homeowners cut electricity bills by up to 70%. MCS certified installations across Omagh, Dungannon, Cookstown and the wider county.",
+  heroTitle: "Solar Panels Tyrone.\nThe Smartest Energy Investment You'll Ever Make.",
   testimonials: [
     {
       name: "Ciarán Mulgrew",
@@ -104,7 +123,7 @@ const tyrone: CountyData = {
       name: "Gráinne Clarke",
       location: "Dungannon",
       rating: 5,
-      text: "We run a small B&B outside Dungannon and electricity was one of our biggest overheads. Solar Tyrone installed a 6kW system on the south-facing roof of the main house and we're now exporting surplus back through SEG. The installation took a single day and caused zero disruption to guests. Highly recommend them to any Tyrone business owner.",
+      text: "We run a small B&B outside Dungannon and electricity was one of our biggest overheads. Solar Tyrone installed a 6kW system on the south-facing roof of the main house and we're now generating most of our own electricity — our bills have dropped dramatically. The installation took a single day and caused zero disruption to guests. Highly recommend them to any Tyrone business owner.",
     },
     {
       name: "James Donnelly",
@@ -153,9 +172,9 @@ const tyrone: CountyData = {
         "In most cases, no. Solar panels on domestic properties in Northern Ireland are classed as permitted development, provided the panels don't extend more than 200mm from the roof slope and aren't installed on a listed building or in a conservation area. For agricultural or commercial installations, different rules may apply — we'll advise you during the free site survey and handle any necessary applications.",
     },
     {
-      question: "What is the Smart Export Guarantee and how much will I earn?",
+      question: "How much will I save on electricity bills with solar panels?",
       answer:
-        "The Smart Export Guarantee (SEG) is a government-backed scheme that requires energy suppliers to pay you for surplus electricity you export to the grid. Rates vary by supplier but typically range from 1p to 7.5p per kWh. On a typical Tyrone home with a 4kW system, this can generate £80–£200 per year in export payments. We'll help you find the best SEG tariff as part of the installation process.",
+        "Typical savings depend on your system size and electricity usage, but most Tyrone homeowners with a 4kW system see a 60–70% reduction in their electricity bills. For an average household spending £1,200–£1,800 per year on electricity, that translates to savings of £800–£1,200 annually. Adding a battery can push self-consumption even higher, reducing your grid reliance to near zero in summer months.",
     },
     {
       question: "How long do solar panels last and what warranty do I get?",
@@ -186,8 +205,8 @@ const antrim: CountyData = {
   province: "Ulster",
   country: "GB",
   phone: "+44-28-9032-5800",
-  email: "info@solarantrim.ie",
-  domain: "solarantrim.ie",
+  email: "info@renewableantrim.ie",
+  domain: "renewableantrim.ie",
   mainTown: "Antrim",
   areaTowns: ["Ballymena", "Larne", "Carrickfergus", "Ballyclare", "Antrim", "Randalstown"],
   lat: "54.7189",
@@ -195,12 +214,13 @@ const antrim: CountyData = {
   currency: "£",
   accreditation: "MCS",
   grants: [
-    "Smart Export Guarantee (SEG)",
-    "Northern Ireland Renewable Obligation Certificates (ROCs)",
-    "Energy Company Obligation (ECO)",
+    "Significant energy savings — reduce electricity bills by up to 70%",
+    "Energy Company Obligation (ECO) for qualifying households",
+    "MCS certified installations with 25-year panel warranty",
   ],
   heroSubtitle:
-    "MCS accredited solar panel installers serving County Antrim — from Ballymena to Larne, Carrickfergus to Ballyclare.",
+    "Antrim's trusted solar installer — from the Glens to the coast, we've helped hundreds of homes switch to clean, affordable energy.",
+  heroTitle: "Solar Panels Antrim.\nPowering the Glens Since Day One.",
   testimonials: [
     {
       name: "Mark Thompson",
@@ -238,9 +258,9 @@ const antrim: CountyData = {
         "Most domestic installations in Northern Ireland are permitted development. Listed buildings and conservation areas may require consent — we'll advise during your free survey.",
     },
     {
-      question: "What is the Smart Export Guarantee?",
+      question: "How much will I save on electricity bills with solar?",
       answer:
-        "The SEG pays you for surplus electricity exported to the grid. Rates vary by supplier from 1p to 7.5p per kWh. We help you find the best available tariff.",
+        "Most Antrim homeowners see a 60–70% reduction in their electricity bills after installing solar panels. With a typical 4kW system, annual savings of £800–£1,200 are achievable, depending on your usage patterns and whether you add battery storage.",
     },
     {
       question: "How long does installation take?",
@@ -261,8 +281,8 @@ const armagh: CountyData = {
   province: "Ulster",
   country: "GB",
   phone: "+44-28-3752-4100",
-  email: "info@solararmagh.ie",
-  domain: "solararmagh.ie",
+  email: "info@renewablearmagh.ie",
+  domain: "renewablearmagh.ie",
   mainTown: "Armagh",
   areaTowns: ["Portadown", "Lurgan", "Tandragee", "Armagh", "Richhill", "Markethill"],
   lat: "54.3498",
@@ -270,12 +290,13 @@ const armagh: CountyData = {
   currency: "£",
   accreditation: "MCS",
   grants: [
-    "Smart Export Guarantee (SEG)",
-    "Northern Ireland Renewable Obligation Certificates (ROCs)",
-    "Energy Company Obligation (ECO)",
+    "Significant energy savings — reduce electricity bills by up to 70%",
+    "Energy Company Obligation (ECO) for qualifying households",
+    "MCS certified installations with 25-year panel warranty",
   ],
   heroSubtitle:
-    "MCS accredited solar panel installers serving County Armagh — from Portadown to Lurgan, Tandragee to Richhill.",
+    "Bringing solar power to the Orchard County. Expert panel and battery installations across Armagh, Portadown and Lurgan.",
+  heroTitle: "Solar Panels Armagh.\nFrom Orchard County to Energy County.",
   testimonials: [
     {
       name: "Seamus Hughes",
@@ -310,7 +331,7 @@ const armagh: CountyData = {
     {
       question: "What grants are available in Northern Ireland?",
       answer:
-        "The Smart Export Guarantee pays you for exported energy. The ECO scheme may provide support for qualifying households. Contact us for the latest information on available incentives.",
+        "While Northern Ireland doesn't currently offer a direct installation grant like the Republic's SEAI scheme, solar panels in Armagh still deliver exceptional savings. The ECO scheme may provide support for qualifying households. With electricity prices rising, solar remains one of the best investments for NI homeowners. Contact us for the latest information on available incentives.",
     },
     {
       question: "How long do solar panels last?",
@@ -336,8 +357,8 @@ const down: CountyData = {
   province: "Ulster",
   country: "GB",
   phone: "+44-28-9042-7800",
-  email: "info@solardown.ie",
-  domain: "solardown.ie",
+  email: "info@renewabledown.ie",
+  domain: "renewabledown.ie",
   mainTown: "Downpatrick",
   areaTowns: ["Bangor", "Newry", "Newcastle", "Downpatrick", "Holywood", "Ballynahinch"],
   lat: "54.3314",
@@ -345,18 +366,19 @@ const down: CountyData = {
   currency: "£",
   accreditation: "MCS",
   grants: [
-    "Smart Export Guarantee (SEG)",
-    "Northern Ireland Renewable Obligation Certificates (ROCs)",
-    "Energy Company Obligation (ECO)",
+    "Significant energy savings — reduce electricity bills by up to 70%",
+    "Energy Company Obligation (ECO) for qualifying households",
+    "MCS certified installations with 25-year panel warranty",
   ],
   heroSubtitle:
-    "MCS accredited solar panel installers serving County Down — from Bangor to Newry, Newcastle to Downpatrick.",
+    "Powering Down with the sun — from the Mourne Mountains to Strangford Lough, premium solar installations for every home.",
+  heroTitle: "Solar Panels Down.\nMourne Views. Solar Savings.",
   testimonials: [
     {
       name: "Liam O'Hare",
       location: "Bangor",
       rating: 5,
-      text: "We chose Solar Down based on their MCS accreditation and local reputation. The installation was faultless and we're now generating more than we expected for our Bangor home.",
+      text: "We chose Renewable Down based on their MCS accreditation and local reputation. The installation was faultless and we're now generating more than we expected for our Bangor home.",
     },
     {
       name: "Rachel Woods",
@@ -368,7 +390,7 @@ const down: CountyData = {
       name: "Tommy Byrne",
       location: "Newcastle",
       rating: 5,
-      text: "Brilliant service. The team was punctual, clean, and clearly knew exactly what they were doing. I'd recommend Solar Down to anyone considering solar in County Down.",
+      text: "Brilliant service. The team was punctual, clean, and clearly knew exactly what they were doing. I'd recommend Renewable Down to anyone considering solar in County Down.",
     },
   ],
   faqs: [
@@ -378,9 +400,9 @@ const down: CountyData = {
         "A typical 4kW system in County Down costs between £6,000 and £9,000. We offer free surveys and detailed written quotes with no obligation.",
     },
     {
-      question: "What is the Smart Export Guarantee?",
+      question: "How much will I save on electricity bills with solar in Down?",
       answer:
-        "The SEG requires energy suppliers to pay you for surplus electricity exported to the grid. Rates vary by supplier — we'll help you find the best tariff.",
+        "Most County Down homeowners with a 4kW solar system save between £800 and £1,200 per year on electricity bills — a reduction of around 60–70%. With rising energy prices, these savings are only increasing. Adding a battery storage system can maximise your savings further.",
     },
     {
       question: "How long does a solar installation take in Down?",
@@ -411,8 +433,8 @@ const fermanagh: CountyData = {
   province: "Ulster",
   country: "GB",
   phone: "+44-28-6632-8100",
-  email: "info@solarfermanagh.ie",
-  domain: "solarfermanagh.ie",
+  email: "info@renewablefermanagh.ie",
+  domain: "renewablefermanagh.ie",
   mainTown: "Enniskillen",
   areaTowns: ["Enniskillen", "Irvinestown", "Lisnaskea", "Ballinamallard", "Tempo", "Belcoo"],
   lat: "54.3668",
@@ -420,12 +442,13 @@ const fermanagh: CountyData = {
   currency: "£",
   accreditation: "MCS",
   grants: [
-    "Smart Export Guarantee (SEG)",
-    "Northern Ireland Renewable Obligation Certificates (ROCs)",
-    "Energy Company Obligation (ECO)",
+    "Significant energy savings — reduce electricity bills by up to 70%",
+    "Energy Company Obligation (ECO) for qualifying households",
+    "MCS certified installations with 25-year panel warranty",
   ],
   heroSubtitle:
-    "MCS accredited solar panel installers serving County Fermanagh — from Enniskillen to Lisnaskea, Ballinamallard to Irvinestown.",
+    "Fermanagh's lakeside homes are perfect for solar. Maximize your roof's potential with our MCS certified installations.",
+  heroTitle: "Solar Panels Fermanagh.\nLakeside Living, Powered by Nature.",
   testimonials: [
     {
       name: "Conor Maguire",
@@ -481,13 +504,13 @@ const fermanagh: CountyData = {
 
 const londonderry: CountyData = {
   slug: "londonderry",
-  name: "Londonderry",
+  name: "Derry",
   region: "Northern Ireland",
   province: "Ulster",
   country: "GB",
   phone: "+44-28-7134-2900",
-  email: "info@solarlondonderry.ie",
-  domain: "solarlondonderry.ie",
+  email: "info@renewablelondonderry.ie",
+  domain: "renewablelondonderry.ie",
   mainTown: "Derry",
   areaTowns: ["Derry", "Coleraine", "Limavady", "Dungiven", "Magherafelt", "Claudy"],
   lat: "54.9966",
@@ -495,24 +518,25 @@ const londonderry: CountyData = {
   currency: "£",
   accreditation: "MCS",
   grants: [
-    "Smart Export Guarantee (SEG)",
-    "Northern Ireland Renewable Obligation Certificates (ROCs)",
-    "Energy Company Obligation (ECO)",
+    "Significant energy savings — reduce electricity bills by up to 70%",
+    "Energy Company Obligation (ECO) for qualifying households",
+    "MCS certified installations with 25-year panel warranty",
   ],
   heroSubtitle:
-    "MCS accredited solar panel installers serving County Londonderry — from Derry to Coleraine, Limavady to Magherafelt.",
+    "Derry's leading solar panel specialists — transforming homes across the North West with high-efficiency, MCS certified systems.",
+  heroTitle: "Solar Panels Derry.\nThe North West's Bright Choice.",
   testimonials: [
     {
       name: "Declan Doherty",
       location: "Derry",
       rating: 5,
-      text: "Excellent experience with Solar Londonderry. The team was knowledgeable, efficient, and the price was fair. Our system has been generating consistently for over a year now.",
+      text: "Excellent experience with Solar Derry. The team was knowledgeable, efficient, and the price was fair. Our system has been generating consistently for over a year now.",
     },
     {
       name: "Ann Gallagher",
       location: "Coleraine",
       rating: 5,
-      text: "We got three quotes and Solar Londonderry was the most thorough by far. The installation was done in a day and the results speak for themselves — 70% reduction in our electricity bill.",
+      text: "We got three quotes and Solar Derry was the most thorough by far. The installation was done in a day and the results speak for themselves — 70% reduction in our electricity bill.",
     },
     {
       name: "Martin Quinn",
@@ -523,14 +547,14 @@ const londonderry: CountyData = {
   ],
   faqs: [
     {
-      question: "How much do solar panels cost in Londonderry?",
+      question: "How much do solar panels cost in Derry?",
       answer:
-        "A 4kW residential system in County Londonderry costs between £6,000 and £9,000. We provide free surveys and no-obligation written quotes.",
+        "A 4kW residential system in County Derry costs between £6,000 and £9,000. We provide free surveys and no-obligation written quotes.",
     },
     {
       question: "Is Derry a good location for solar panels?",
       answer:
-        "Yes. While Northern Ireland has more overcast days than southern Europe, solar panels work on daylight — not direct sunshine. Londonderry's latitude is well within the productive range for solar energy.",
+        "Yes. While Northern Ireland has more overcast days than southern Europe, solar panels work on daylight — not direct sunshine. Derry's latitude is well within the productive range for solar energy.",
     },
     {
       question: "What warranty do you offer?",
@@ -538,9 +562,9 @@ const londonderry: CountyData = {
         "We provide a 10-year workmanship warranty, with panel performance warranties of 25 years and inverter warranties of 5–10 years from the manufacturer.",
     },
     {
-      question: "Can I get paid for exporting solar energy?",
+      question: "How much will I save on electricity bills with solar panels?",
       answer:
-        "Yes, through the Smart Export Guarantee (SEG). Energy suppliers pay you for surplus electricity, typically between 1p and 7.5p per kWh.",
+        "Most Derry homeowners see a 60–70% reduction in their electricity bills. A typical 4kW system can save £800–£1,200 per year, depending on your energy usage. With energy prices continuing to rise, solar panels offer an excellent return on investment.",
     },
     {
       question: "Do you install EV chargers with solar?",
@@ -565,8 +589,8 @@ const carlow: CountyData = {
   province: "Leinster",
   country: "IE",
   phone: "+353-59-913-4100",
-  email: "info@solarcarlow.ie",
-  domain: "solarcarlow.ie",
+  email: "info@renewablecarlow.ie",
+  domain: "renewablecarlow.ie",
   mainTown: "Carlow",
   areaTowns: ["Carlow", "Tullow", "Bagenalstown", "Hacketstown", "Leighlinbridge", "Myshall"],
   lat: "52.8365",
@@ -579,18 +603,54 @@ const carlow: CountyData = {
     "TACs (Tax Exemption for Solar PV under €1,000 annual income)",
   ],
   heroSubtitle:
-    "SEAI registered solar panel installers serving County Carlow — from Carlow town to Tullow, Bagenalstown to Leighlinbridge.",
+    "Carlow's solar revolution starts here. SEAI registered installations that pay for themselves in as little as 5 years.",
+  heroTitle: "Solar Panels Carlow.\nSunny Savings, Serious Returns.",
   testimonials: [
     { name: "John Murphy", location: "Carlow", rating: 5, text: "Solar Carlow made the SEAI grant process completely straightforward. Great installation and our bills have been cut dramatically since." },
     { name: "Mary Kavanagh", location: "Tullow", rating: 5, text: "Professional, punctual, and excellent value. The 4kW system on our home in Tullow has exceeded the performance estimates we were given." },
     { name: "Michael Doyle", location: "Bagenalstown", rating: 5, text: "We added a battery to our solar system and now we're virtually off the grid during summer. Fantastic service from the Solar Carlow team." },
   ],
-  faqs: [
-    { question: "How much do solar panels cost in Carlow?", answer: "A typical 4kW system in County Carlow costs between €4,500 and €6,500. The SEAI grant can reduce this by up to €1,800." },
-    { question: "What SEAI grants are available in Carlow?", answer: "The Domestic Solar PV Grant offers up to €1,800 for home installations. We handle the grant application process on your behalf." },
-    { question: "How long does installation take?", answer: "Most residential installations in Carlow are completed in one day. We handle scaffolding, grid connection, and SEAI registration." },
-    { question: "Do I need planning permission for solar in Carlow?", answer: "No. Domestic solar panels in Ireland are exempt from planning permission up to certain size limits. We'll confirm during the survey." },
-    { question: "How much will I save with solar panels?", answer: "Typical savings are €500–€800 per year on electricity bills, depending on system size and usage patterns." },
+    faqs: [
+    {
+      question: "How much do solar panels cost in Carlow?",
+      answer: "The cost of solar panels in County Carlow depends on system size, panel quality, and roof complexity. A typical 4kW residential solar PV system — suitable for most three- to four-bedroom homes in Carlow, Tullow, Bagenalstown, Hacketstown, and Leighlinbridge — costs between €4,500 and €6,500 before any grants. This price usually includes all scaffolding, SEAI-registered installation, grid connection application, and a monitoring system. A larger 6kW system, ideal for homes with heat pumps or electric vehicles, ranges from €6,000 to €9,500. With the SEAI Domestic Solar PV Grant reducing your cost by up to €1,800, the net outlay for a standard 4kW system in Carlow can be as low as €2,700–€4,700. We provide free, no-obligation site surveys for every home in County Carlow and a detailed written quote so you know exactly what you're paying for. There are no hidden fees — ever."
+    },
+    {
+      question: "What SEAI grants are available in Carlow?",
+      answer: "Homeowners in County Carlow can access the SEAI Domestic Solar PV Grant, which offers up to €1,800 towards the cost of a solar panel installation. To qualify, your home must have been built and occupied before 2021, and you must use an SEAI-registered installer — which we are. The grant is paid directly to you after installation, typically within four to six weeks of submitting your claim. For properties built before 2007, there may also be additional SEAI grants available for insulation and heating upgrades through the Better Energy Homes scheme, which can further improve your home's energy performance. We handle the entire SEAI grant application process on your behalf at no extra cost, making it completely hassle-free for homeowners across Carlow, Tullow, Bagenalstown, Hacketstown, and Leighlinbridge. Many of our Carlow customers combine their solar grant with other energy upgrades for even greater savings on their electricity bills and carbon footprint."
+    },
+    {
+      question: "How long does a solar installation take in Carlow?",
+      answer: "A standard residential solar panel installation in County Carlow is typically completed in a single working day. Our SEAI-certified installers arrive early, erect scaffolding, mount the panel rails to your roof, fit and wire the solar panels, install the inverter, connect everything to your consumer unit (fuse board), and commission the system — all within roughly six to eight hours. Before installation day, we've already completed your ESB grid connection application, which takes two to four weeks for approval. The total timeline from your initial free survey in Carlow or Tullow to your system generating electricity is typically four to six weeks. Larger installations — such as 6kW+ systems, properties with complex roof shapes, or battery storage additions — may require a second day. We always confirm the exact timeline during your quote and keep you informed every step of the way. Every installation in Carlow comes with a thorough handover, including a demonstration of your monitoring app and system controls."
+    },
+    {
+      question: "Do I need planning permission for solar panels in Carlow?",
+      answer: "In the vast majority of cases, no — domestic solar panel installations in County Carlow are exempt from planning permission under Irish building regulations. The exemption covers rooftop solar panels on private homes, provided the panels do not protrude more than 300mm from the roof surface and do not cover more than 50% of the total roof area. Ground-mounted solar arrays under 25 square metres are also generally exempt. However, there are exceptions: if your home in Carlow or Tullow is a listed or protected structure, located within an architectural conservation area, or near a national monument, you may need planning permission or at least a declaration of exemption from your local county council. Properties in or near the Carlow area may require additional consideration. We check all planning requirements during your free site survey and advise you if any consent is needed before we proceed. For most homeowners across County Carlow, the answer is a straightforward no — you can go ahead with your solar installation without any planning involvement."
+    },
+    {
+      question: "How much will I save with solar panels in Carlow?",
+      answer: "Typical savings from solar panels in County Carlow range from €600 to €1,000 per year on electricity bills, depending on your system size, household consumption, and whether you're home during the day. A 4kW solar PV system installed on a home in Carlow, Tullow, Bagenalstown, Hacketstown, and Leighlinbridge can generate approximately 3,400 to 3,800 kWh of clean electricity annually. With current electricity prices in Ireland, this translates to significant annual savings — and the savings grow every time electricity prices increase. If you add battery storage, you can increase your savings further by storing excess daytime generation for evening use, potentially saving €800 to €1,300 per year. Over a 25-year panel lifespan, a solar system in Carlow can save you €15,000 to €25,000 or more. With the SEAI grant reducing your upfront cost by up to €1,800, most homeowners in County Carlow achieve full payback within five to seven years — leaving roughly 18 to 20 years of virtually free electricity. Your solar installation also reduces your carbon footprint by approximately 1.5 to 2 tonnes of CO₂ annually."
+    },
+    {
+      question: "Does solar work in Carlow's weather and climate?",
+      answer: "Yes — absolutely. Solar panels generate electricity from daylight, not direct sunshine, which is why they work effectively throughout Ireland's seasons. County Carlow receives approximately 1,000 to 1,150 kilowatt-hours (kWh) of solar irradiance per square metre annually. Carlow's south-east location means above-average Irish solar irradiance levels. Modern solar panels are highly efficient in diffuse light conditions, meaning even on the cloudiest days in Carlow or Tullow, your system will still produce meaningful electricity. While Carlow is the south-east and experiences typical Irish weather patterns, solar panels are designed and tested to perform reliably in these conditions for 25 to 30 years. In fact, cooler temperatures actually improve panel efficiency — solar panels work slightly better in Irish temperatures than in extreme heat. Our monitoring systems allow you to track daily, monthly, and annual generation so you can see exactly how well your system performs through every season."
+    },
+    {
+      question: "What size solar panel system do I need for my home in Carlow?",
+      answer: "The ideal solar panel system size for your home in County Carlow depends on your electricity consumption, roof space, and budget. For most three- to four-bedroom households in Carlow, Tullow, Bagenalstown, Hacketstown, and Leighlinbridge, a 4kW system (approximately 10 to 12 panels) is the sweet spot — generating around 3,400 to 3,800 kWh annually and covering 40 to 50% of a typical household's electricity needs. If you have a larger home, use an electric vehicle, or have a heat pump, a 6kW system (15 to 18 panels) may be more appropriate, generating 5,000 to 5,800 kWh per year. Smaller two-bedroom homes in areas like Bagenalstown or Hacketstown may only need a 3kW system. During your free site survey, we analyse your ESB bills, assess your roof dimensions and orientation, and use satellite shading analysis to recommend the optimally sized system for your specific property. There's no one-size-fits-all — every installation in Carlow is tailored to your home's unique characteristics and your family's energy usage patterns."
+    },
+    {
+      question: "Are solar panels worth it for older homes in Carlow?",
+      answer: "Solar panels are absolutely worth it for older homes in County Carlow — and they may actually benefit you more than newer properties. Older homes in Carlow, Tullow, and surrounding areas often have solid fuel heating systems, electric immersion heaters, or storage heaters that consume large amounts of electricity. A solar panel system can offset these running costs significantly, especially if you time your immersion heating to coincide with peak solar generation hours. Furthermore, installing solar panels on an older property in Carlow can improve your BER (Building Energy Rating) by one to two rating bands, which is increasingly important for property value and for accessing future green mortgage rates. Many period homes in the Carlow area have large roof areas with south-facing pitches — ideal for solar installations. While we always check structural integrity during our survey, most older Irish homes can easily support the lightweight mounting systems used for modern solar panels. With the SEAI grant of up to €1,800 and typical payback periods of five to seven years, solar panels are one of the smartest investments you can make in an older Carlow home."
+    },
+    {
+      question: "Do solar panels work on flat roofs in Carlow?",
+      answer: "Yes, solar panels work very well on flat roofs in County Carlow. While most homes in Carlow and Tullow have pitched roofs, we regularly install on flat-roofed properties including extensions, garages, commercial buildings, and farm outbuildings across Carlow. On a flat roof, panels are mounted on angled frame systems — typically tilted at 15 to 30 degrees — to optimise solar exposure and allow rainwater runoff. The main consideration for flat roof installations in Carlow is ensuring the roof structure can bear the additional weight, which is typically around 15 to 20 kilograms per square metre. We assess this during every survey. Flat roof systems can actually be more productive than some pitched roof installations because the mounting frames allow us to orient panels at the perfect angle regardless of the roof itself. For homeowners in Bagenalstown and Hacketstown with flat-roof extensions or outbuildings, these spaces can provide excellent additional generation capacity beyond what the main house roof offers. All our flat roof installations comply with SEAI standards and come with the same comprehensive warranties as pitched roof systems."
+    },
+    {
+      question: "What is the best orientation for solar panels in Carlow?",
+      answer: "The best orientation for solar panels in County Carlow is south-facing, which maximises annual electricity generation. However, this doesn't mean your roof must face exactly due south. Panels facing south-east or south-west still produce approximately 85 to 95% of the output of a perfectly south-facing system — a relatively small reduction that still delivers excellent savings. In fact, east-west split installations (panels on both sides of a roof) are increasingly popular in Carlow, Tullow, Bagenalstown, Hacketstown, and Leighlinbridge because they generate electricity more evenly throughout the day, which better matches the consumption patterns of households where people are out at work during the middle of the day. Properties in the south-east with varied roof lines often benefit from our expert assessment to find the most productive configuration. During your free survey, we use satellite imagery and shading analysis tools to determine the optimal panel layout for your specific roof in Carlow. We never recommend an installation unless we're confident it will deliver strong returns on your investment."
+    }
   ],
   avgSystemCost: "€4,500 – €6,500",
   avgPaybackYears: "5–7 years",
@@ -605,8 +665,8 @@ const cavan: CountyData = {
   province: "Ulster",
   country: "IE",
   phone: "+353-49-433-5100",
-  email: "info@solarcavan.ie",
-  domain: "solarcavan.ie",
+  email: "info@renewablecavan.ie",
+  domain: "renewablecavan.ie",
   mainTown: "Cavan",
   areaTowns: ["Cavan", "Cootehill", "Bailieborough", "Kingscourt", "Virginia", "Ballyjamesduff"],
   lat: "53.9939",
@@ -619,18 +679,54 @@ const cavan: CountyData = {
     "TACs (Tax Exemption for Solar PV under €1,000 annual income)",
   ],
   heroSubtitle:
-    "SEAI registered solar panel installers serving County Cavan — from Cavan town to Cootehill, Bailieborough to Virginia.",
+    "Cavan's wide open skies mean exceptional solar yield. We design and install systems tailored to your home and budget.",
+  heroTitle: "Solar Panels Cavan.\nBig Skies, Bigger Savings.",
   testimonials: [
     { name: "Peter Reilly", location: "Cavan", rating: 5, text: "Excellent service from the Solar Cavan team. They handled our SEAI grant and the installation was done in a single day. Very happy with the results." },
     { name: "Angela Brady", location: "Cootehill", rating: 5, text: "We were impressed by the professionalism and clear communication throughout. Our electricity bills have dropped significantly since the installation." },
     { name: "Thomas Smith", location: "Bailieborough", rating: 5, text: "Solar Cavan installed panels on both our home and farm buildings. Both systems are performing well above expectations. Highly recommend." },
   ],
-  faqs: [
-    { question: "How much do solar panels cost in Cavan?", answer: "A 4kW system in County Cavan costs between €4,500 and €6,500 before the SEAI grant. The grant can reduce your cost by up to €1,800." },
-    { question: "Is Cavan suitable for solar panels?", answer: "Yes. Cavan receives ample daylight for effective solar generation. Typical systems generate 3,500–4,000 kWh per year." },
-    { question: "What SEAI grants are available?", answer: "The Domestic Solar PV Grant offers up to €1,800. We manage the application process on your behalf at no extra cost." },
-    { question: "How long does installation take?", answer: "Standard residential installations in Cavan take one working day. Farm or commercial installations may take longer." },
-    { question: "Do you offer battery storage?", answer: "Yes. We install batteries from GivEnergy, FoxESS, and other leading manufacturers. Adding a battery can increase your solar self-consumption to 80%+." },
+    faqs: [
+    {
+      question: "How much do solar panels cost in Cavan?",
+      answer: "The cost of solar panels in County Cavan depends on system size, panel quality, and roof complexity. A typical 4kW residential solar PV system — suitable for most three- to four-bedroom homes in Cavan, Cootehill, Bailieborough, Kingscourt, and Virginia — costs between €4,500 and €6,500 before any grants. This price usually includes all scaffolding, SEAI-registered installation, grid connection application, and a monitoring system. A larger 6kW system, ideal for homes with heat pumps or electric vehicles, ranges from €6,000 to €9,500. With the SEAI Domestic Solar PV Grant reducing your cost by up to €1,800, the net outlay for a standard 4kW system in Cavan can be as low as €2,700–€4,700. We provide free, no-obligation site surveys for every home in County Cavan and a detailed written quote so you know exactly what you're paying for. There are no hidden fees — ever."
+    },
+    {
+      question: "What SEAI grants are available in Cavan?",
+      answer: "Homeowners in County Cavan can access the SEAI Domestic Solar PV Grant, which offers up to €1,800 towards the cost of a solar panel installation. To qualify, your home must have been built and occupied before 2021, and you must use an SEAI-registered installer — which we are. The grant is paid directly to you after installation, typically within four to six weeks of submitting your claim. For properties built before 2007, there may also be additional SEAI grants available for insulation and heating upgrades through the Better Energy Homes scheme, which can further improve your home's energy performance. We handle the entire SEAI grant application process on your behalf at no extra cost, making it completely hassle-free for homeowners across Cavan, Cootehill, Bailieborough, Kingscourt, and Virginia. Many of our Cavan customers combine their solar grant with other energy upgrades for even greater savings on their electricity bills and carbon footprint."
+    },
+    {
+      question: "How long does a solar installation take in Cavan?",
+      answer: "A standard residential solar panel installation in County Cavan is typically completed in a single working day. Our SEAI-certified installers arrive early, erect scaffolding, mount the panel rails to your roof, fit and wire the solar panels, install the inverter, connect everything to your consumer unit (fuse board), and commission the system — all within roughly six to eight hours. Before installation day, we've already completed your ESB grid connection application, which takes two to four weeks for approval. The total timeline from your initial free survey in Cavan or Cootehill to your system generating electricity is typically four to six weeks. Larger installations — such as 6kW+ systems, properties with complex roof shapes, or battery storage additions — may require a second day. We always confirm the exact timeline during your quote and keep you informed every step of the way. Every installation in Cavan comes with a thorough handover, including a demonstration of your monitoring app and system controls."
+    },
+    {
+      question: "Do I need planning permission for solar panels in Cavan?",
+      answer: "In the vast majority of cases, no — domestic solar panel installations in County Cavan are exempt from planning permission under Irish building regulations. The exemption covers rooftop solar panels on private homes, provided the panels do not protrude more than 300mm from the roof surface and do not cover more than 50% of the total roof area. Ground-mounted solar arrays under 25 square metres are also generally exempt. However, there are exceptions: if your home in Cavan or Cootehill is a listed or protected structure, located within an architectural conservation area, or near a national monument, you may need planning permission or at least a declaration of exemption from your local county council. Properties in or near Cavan may require additional consideration. We check all planning requirements during your free site survey and advise you if any consent is needed before we proceed. For most homeowners across County Cavan, the answer is a straightforward no — you can go ahead with your solar installation without any planning involvement."
+    },
+    {
+      question: "How much will I save with solar panels in Cavan?",
+      answer: "Typical savings from solar panels in County Cavan range from €600 to €1,000 per year on electricity bills, depending on your system size, household consumption, and whether you're home during the day. A 4kW solar PV system installed on a home in Cavan, Cootehill, Bailieborough, Kingscourt, and Virginia can generate approximately 3,400 to 3,800 kWh of clean electricity annually. With current electricity prices in Ireland, this translates to significant annual savings — and the savings grow every time electricity prices increase. If you add battery storage, you can increase your savings further by storing excess daytime generation for evening use, potentially saving €800 to €1,300 per year. Over a 25-year panel lifespan, a solar system in Cavan can save you €15,000 to €25,000 or more. With the SEAI grant reducing your upfront cost by up to €1,800, most homeowners in County Cavan achieve full payback within five to seven years — leaving roughly 18 to 20 years of virtually free electricity. Your solar installation also reduces your carbon footprint by approximately 1.5 to 2 tonnes of CO₂ annually."
+    },
+    {
+      question: "Does solar work in Cavan's weather and climate?",
+      answer: "Yes — absolutely. Solar panels generate electricity from daylight, not direct sunshine, which is why they work effectively throughout Ireland's seasons. County Cavan receives approximately 1,000 to 1,150 kilowatt-hours (kWh) of solar irradiance per square metre annually. Cavan's wide open skies are a natural advantage for solar energy generation. Modern solar panels are highly efficient in diffuse light conditions, meaning even on the cloudiest days in Cavan or Cootehill, your system will still produce meaningful electricity. While Cavan is the border region and experiences typical Irish weather patterns, solar panels are designed and tested to perform reliably in these conditions for 25 to 30 years. In fact, cooler temperatures actually improve panel efficiency — solar panels work slightly better in Irish temperatures than in extreme heat. Our monitoring systems allow you to track daily, monthly, and annual generation so you can see exactly how well your system performs through every season."
+    },
+    {
+      question: "What size solar panel system do I need for my home in Cavan?",
+      answer: "The ideal solar panel system size for your home in County Cavan depends on your electricity consumption, roof space, and budget. For most three- to four-bedroom households in Cavan, Cootehill, Bailieborough, Kingscourt, and Virginia, a 4kW system (approximately 10 to 12 panels) is the sweet spot — generating around 3,400 to 3,800 kWh annually and covering 40 to 50% of a typical household's electricity needs. If you have a larger home, use an electric vehicle, or have a heat pump, a 6kW system (15 to 18 panels) may be more appropriate, generating 5,000 to 5,800 kWh per year. Smaller two-bedroom homes in areas like Bailieborough or Kingscourt may only need a 3kW system. During your free site survey, we analyse your ESB bills, assess your roof dimensions and orientation, and use satellite shading analysis to recommend the optimally sized system for your specific property. There's no one-size-fits-all — every installation in Cavan is tailored to your home's unique characteristics and your family's energy usage patterns."
+    },
+    {
+      question: "Are solar panels worth it for older homes in Cavan?",
+      answer: "Solar panels are absolutely worth it for older homes in County Cavan — and they may actually benefit you more than newer properties. Older homes in Cavan, Cootehill, and surrounding areas often have solid fuel heating systems, electric immersion heaters, or storage heaters that consume large amounts of electricity. A solar panel system can offset these running costs significantly, especially if you time your immersion heating to coincide with peak solar generation hours. Furthermore, installing solar panels on an older property in Cavan can improve your BER (Building Energy Rating) by one to two rating bands, which is increasingly important for property value and for accessing future green mortgage rates. Many period homes in Cavan have large roof areas with south-facing pitches — ideal for solar installations. While we always check structural integrity during our survey, most older Irish homes can easily support the lightweight mounting systems used for modern solar panels. With the SEAI grant of up to €1,800 and typical payback periods of five to seven years, solar panels are one of the smartest investments you can make in an older Cavan home."
+    },
+    {
+      question: "Do solar panels work on flat roofs in Cavan?",
+      answer: "Yes, solar panels work very well on flat roofs in County Cavan. While most homes in Cavan and Cootehill have pitched roofs, we regularly install on flat-roofed properties including extensions, garages, commercial buildings, and farm outbuildings across Cavan. On a flat roof, panels are mounted on angled frame systems — typically tilted at 15 to 30 degrees — to optimise solar exposure and allow rainwater runoff. The main consideration for flat roof installations in Cavan is ensuring the roof structure can bear the additional weight, which is typically around 15 to 20 kilograms per square metre. We assess this during every survey. Flat roof systems can actually be more productive than some pitched roof installations because the mounting frames allow us to orient panels at the perfect angle regardless of the roof itself. For homeowners in Bailieborough and Kingscourt with flat-roof extensions or outbuildings, these spaces can provide excellent additional generation capacity beyond what the main house roof offers. All our flat roof installations comply with SEAI standards and come with the same comprehensive warranties as pitched roof systems."
+    },
+    {
+      question: "What is the best orientation for solar panels in Cavan?",
+      answer: "The best orientation for solar panels in County Cavan is south-facing, which maximises annual electricity generation. However, this doesn't mean your roof must face exactly due south. Panels facing south-east or south-west still produce approximately 85 to 95% of the output of a perfectly south-facing system — a relatively small reduction that still delivers excellent savings. In fact, east-west split installations (panels on both sides of a roof) are increasingly popular in Cavan, Cootehill, Bailieborough, Kingscourt, and Virginia because they generate electricity more evenly throughout the day, which better matches the consumption patterns of households where people are out at work during the middle of the day. Properties in the border region with varied roof lines often benefit from our expert assessment to find the most productive configuration. During your free survey, we use satellite imagery and shading analysis tools to determine the optimal panel layout for your specific roof in Cavan. We never recommend an installation unless we're confident it will deliver strong returns on your investment."
+    }
   ],
   avgSystemCost: "€4,500 – €6,500",
   avgPaybackYears: "5–7 years",
@@ -645,8 +741,8 @@ const clare: CountyData = {
   province: "Munster",
   country: "IE",
   phone: "+353-65-682-3100",
-  email: "info@solarclare.ie",
-  domain: "solarclare.ie",
+  email: "info@renewableclare.ie",
+  domain: "renewableclare.ie",
   mainTown: "Ennis",
   areaTowns: ["Ennis", "Shannon", "Kilrush", "Ennistimon", "Lahinch", "Scariff"],
   lat: "52.9432",
@@ -659,18 +755,54 @@ const clare: CountyData = {
     "TACs (Tax Exemption for Solar PV under €1,000 annual income)",
   ],
   heroSubtitle:
-    "SEAI registered solar panel installers serving County Clare — from Ennis to Shannon, Kilrush to Lahinch.",
+    "From the Banner's barns to its bungalows — solar panel and battery solutions built for Clare's unique landscape.",
+  heroTitle: "Solar Panels Clare.\nBanner County, Bright Future.",
   testimonials: [
     { name: "Brendan Hayes", location: "Ennis", rating: 5, text: "Solar Clare did a fantastic job on our home. The SEAI grant was handled seamlessly and the system is performing beautifully. Very professional team." },
     { name: "Colette O'Brien", location: "Shannon", rating: 5, text: "We researched several companies before choosing Solar Clare. Their attention to detail during the survey gave us confidence, and the installation lived up to it." },
     { name: "Sean Flanagan", location: "Kilrush", rating: 5, text: "Great service from start to finish. The installers were efficient, tidy, and thorough. We're seeing significant savings already on our Kilrush home." },
   ],
-  faqs: [
-    { question: "How much do solar panels cost in Clare?", answer: "A typical 4kW system costs between €4,500 and €6,500 in County Clare. The SEAI grant of up to €1,800 can reduce this considerably." },
-    { question: "What SEAI grants are available in Clare?", answer: "The Domestic Solar PV Grant offers up to €1,800 for home installations. Additional grants may be available for businesses." },
-    { question: "How long does installation take in Clare?", answer: "Residential installations typically take one working day. We coordinate scaffolding and grid connection for you." },
-    { question: "Do I need planning permission?", answer: "Domestic solar panels are exempt from planning permission in Ireland within certain limits. We'll confirm during your free survey." },
-    { question: "Will solar work in Clare's coastal areas?", answer: "Yes. Coastal areas in Clare receive excellent daylight. Panels are designed to withstand wind and salt air exposure." },
+    faqs: [
+    {
+      question: "How much do solar panels cost in Clare?",
+      answer: "The cost of solar panels in County Clare depends on system size, panel quality, and roof complexity. A typical 4kW residential solar PV system — suitable for most three- to four-bedroom homes in Ennis, Shannon, Kilrush, Ennistimon, and Lahinch — costs between €4,500 and €6,500 before any grants. This price usually includes all scaffolding, SEAI-registered installation, grid connection application, and a monitoring system. A larger 6kW system, ideal for homes with heat pumps or electric vehicles, ranges from €6,000 to €9,500. With the SEAI Domestic Solar PV Grant reducing your cost by up to €1,800, the net outlay for a standard 4kW system in Clare can be as low as €2,700–€4,700. We provide free, no-obligation site surveys for every home in County Clare and a detailed written quote so you know exactly what you're paying for. There are no hidden fees — ever."
+    },
+    {
+      question: "What SEAI grants are available in Clare?",
+      answer: "Homeowners in County Clare can access the SEAI Domestic Solar PV Grant, which offers up to €1,800 towards the cost of a solar panel installation. To qualify, your home must have been built and occupied before 2021, and you must use an SEAI-registered installer — which we are. The grant is paid directly to you after installation, typically within four to six weeks of submitting your claim. For properties built before 2007, there may also be additional SEAI grants available for insulation and heating upgrades through the Better Energy Homes scheme, which can further improve your home's energy performance. We handle the entire SEAI grant application process on your behalf at no extra cost, making it completely hassle-free for homeowners across Ennis, Shannon, Kilrush, Ennistimon, and Lahinch. Many of our Clare customers combine their solar grant with other energy upgrades for even greater savings on their electricity bills and carbon footprint."
+    },
+    {
+      question: "How long does a solar installation take in Clare?",
+      answer: "A standard residential solar panel installation in County Clare is typically completed in a single working day. Our SEAI-certified installers arrive early, erect scaffolding, mount the panel rails to your roof, fit and wire the solar panels, install the inverter, connect everything to your consumer unit (fuse board), and commission the system — all within roughly six to eight hours. Before installation day, we've already completed your ESB grid connection application, which takes two to four weeks for approval. The total timeline from your initial free survey in Ennis or Shannon to your system generating electricity is typically four to six weeks. Larger installations — such as 6kW+ systems, properties with complex roof shapes, or battery storage additions — may require a second day. We always confirm the exact timeline during your quote and keep you informed every step of the way. Every installation in Clare comes with a thorough handover, including a demonstration of your monitoring app and system controls."
+    },
+    {
+      question: "Do I need planning permission for solar panels in Clare?",
+      answer: "In the vast majority of cases, no — domestic solar panel installations in County Clare are exempt from planning permission under Irish building regulations. The exemption covers rooftop solar panels on private homes, provided the panels do not protrude more than 300mm from the roof surface and do not cover more than 50% of the total roof area. Ground-mounted solar arrays under 25 square metres are also generally exempt. However, there are exceptions: if your home in Ennis or Shannon is a listed or protected structure, located within an architectural conservation area, or near a national monument, you may need planning permission or at least a declaration of exemption from your local county council. Properties in or near Clare's coastal and rural areas may require additional consideration. We check all planning requirements during your free site survey and advise you if any consent is needed before we proceed. For most homeowners across County Clare, the answer is a straightforward no — you can go ahead with your solar installation without any planning involvement."
+    },
+    {
+      question: "How much will I save with solar panels in Clare?",
+      answer: "Typical savings from solar panels in County Clare range from €600 to €1,000 per year on electricity bills, depending on your system size, household consumption, and whether you're home during the day. A 4kW solar PV system installed on a home in Ennis, Shannon, Kilrush, Ennistimon, and Lahinch can generate approximately 3,400 to 3,800 kWh of clean electricity annually. With current electricity prices in Ireland, this translates to significant annual savings — and the savings grow every time electricity prices increase. If you add battery storage, you can increase your savings further by storing excess daytime generation for evening use, potentially saving €800 to €1,300 per year. Over a 25-year panel lifespan, a solar system in Clare can save you €15,000 to €25,000 or more. With the SEAI grant reducing your upfront cost by up to €1,800, most homeowners in County Clare achieve full payback within five to seven years — leaving roughly 18 to 20 years of virtually free electricity. Your solar installation also reduces your carbon footprint by approximately 1.5 to 2 tonnes of CO₂ annually."
+    },
+    {
+      question: "Does solar work in Clare's weather and climate?",
+      answer: "Yes — absolutely. Solar panels generate electricity from daylight, not direct sunshine, which is why they work effectively throughout Ireland's seasons. County Clare receives approximately 1,000 to 1,150 kilowatt-hours (kWh) of solar irradiance per square metre annually. Clare's long Atlantic coastline receives excellent daylight, and while coastal areas experience wind and salt air, quality panels are built to withstand these conditions. Modern solar panels are highly efficient in diffuse light conditions, meaning even on the cloudiest days in Ennis or Shannon, your system will still produce meaningful electricity. As a coastal county, Clare does experience more wind and rainfall, but quality solar panels are manufactured to withstand harsh weather conditions including salt air exposure, heavy rain, and wind speeds well above what Ireland experiences. We use marine-grade mounting systems for properties near the coast. In fact, cooler temperatures actually improve panel efficiency — solar panels work slightly better in Irish temperatures than in extreme heat. Our monitoring systems allow you to track daily, monthly, and annual generation so you can see exactly how well your system performs through every season."
+    },
+    {
+      question: "What size solar panel system do I need for my home in Clare?",
+      answer: "The ideal solar panel system size for your home in County Clare depends on your electricity consumption, roof space, and budget. For most three- to four-bedroom households in Ennis, Shannon, Kilrush, Ennistimon, and Lahinch, a 4kW system (approximately 10 to 12 panels) is the sweet spot — generating around 3,400 to 3,800 kWh annually and covering 40 to 50% of a typical household's electricity needs. If you have a larger home, use an electric vehicle, or have a heat pump, a 6kW system (15 to 18 panels) may be more appropriate, generating 5,000 to 5,800 kWh per year. Smaller two-bedroom homes in areas like Kilrush or Ennistimon may only need a 3kW system. During your free site survey, we analyse your ESB bills, assess your roof dimensions and orientation, and use satellite shading analysis to recommend the optimally sized system for your specific property. There's no one-size-fits-all — every installation in Clare is tailored to your home's unique characteristics and your family's energy usage patterns."
+    },
+    {
+      question: "Are solar panels worth it for older homes in Clare?",
+      answer: "Solar panels are absolutely worth it for older homes in County Clare — and they may actually benefit you more than newer properties. Older homes in Ennis, Shannon, and surrounding areas often have solid fuel heating systems, electric immersion heaters, or storage heaters that consume large amounts of electricity. A solar panel system can offset these running costs significantly, especially if you time your immersion heating to coincide with peak solar generation hours. Furthermore, installing solar panels on an older property in Clare can improve your BER (Building Energy Rating) by one to two rating bands, which is increasingly important for property value and for accessing future green mortgage rates. Many period homes in Clare's coastal and rural areas have large roof areas with south-facing pitches — ideal for solar installations. While we always check structural integrity during our survey, most older Irish homes can easily support the lightweight mounting systems used for modern solar panels. With the SEAI grant of up to €1,800 and typical payback periods of five to seven years, solar panels are one of the smartest investments you can make in an older Clare home."
+    },
+    {
+      question: "Do solar panels work on flat roofs in Clare?",
+      answer: "Yes, solar panels work very well on flat roofs in County Clare. While most homes in Ennis and Shannon have pitched roofs, we regularly install on flat-roofed properties including extensions, garages, commercial buildings, and farm outbuildings across Clare. On a flat roof, panels are mounted on angled frame systems — typically tilted at 15 to 30 degrees — to optimise solar exposure and allow rainwater runoff. The main consideration for flat roof installations in Clare is ensuring the roof structure can bear the additional weight, which is typically around 15 to 20 kilograms per square metre. We assess this during every survey. Flat roof systems can actually be more productive than some pitched roof installations because the mounting frames allow us to orient panels at the perfect angle regardless of the roof itself. For homeowners in Kilrush and Ennistimon with flat-roof extensions or outbuildings, these spaces can provide excellent additional generation capacity beyond what the main house roof offers. All our flat roof installations comply with SEAI standards and come with the same comprehensive warranties as pitched roof systems."
+    },
+    {
+      question: "What is the best orientation for solar panels in Clare?",
+      answer: "The best orientation for solar panels in County Clare is south-facing, which maximises annual electricity generation. However, this doesn't mean your roof must face exactly due south. Panels facing south-east or south-west still produce approximately 85 to 95% of the output of a perfectly south-facing system — a relatively small reduction that still delivers excellent savings. In fact, east-west split installations (panels on both sides of a roof) are increasingly popular in Ennis, Shannon, Kilrush, Ennistimon, and Lahinch because they generate electricity more evenly throughout the day, which better matches the consumption patterns of households where people are out at work during the middle of the day. Properties along Clare's coastline sometimes face unusual orientations due to their location — we've successfully installed solar on roofs facing nearly every direction. During your free survey, we use satellite imagery and shading analysis tools to determine the optimal panel layout for your specific roof in Clare. We never recommend an installation unless we're confident it will deliver strong returns on your investment."
+    }
   ],
   avgSystemCost: "€4,500 – €6,500",
   avgPaybackYears: "5–7 years",
@@ -685,8 +817,8 @@ const cork: CountyData = {
   province: "Munster",
   country: "IE",
   phone: "+353-21-234-5600",
-  email: "info@solarcork.ie",
-  domain: "solarcork.ie",
+  email: "info@renewablecork.ie",
+  domain: "renewablecork.ie",
   mainTown: "Cork",
   areaTowns: ["Cork City", "Mallow", "Bandon", "Clonakilty", "Macroom", "Youghal"],
   lat: "51.8985",
@@ -699,18 +831,54 @@ const cork: CountyData = {
     "TACs (Tax Exemption for Solar PV under €1,000 annual income)",
   ],
   heroSubtitle:
-    "SEAI registered solar panel installers serving County Cork — from Cork City to Mallow, Bandon to Clonakilty.",
+    "Cork's largest independent solar installer. Over 1,000 homes powered across the Rebel County — city, coast and countryside.",
+  heroTitle: "Solar Panels Cork.\nThe Rebel County Goes Green.",
   testimonials: [
     { name: "Eamonn O'Sullivan", location: "Cork City", rating: 5, text: "Solar Cork provided an excellent service. The installation on our terraced house was handled with care and professionalism. Our bills are down by over 60%." },
     { name: "Fiona Murphy", location: "Bandon", rating: 5, text: "We added both solar panels and a battery storage system. Solar Cork managed the SEAI grant application and the whole process was seamless." },
     { name: "Derek O'Connor", location: "Clonakilty", rating: 5, text: "Outstanding installation on our west Cork home. The team was knowledgeable, efficient, and the system has exceeded the quoted performance figures." },
   ],
-  faqs: [
-    { question: "How much do solar panels cost in Cork?", answer: "A 4kW system in Cork costs between €4,500 and €6,500. The SEAI grant can reduce this by up to €1,800." },
-    { question: "What SEAI grants are available?", answer: "The Domestic Solar PV Grant provides up to €1,800 for home installations. We handle the full application process." },
-    { question: "How long does installation take?", answer: "Standard installations in Cork take one working day. Larger commercial or agricultural systems may take 2–3 days." },
-    { question: "Do I need planning permission for solar panels in Cork?", answer: "Domestic solar panels are planning-exempt within size limits. Heritage buildings may have restrictions — we'll advise." },
-    { question: "Do you install battery storage in Cork?", answer: "Yes. We install battery systems that let you store excess solar energy for evening and night-time use, dramatically reducing your grid dependence." },
+    faqs: [
+    {
+      question: "How much do solar panels cost in Cork?",
+      answer: "The cost of solar panels in County Cork depends on system size, panel quality, and roof complexity. A typical 4kW residential solar PV system — suitable for most three- to four-bedroom homes in Cork City, Mallow, Bandon, Clonakilty, and Macroom — costs between €4,500 and €6,500 before any grants. This price usually includes all scaffolding, SEAI-registered installation, grid connection application, and a monitoring system. A larger 6kW system, ideal for homes with heat pumps or electric vehicles, ranges from €6,000 to €9,500. With the SEAI Domestic Solar PV Grant reducing your cost by up to €1,800, the net outlay for a standard 4kW system in Cork can be as low as €2,700–€4,700. We provide free, no-obligation site surveys for every home in County Cork and a detailed written quote so you know exactly what you're paying for. There are no hidden fees — ever."
+    },
+    {
+      question: "What SEAI grants are available in Cork?",
+      answer: "Homeowners in County Cork can access the SEAI Domestic Solar PV Grant, which offers up to €1,800 towards the cost of a solar panel installation. To qualify, your home must have been built and occupied before 2021, and you must use an SEAI-registered installer — which we are. The grant is paid directly to you after installation, typically within four to six weeks of submitting your claim. For properties built before 2007, there may also be additional SEAI grants available for insulation and heating upgrades through the Better Energy Homes scheme, which can further improve your home's energy performance. We handle the entire SEAI grant application process on your behalf at no extra cost, making it completely hassle-free for homeowners across Cork City, Mallow, Bandon, Clonakilty, and Macroom. Many of our Cork customers combine their solar grant with other energy upgrades for even greater savings on their electricity bills and carbon footprint."
+    },
+    {
+      question: "How long does a solar installation take in Cork?",
+      answer: "A standard residential solar panel installation in County Cork is typically completed in a single working day. Our SEAI-certified installers arrive early, erect scaffolding, mount the panel rails to your roof, fit and wire the solar panels, install the inverter, connect everything to your consumer unit (fuse board), and commission the system — all within roughly six to eight hours. Before installation day, we've already completed your ESB grid connection application, which takes two to four weeks for approval. The total timeline from your initial free survey in Cork City or Mallow to your system generating electricity is typically four to six weeks. Larger installations — such as 6kW+ systems, properties with complex roof shapes, or battery storage additions — may require a second day. We always confirm the exact timeline during your quote and keep you informed every step of the way. Every installation in Cork comes with a thorough handover, including a demonstration of your monitoring app and system controls."
+    },
+    {
+      question: "Do I need planning permission for solar panels in Cork?",
+      answer: "In the vast majority of cases, no — domestic solar panel installations in County Cork are exempt from planning permission under Irish building regulations. The exemption covers rooftop solar panels on private homes, provided the panels do not protrude more than 300mm from the roof surface and do not cover more than 50% of the total roof area. Ground-mounted solar arrays under 25 square metres are also generally exempt. However, there are exceptions: if your home in Cork City or Mallow is a listed or protected structure, located within an architectural conservation area, or near a national monument, you may need planning permission or at least a declaration of exemption from your local county council. Properties in or near Cork City's Georgian and Victorian architecture and west Cork's scenic villages may require additional consideration. We check all planning requirements during your free site survey and advise you if any consent is needed before we proceed. For most homeowners across County Cork, the answer is a straightforward no — you can go ahead with your solar installation without any planning involvement."
+    },
+    {
+      question: "How much will I save with solar panels in Cork?",
+      answer: "Typical savings from solar panels in County Cork range from €600 to €1,000 per year on electricity bills, depending on your system size, household consumption, and whether you're home during the day. A 4kW solar PV system installed on a home in Cork City, Mallow, Bandon, Clonakilty, and Macroom can generate approximately 3,400 to 3,800 kWh of clean electricity annually. With current electricity prices in Ireland, this translates to significant annual savings — and the savings grow every time electricity prices increase. If you add battery storage, you can increase your savings further by storing excess daytime generation for evening use, potentially saving €800 to €1,300 per year. Over a 25-year panel lifespan, a solar system in Cork can save you €15,000 to €25,000 or more. With the SEAI grant reducing your upfront cost by up to €1,800, most homeowners in County Cork achieve full payback within five to seven years — leaving roughly 18 to 20 years of virtually free electricity. Your solar installation also reduces your carbon footprint by approximately 1.5 to 2 tonnes of CO₂ annually."
+    },
+    {
+      question: "Does solar work in Cork's weather and climate?",
+      answer: "Yes — absolutely. Solar panels generate electricity from daylight, not direct sunshine, which is why they work effectively throughout Ireland's seasons. County Cork receives approximately 1,000 to 1,150 kilowatt-hours (kWh) of solar irradiance per square metre annually. Cork's southerly latitude gives it some of Ireland's best solar irradiance levels. Modern solar panels are highly efficient in diffuse light conditions, meaning even on the cloudiest days in Cork City or Mallow, your system will still produce meaningful electricity. As a coastal county, Cork does experience more wind and rainfall, but quality solar panels are manufactured to withstand harsh weather conditions including salt air exposure, heavy rain, and wind speeds well above what Ireland experiences. We use marine-grade mounting systems for properties near the coast. In fact, cooler temperatures actually improve panel efficiency — solar panels work slightly better in Irish temperatures than in extreme heat. Our monitoring systems allow you to track daily, monthly, and annual generation so you can see exactly how well your system performs through every season."
+    },
+    {
+      question: "What size solar panel system do I need for my home in Cork?",
+      answer: "The ideal solar panel system size for your home in County Cork depends on your electricity consumption, roof space, and budget. For most three- to four-bedroom households in Cork City, Mallow, Bandon, Clonakilty, and Macroom, a 4kW system (approximately 10 to 12 panels) is the sweet spot — generating around 3,400 to 3,800 kWh annually and covering 40 to 50% of a typical household's electricity needs. If you have a larger home, use an electric vehicle, or have a heat pump, a 6kW system (15 to 18 panels) may be more appropriate, generating 5,000 to 5,800 kWh per year. Smaller two-bedroom homes in areas like Bandon or Clonakilty may only need a 3kW system. During your free site survey, we analyse your ESB bills, assess your roof dimensions and orientation, and use satellite shading analysis to recommend the optimally sized system for your specific property. There's no one-size-fits-all — every installation in Cork is tailored to your home's unique characteristics and your family's energy usage patterns."
+    },
+    {
+      question: "Are solar panels worth it for older homes in Cork?",
+      answer: "Solar panels are absolutely worth it for older homes in County Cork — and they may actually benefit you more than newer properties. Older homes in Cork City, Mallow, and surrounding areas often have solid fuel heating systems, electric immersion heaters, or storage heaters that consume large amounts of electricity. A solar panel system can offset these running costs significantly, especially if you time your immersion heating to coincide with peak solar generation hours. Furthermore, installing solar panels on an older property in Cork can improve your BER (Building Energy Rating) by one to two rating bands, which is increasingly important for property value and for accessing future green mortgage rates. Many period homes in Cork City's Georgian and Victorian architecture and west Cork's scenic villages have large roof areas with south-facing pitches — ideal for solar installations. While we always check structural integrity during our survey, most older Irish homes can easily support the lightweight mounting systems used for modern solar panels. With the SEAI grant of up to €1,800 and typical payback periods of five to seven years, solar panels are one of the smartest investments you can make in an older Cork home."
+    },
+    {
+      question: "Do solar panels work on flat roofs in Cork?",
+      answer: "Yes, solar panels work very well on flat roofs in County Cork. While most homes in Cork City and Mallow have pitched roofs, we regularly install on flat-roofed properties including extensions, garages, commercial buildings, and farm outbuildings across Cork. On a flat roof, panels are mounted on angled frame systems — typically tilted at 15 to 30 degrees — to optimise solar exposure and allow rainwater runoff. The main consideration for flat roof installations in Cork is ensuring the roof structure can bear the additional weight, which is typically around 15 to 20 kilograms per square metre. We assess this during every survey. Flat roof systems can actually be more productive than some pitched roof installations because the mounting frames allow us to orient panels at the perfect angle regardless of the roof itself. For homeowners in Bandon and Clonakilty with flat-roof extensions or outbuildings, these spaces can provide excellent additional generation capacity beyond what the main house roof offers. All our flat roof installations comply with SEAI standards and come with the same comprehensive warranties as pitched roof systems."
+    },
+    {
+      question: "What is the best orientation for solar panels in Cork?",
+      answer: "The best orientation for solar panels in County Cork is south-facing, which maximises annual electricity generation. However, this doesn't mean your roof must face exactly due south. Panels facing south-east or south-west still produce approximately 85 to 95% of the output of a perfectly south-facing system — a relatively small reduction that still delivers excellent savings. In fact, east-west split installations (panels on both sides of a roof) are increasingly popular in Cork City, Mallow, Bandon, Clonakilty, and Macroom because they generate electricity more evenly throughout the day, which better matches the consumption patterns of households where people are out at work during the middle of the day. Properties along Cork's coastline sometimes face unusual orientations due to their location — we've successfully installed solar on roofs facing nearly every direction. During your free survey, we use satellite imagery and shading analysis tools to determine the optimal panel layout for your specific roof in Cork. We never recommend an installation unless we're confident it will deliver strong returns on your investment."
+    }
   ],
   avgSystemCost: "€4,500 – €6,500",
   avgPaybackYears: "5–7 years",
@@ -725,8 +893,8 @@ const donegal: CountyData = {
   province: "Ulster",
   country: "IE",
   phone: "+353-74-912-3100",
-  email: "info@solardonegal.ie",
-  domain: "solardonegal.ie",
+  email: "info@renewabledonegal.ie",
+  domain: "renewabledonegal.ie",
   mainTown: "Letterkenny",
   areaTowns: ["Letterkenny", "Donegal Town", "Buncrana", "Ballybofey", "Bundoran", "Gweedore"],
   lat: "54.6548",
@@ -739,18 +907,54 @@ const donegal: CountyData = {
     "TACs (Tax Exemption for Solar PV under €1,000 annual income)",
   ],
   heroSubtitle:
-    "SEAI registered solar panel installers serving County Donegal — from Letterkenny to Donegal Town, Buncrana to Bundoran.",
+    "Donegal's wild Atlantic coast gets more daylight than you think. Harness it with our high-performance solar systems.",
+  heroTitle: "Solar Panels Donegal.\nAtlantic Coast, Exceptional Generation.",
   testimonials: [
     { name: "Neil Gallagher", location: "Letterkenny", rating: 5, text: "Despite Donegal's weather reputation, our solar panels are generating brilliantly. Solar Donegal were upfront about expected output and have delivered exactly what they promised." },
     { name: "Martha Doherty", location: "Buncrana", rating: 5, text: "Very happy with our installation. The team was professional, tidy, and the aftercare has been excellent. Our electricity bills have never been lower." },
     { name: "Joe McFadden", location: "Donegal Town", rating: 5, text: "Solar Donegal installed a system on our hotel and the savings have been significant. Great service from a trusted local company." },
   ],
-  faqs: [
-    { question: "How much do solar panels cost in Donegal?", answer: "A 4kW system in Donegal costs between €4,500 and €6,500. The SEAI grant of up to €1,800 can reduce this significantly." },
-    { question: "Does solar work well in Donegal?", answer: "Yes. Donegal receives sufficient daylight for solar to be a sound investment. Modern panels are highly efficient even in overcast conditions." },
-    { question: "What SEAI grants are available?", answer: "The Domestic Solar PV Grant provides up to €1,800. We manage the full application on your behalf." },
-    { question: "How long does installation take?", answer: "Most residential installations in Donegal are completed in one day. Remote locations may require additional logistics planning." },
-    { question: "Do I need planning permission?", answer: "Domestic solar panels are exempt in Ireland within certain limits. We'll confirm any requirements during your free survey." },
+    faqs: [
+    {
+      question: "How much do solar panels cost in Donegal?",
+      answer: "The cost of solar panels in County Donegal depends on system size, panel quality, and roof complexity. A typical 4kW residential solar PV system — suitable for most three- to four-bedroom homes in Letterkenny, Donegal Town, Buncrana, Ballybofey, and Bundoran — costs between €4,500 and €6,500 before any grants. This price usually includes all scaffolding, SEAI-registered installation, grid connection application, and a monitoring system. A larger 6kW system, ideal for homes with heat pumps or electric vehicles, ranges from €6,000 to €9,500. With the SEAI Domestic Solar PV Grant reducing your cost by up to €1,800, the net outlay for a standard 4kW system in Donegal can be as low as €2,700–€4,700. We provide free, no-obligation site surveys for every home in County Donegal and a detailed written quote so you know exactly what you're paying for. There are no hidden fees — ever."
+    },
+    {
+      question: "What SEAI grants are available in Donegal?",
+      answer: "Homeowners in County Donegal can access the SEAI Domestic Solar PV Grant, which offers up to €1,800 towards the cost of a solar panel installation. To qualify, your home must have been built and occupied before 2021, and you must use an SEAI-registered installer — which we are. The grant is paid directly to you after installation, typically within four to six weeks of submitting your claim. For properties built before 2007, there may also be additional SEAI grants available for insulation and heating upgrades through the Better Energy Homes scheme, which can further improve your home's energy performance. We handle the entire SEAI grant application process on your behalf at no extra cost, making it completely hassle-free for homeowners across Letterkenny, Donegal Town, Buncrana, Ballybofey, and Bundoran. Many of our Donegal customers combine their solar grant with other energy upgrades for even greater savings on their electricity bills and carbon footprint."
+    },
+    {
+      question: "How long does a solar installation take in Donegal?",
+      answer: "A standard residential solar panel installation in County Donegal is typically completed in a single working day. Our SEAI-certified installers arrive early, erect scaffolding, mount the panel rails to your roof, fit and wire the solar panels, install the inverter, connect everything to your consumer unit (fuse board), and commission the system — all within roughly six to eight hours. Before installation day, we've already completed your ESB grid connection application, which takes two to four weeks for approval. The total timeline from your initial free survey in Letterkenny or Donegal Town to your system generating electricity is typically four to six weeks. Larger installations — such as 6kW+ systems, properties with complex roof shapes, or battery storage additions — may require a second day. We always confirm the exact timeline during your quote and keep you informed every step of the way. Every installation in Donegal comes with a thorough handover, including a demonstration of your monitoring app and system controls."
+    },
+    {
+      question: "Do I need planning permission for solar panels in Donegal?",
+      answer: "In the vast majority of cases, no — domestic solar panel installations in County Donegal are exempt from planning permission under Irish building regulations. The exemption covers rooftop solar panels on private homes, provided the panels do not protrude more than 300mm from the roof surface and do not cover more than 50% of the total roof area. Ground-mounted solar arrays under 25 square metres are also generally exempt. However, there are exceptions: if your home in Letterkenny or Donegal Town is a listed or protected structure, located within an architectural conservation area, or near a national monument, you may need planning permission or at least a declaration of exemption from your local county council. Properties in or near Donegal may require additional consideration. We check all planning requirements during your free site survey and advise you if any consent is needed before we proceed. For most homeowners across County Donegal, the answer is a straightforward no — you can go ahead with your solar installation without any planning involvement."
+    },
+    {
+      question: "How much will I save with solar panels in Donegal?",
+      answer: "Typical savings from solar panels in County Donegal range from €600 to €1,000 per year on electricity bills, depending on your system size, household consumption, and whether you're home during the day. A 4kW solar PV system installed on a home in Letterkenny, Donegal Town, Buncrana, Ballybofey, and Bundoran can generate approximately 3,400 to 3,800 kWh of clean electricity annually. With current electricity prices in Ireland, this translates to significant annual savings — and the savings grow every time electricity prices increase. If you add battery storage, you can increase your savings further by storing excess daytime generation for evening use, potentially saving €800 to €1,300 per year. Over a 25-year panel lifespan, a solar system in Donegal can save you €15,000 to €25,000 or more. With the SEAI grant reducing your upfront cost by up to €1,800, most homeowners in County Donegal achieve full payback within five to seven years — leaving roughly 18 to 20 years of virtually free electricity. Your solar installation also reduces your carbon footprint by approximately 1.5 to 2 tonnes of CO₂ annually."
+    },
+    {
+      question: "Does solar work in Donegal's weather and climate?",
+      answer: "Yes — absolutely. Solar panels generate electricity from daylight, not direct sunshine, which is why they work effectively throughout Ireland's seasons. County Donegal receives approximately 1,000 to 1,150 kilowatt-hours (kWh) of solar irradiance per square metre annually. Despite Donegal's northerly latitude, the county actually receives excellent daylight hours in summer — longer than much of southern Europe between May and August. Modern solar panels are highly efficient in diffuse light conditions, meaning even on the cloudiest days in Letterkenny or Donegal Town, your system will still produce meaningful electricity. As a coastal county, Donegal does experience more wind and rainfall, but quality solar panels are manufactured to withstand harsh weather conditions including salt air exposure, heavy rain, and wind speeds well above what Ireland experiences. We use marine-grade mounting systems for properties near the coast. In fact, cooler temperatures actually improve panel efficiency — solar panels work slightly better in Irish temperatures than in extreme heat. Our monitoring systems allow you to track daily, monthly, and annual generation so you can see exactly how well your system performs through every season."
+    },
+    {
+      question: "What size solar panel system do I need for my home in Donegal?",
+      answer: "The ideal solar panel system size for your home in County Donegal depends on your electricity consumption, roof space, and budget. For most three- to four-bedroom households in Letterkenny, Donegal Town, Buncrana, Ballybofey, and Bundoran, a 4kW system (approximately 10 to 12 panels) is the sweet spot — generating around 3,400 to 3,800 kWh annually and covering 40 to 50% of a typical household's electricity needs. If you have a larger home, use an electric vehicle, or have a heat pump, a 6kW system (15 to 18 panels) may be more appropriate, generating 5,000 to 5,800 kWh per year. Smaller two-bedroom homes in areas like Buncrana or Ballybofey may only need a 3kW system. During your free site survey, we analyse your ESB bills, assess your roof dimensions and orientation, and use satellite shading analysis to recommend the optimally sized system for your specific property. There's no one-size-fits-all — every installation in Donegal is tailored to your home's unique characteristics and your family's energy usage patterns."
+    },
+    {
+      question: "Are solar panels worth it for older homes in Donegal?",
+      answer: "Solar panels are absolutely worth it for older homes in County Donegal — and they may actually benefit you more than newer properties. Older homes in Letterkenny, Donegal Town, and surrounding areas often have solid fuel heating systems, electric immersion heaters, or storage heaters that consume large amounts of electricity. A solar panel system can offset these running costs significantly, especially if you time your immersion heating to coincide with peak solar generation hours. Furthermore, installing solar panels on an older property in Donegal can improve your BER (Building Energy Rating) by one to two rating bands, which is increasingly important for property value and for accessing future green mortgage rates. Many period homes in Donegal have large roof areas with south-facing pitches — ideal for solar installations. While we always check structural integrity during our survey, most older Irish homes can easily support the lightweight mounting systems used for modern solar panels. With the SEAI grant of up to €1,800 and typical payback periods of five to seven years, solar panels are one of the smartest investments you can make in an older Donegal home."
+    },
+    {
+      question: "Do solar panels work on flat roofs in Donegal?",
+      answer: "Yes, solar panels work very well on flat roofs in County Donegal. While most homes in Letterkenny and Donegal Town have pitched roofs, we regularly install on flat-roofed properties including extensions, garages, commercial buildings, and farm outbuildings across Donegal. On a flat roof, panels are mounted on angled frame systems — typically tilted at 15 to 30 degrees — to optimise solar exposure and allow rainwater runoff. The main consideration for flat roof installations in Donegal is ensuring the roof structure can bear the additional weight, which is typically around 15 to 20 kilograms per square metre. We assess this during every survey. Flat roof systems can actually be more productive than some pitched roof installations because the mounting frames allow us to orient panels at the perfect angle regardless of the roof itself. For homeowners in Buncrana and Ballybofey with flat-roof extensions or outbuildings, these spaces can provide excellent additional generation capacity beyond what the main house roof offers. All our flat roof installations comply with SEAI standards and come with the same comprehensive warranties as pitched roof systems."
+    },
+    {
+      question: "What is the best orientation for solar panels in Donegal?",
+      answer: "The best orientation for solar panels in County Donegal is south-facing, which maximises annual electricity generation. However, this doesn't mean your roof must face exactly due south. Panels facing south-east or south-west still produce approximately 85 to 95% of the output of a perfectly south-facing system — a relatively small reduction that still delivers excellent savings. In fact, east-west split installations (panels on both sides of a roof) are increasingly popular in Letterkenny, Donegal Town, Buncrana, Ballybofey, and Bundoran because they generate electricity more evenly throughout the day, which better matches the consumption patterns of households where people are out at work during the middle of the day. Properties along Donegal's coastline sometimes face unusual orientations due to their location — we've successfully installed solar on roofs facing nearly every direction. During your free survey, we use satellite imagery and shading analysis tools to determine the optimal panel layout for your specific roof in Donegal. We never recommend an installation unless we're confident it will deliver strong returns on your investment."
+    }
   ],
   avgSystemCost: "€4,500 – €6,500",
   avgPaybackYears: "5–7 years",
@@ -765,8 +969,8 @@ const dublin: CountyData = {
   province: "Leinster",
   country: "IE",
   phone: "+353-1-514-3200",
-  email: "info@solardublin.ie",
-  domain: "solardublin.ie",
+  email: "info@renewabledublin.ie",
+  domain: "renewabledublin.ie",
   mainTown: "Dublin",
   areaTowns: ["Dublin City", "Dundrum", "Swords", "Dun Laoghaire", "Blanchardstown", "Tallaght"],
   lat: "53.3498",
@@ -779,18 +983,54 @@ const dublin: CountyData = {
     "TACs (Tax Exemption for Solar PV under €1,000 annual income)",
   ],
   heroSubtitle:
-    "SEAI registered solar panel installers serving County Dublin — from Dublin City to Swords, Dun Laoghaire to Tallaght.",
+    "Dublin's solar specialists — beating rising energy costs for homeowners across the capital, one roof at a time.",
+  heroTitle: "Solar Panels Dublin.\nCapital Savings Start on Your Roof.",
   testimonials: [
     { name: "David O'Neil", location: "Dublin City", rating: 5, text: "Solar Dublin installed panels on our semi-detached home and the process was smooth from start to finish. Great communication, clean work, and the results speak for themselves." },
     { name: "Siobhan Walsh", location: "Swords", rating: 5, text: "We were quoted quickly, installation was done in a day, and the SEAI grant was handled entirely by the Solar Dublin team. Couldn't have asked for a better experience." },
     { name: "Paul Dunne", location: "Dundrum", rating: 5, text: "Excellent installation on our 1960s bungalow in Dundrum. The team was knowledgeable about the specific challenges of older roofs and delivered a first-class result." },
   ],
-  faqs: [
-    { question: "How much do solar panels cost in Dublin?", answer: "A 4kW system in Dublin costs between €4,500 and €6,500. The SEAI grant can reduce this by up to €1,800." },
-    { question: "What SEAI grants are available in Dublin?", answer: "The Domestic Solar PV Grant provides up to €1,800 for homes. Additional grants may be available for businesses." },
-    { question: "How long does installation take?", answer: "Most Dublin installations are completed in one working day. We coordinate scaffolding and all permitting." },
-    { question: "Are there restrictions on solar panels in Dublin?", answer: "Some areas may have architectural conservation requirements. We check all restrictions during the free survey." },
-    { question: "Do you offer battery storage?", answer: "Yes. We install battery systems alongside solar panels to maximise self-consumption and reduce grid reliance." },
+    faqs: [
+    {
+      question: "How much do solar panels cost in Dublin?",
+      answer: "The cost of solar panels in County Dublin depends on system size, panel quality, and roof complexity. A typical 4kW residential solar PV system — suitable for most three- to four-bedroom homes in Dublin City, Dundrum, Swords, Dun Laoghaire, and Blanchardstown — costs between €4,500 and €6,500 before any grants. This price usually includes all scaffolding, SEAI-registered installation, grid connection application, and a monitoring system. A larger 6kW system, ideal for homes with heat pumps or electric vehicles, ranges from €6,000 to €9,500. With the SEAI Domestic Solar PV Grant reducing your cost by up to €1,800, the net outlay for a standard 4kW system in Dublin can be as low as €2,700–€4,700. We provide free, no-obligation site surveys for every home in County Dublin and a detailed written quote so you know exactly what you're paying for. There are no hidden fees — ever."
+    },
+    {
+      question: "What SEAI grants are available in Dublin?",
+      answer: "Homeowners in County Dublin can access the SEAI Domestic Solar PV Grant, which offers up to €1,800 towards the cost of a solar panel installation. To qualify, your home must have been built and occupied before 2021, and you must use an SEAI-registered installer — which we are. The grant is paid directly to you after installation, typically within four to six weeks of submitting your claim. For properties built before 2007, there may also be additional SEAI grants available for insulation and heating upgrades through the Better Energy Homes scheme, which can further improve your home's energy performance. We handle the entire SEAI grant application process on your behalf at no extra cost, making it completely hassle-free for homeowners across Dublin City, Dundrum, Swords, Dun Laoghaire, and Blanchardstown. Many of our Dublin customers combine their solar grant with other energy upgrades for even greater savings on their electricity bills and carbon footprint."
+    },
+    {
+      question: "How long does a solar installation take in Dublin?",
+      answer: "A standard residential solar panel installation in County Dublin is typically completed in a single working day. Our SEAI-certified installers arrive early, erect scaffolding, mount the panel rails to your roof, fit and wire the solar panels, install the inverter, connect everything to your consumer unit (fuse board), and commission the system — all within roughly six to eight hours. Before installation day, we've already completed your ESB grid connection application, which takes two to four weeks for approval. The total timeline from your initial free survey in Dublin City or Dundrum to your system generating electricity is typically four to six weeks. Larger installations — such as 6kW+ systems, properties with complex roof shapes, or battery storage additions — may require a second day. We always confirm the exact timeline during your quote and keep you informed every step of the way. Every installation in Dublin comes with a thorough handover, including a demonstration of your monitoring app and system controls."
+    },
+    {
+      question: "Do I need planning permission for solar panels in Dublin?",
+      answer: "In the vast majority of cases, no — domestic solar panel installations in County Dublin are exempt from planning permission under Irish building regulations. The exemption covers rooftop solar panels on private homes, provided the panels do not protrude more than 300mm from the roof surface and do not cover more than 50% of the total roof area. Ground-mounted solar arrays under 25 square metres are also generally exempt. However, there are exceptions: if your home in Dublin City or Dundrum is a listed or protected structure, located within an architectural conservation area, or near a national monument, you may need planning permission or at least a declaration of exemption from your local county council. Properties in or near Dublin's Georgian and Victorian conservation areas may require additional consideration. We check all planning requirements during your free site survey and advise you if any consent is needed before we proceed. For most homeowners across County Dublin, the answer is a straightforward no — you can go ahead with your solar installation without any planning involvement."
+    },
+    {
+      question: "How much will I save with solar panels in Dublin?",
+      answer: "Typical savings from solar panels in County Dublin range from €600 to €1,000 per year on electricity bills, depending on your system size, household consumption, and whether you're home during the day. A 4kW solar PV system installed on a home in Dublin City, Dundrum, Swords, Dun Laoghaire, and Blanchardstown can generate approximately 3,400 to 3,800 kWh of clean electricity annually. With current electricity prices in Ireland, this translates to significant annual savings — and the savings grow every time electricity prices increase. If you add battery storage, you can increase your savings further by storing excess daytime generation for evening use, potentially saving €800 to €1,300 per year. Over a 25-year panel lifespan, a solar system in Dublin can save you €15,000 to €25,000 or more. With the SEAI grant reducing your upfront cost by up to €1,800, most homeowners in County Dublin achieve full payback within five to seven years — leaving roughly 18 to 20 years of virtually free electricity. Your solar installation also reduces your carbon footprint by approximately 1.5 to 2 tonnes of CO₂ annually."
+    },
+    {
+      question: "Does solar work in Dublin's weather and climate?",
+      answer: "Yes — absolutely. Solar panels generate electricity from daylight, not direct sunshine, which is why they work effectively throughout Ireland's seasons. County Dublin receives approximately 1,000 to 1,150 kilowatt-hours (kWh) of solar irradiance per square metre annually. Dublin's urban density means many homes are semi-detached or terraced, but even a modest roof area can host a productive solar system. Modern solar panels are highly efficient in diffuse light conditions, meaning even on the cloudiest days in Dublin City or Dundrum, your system will still produce meaningful electricity. As a coastal county, Dublin does experience more wind and rainfall, but quality solar panels are manufactured to withstand harsh weather conditions including salt air exposure, heavy rain, and wind speeds well above what Ireland experiences. We use marine-grade mounting systems for properties near the coast. In fact, cooler temperatures actually improve panel efficiency — solar panels work slightly better in Irish temperatures than in extreme heat. Our monitoring systems allow you to track daily, monthly, and annual generation so you can see exactly how well your system performs through every season."
+    },
+    {
+      question: "What size solar panel system do I need for my home in Dublin?",
+      answer: "The ideal solar panel system size for your home in County Dublin depends on your electricity consumption, roof space, and budget. For most three- to four-bedroom households in Dublin City, Dundrum, Swords, Dun Laoghaire, and Blanchardstown, a 4kW system (approximately 10 to 12 panels) is the sweet spot — generating around 3,400 to 3,800 kWh annually and covering 40 to 50% of a typical household's electricity needs. If you have a larger home, use an electric vehicle, or have a heat pump, a 6kW system (15 to 18 panels) may be more appropriate, generating 5,000 to 5,800 kWh per year. Smaller two-bedroom homes in areas like Swords or Dun Laoghaire may only need a 3kW system. During your free site survey, we analyse your ESB bills, assess your roof dimensions and orientation, and use satellite shading analysis to recommend the optimally sized system for your specific property. There's no one-size-fits-all — every installation in Dublin is tailored to your home's unique characteristics and your family's energy usage patterns."
+    },
+    {
+      question: "Are solar panels worth it for older homes in Dublin?",
+      answer: "Solar panels are absolutely worth it for older homes in County Dublin — and they may actually benefit you more than newer properties. Older homes in Dublin City, Dundrum, and surrounding areas often have solid fuel heating systems, electric immersion heaters, or storage heaters that consume large amounts of electricity. A solar panel system can offset these running costs significantly, especially if you time your immersion heating to coincide with peak solar generation hours. Furthermore, installing solar panels on an older property in Dublin can improve your BER (Building Energy Rating) by one to two rating bands, which is increasingly important for property value and for accessing future green mortgage rates. Many period homes in Dublin's Georgian and Victorian conservation areas have large roof areas with south-facing pitches — ideal for solar installations. While we always check structural integrity during our survey, most older Irish homes can easily support the lightweight mounting systems used for modern solar panels. With the SEAI grant of up to €1,800 and typical payback periods of five to seven years, solar panels are one of the smartest investments you can make in an older Dublin home."
+    },
+    {
+      question: "Do solar panels work on flat roofs in Dublin?",
+      answer: "Yes, solar panels work very well on flat roofs in County Dublin. While most homes in Dublin City and Dundrum have pitched roofs, we regularly install on flat-roofed properties including extensions, garages, commercial buildings, and farm outbuildings across Dublin. On a flat roof, panels are mounted on angled frame systems — typically tilted at 15 to 30 degrees — to optimise solar exposure and allow rainwater runoff. The main consideration for flat roof installations in Dublin is ensuring the roof structure can bear the additional weight, which is typically around 15 to 20 kilograms per square metre. We assess this during every survey. Flat roof systems can actually be more productive than some pitched roof installations because the mounting frames allow us to orient panels at the perfect angle regardless of the roof itself. For homeowners in Swords and Dun Laoghaire with flat-roof extensions or outbuildings, these spaces can provide excellent additional generation capacity beyond what the main house roof offers. All our flat roof installations comply with SEAI standards and come with the same comprehensive warranties as pitched roof systems."
+    },
+    {
+      question: "What is the best orientation for solar panels in Dublin?",
+      answer: "The best orientation for solar panels in County Dublin is south-facing, which maximises annual electricity generation. However, this doesn't mean your roof must face exactly due south. Panels facing south-east or south-west still produce approximately 85 to 95% of the output of a perfectly south-facing system — a relatively small reduction that still delivers excellent savings. In fact, east-west split installations (panels on both sides of a roof) are increasingly popular in Dublin City, Dundrum, Swords, Dun Laoghaire, and Blanchardstown because they generate electricity more evenly throughout the day, which better matches the consumption patterns of households where people are out at work during the middle of the day. Properties along Dublin's coastline sometimes face unusual orientations due to their location — we've successfully installed solar on roofs facing nearly every direction. During your free survey, we use satellite imagery and shading analysis tools to determine the optimal panel layout for your specific roof in Dublin. We never recommend an installation unless we're confident it will deliver strong returns on your investment."
+    }
   ],
   avgSystemCost: "€4,500 – €6,500",
   avgPaybackYears: "5–7 years",
@@ -805,8 +1045,8 @@ const galway: CountyData = {
   province: "Connacht",
   country: "IE",
   phone: "+353-91-523-4100",
-  email: "info@solargalway.ie",
-  domain: "solargalway.ie",
+  email: "info@renewablegalway.ie",
+  domain: "renewablegalway.ie",
   mainTown: "Galway",
   areaTowns: ["Galway City", "Tuam", "Athenry", "Oranmore", "Loughrea", "Clifden"],
   lat: "53.2707",
@@ -819,18 +1059,54 @@ const galway: CountyData = {
     "TACs (Tax Exemption for Solar PV under €1,000 annual income)",
   ],
   heroSubtitle:
-    "SEAI registered solar panel installers serving County Galway — from Galway City to Tuam, Athenry to Clifden.",
+    "Galway's mix of city roofs and rural homesteads makes it ideal for solar. City and county installations with lifetime support.",
+  heroTitle: "Solar Panels Galway.\nCity & County, Powered by the West.",
   testimonials: [
     { name: "Aiden Connolly", location: "Galway City", rating: 5, text: "Solar Galway provided a seamless experience. From the initial survey to commissioning, everything was handled professionally. We're delighted with the results." },
     { name: "Niamh O'Flaherty", location: "Athenry", rating: 5, text: "We added solar and battery storage to our home in Athenry. Solar Galway's team was excellent — knowledgeable, efficient, and very tidy." },
     { name: "Sean Joyce", location: "Loughrea", rating: 5, text: "Top quality installation at a fair price. The monitoring app shows our system is performing exactly as quoted. Highly recommend Solar Galway." },
   ],
-  faqs: [
-    { question: "How much do solar panels cost in Galway?", answer: "A 4kW system in County Galway costs between €4,500 and €6,500 before the SEAI grant of up to €1,800." },
-    { question: "What SEAI grants are available?", answer: "The Domestic Solar PV Grant offers up to €1,800. We handle the full application on your behalf." },
-    { question: "How long does installation take?", answer: "Residential installations in Galway typically take one working day. We manage all aspects including scaffolding." },
-    { question: "Does Galway get enough sun for solar?", answer: "Yes. Galway receives sufficient daylight for solar to be a strong investment. Panels work on daylight, not direct sunshine." },
-    { question: "Do you install on commercial properties?", answer: "Yes. We install commercial solar systems for businesses, schools, and community buildings across County Galway." },
+    faqs: [
+    {
+      question: "How much do solar panels cost in Galway?",
+      answer: "The cost of solar panels in County Galway depends on system size, panel quality, and roof complexity. A typical 4kW residential solar PV system — suitable for most three- to four-bedroom homes in Galway City, Tuam, Athenry, Oranmore, and Loughrea — costs between €4,500 and €6,500 before any grants. This price usually includes all scaffolding, SEAI-registered installation, grid connection application, and a monitoring system. A larger 6kW system, ideal for homes with heat pumps or electric vehicles, ranges from €6,000 to €9,500. With the SEAI Domestic Solar PV Grant reducing your cost by up to €1,800, the net outlay for a standard 4kW system in Galway can be as low as €2,700–€4,700. We provide free, no-obligation site surveys for every home in County Galway and a detailed written quote so you know exactly what you're paying for. There are no hidden fees — ever."
+    },
+    {
+      question: "What SEAI grants are available in Galway?",
+      answer: "Homeowners in County Galway can access the SEAI Domestic Solar PV Grant, which offers up to €1,800 towards the cost of a solar panel installation. To qualify, your home must have been built and occupied before 2021, and you must use an SEAI-registered installer — which we are. The grant is paid directly to you after installation, typically within four to six weeks of submitting your claim. For properties built before 2007, there may also be additional SEAI grants available for insulation and heating upgrades through the Better Energy Homes scheme, which can further improve your home's energy performance. We handle the entire SEAI grant application process on your behalf at no extra cost, making it completely hassle-free for homeowners across Galway City, Tuam, Athenry, Oranmore, and Loughrea. Many of our Galway customers combine their solar grant with other energy upgrades for even greater savings on their electricity bills and carbon footprint."
+    },
+    {
+      question: "How long does a solar installation take in Galway?",
+      answer: "A standard residential solar panel installation in County Galway is typically completed in a single working day. Our SEAI-certified installers arrive early, erect scaffolding, mount the panel rails to your roof, fit and wire the solar panels, install the inverter, connect everything to your consumer unit (fuse board), and commission the system — all within roughly six to eight hours. Before installation day, we've already completed your ESB grid connection application, which takes two to four weeks for approval. The total timeline from your initial free survey in Galway City or Tuam to your system generating electricity is typically four to six weeks. Larger installations — such as 6kW+ systems, properties with complex roof shapes, or battery storage additions — may require a second day. We always confirm the exact timeline during your quote and keep you informed every step of the way. Every installation in Galway comes with a thorough handover, including a demonstration of your monitoring app and system controls."
+    },
+    {
+      question: "Do I need planning permission for solar panels in Galway?",
+      answer: "In the vast majority of cases, no — domestic solar panel installations in County Galway are exempt from planning permission under Irish building regulations. The exemption covers rooftop solar panels on private homes, provided the panels do not protrude more than 300mm from the roof surface and do not cover more than 50% of the total roof area. Ground-mounted solar arrays under 25 square metres are also generally exempt. However, there are exceptions: if your home in Galway City or Tuam is a listed or protected structure, located within an architectural conservation area, or near a national monument, you may need planning permission or at least a declaration of exemption from your local county council. Properties in or near Galway City and the surrounding areas may require additional consideration. We check all planning requirements during your free site survey and advise you if any consent is needed before we proceed. For most homeowners across County Galway, the answer is a straightforward no — you can go ahead with your solar installation without any planning involvement."
+    },
+    {
+      question: "How much will I save with solar panels in Galway?",
+      answer: "Typical savings from solar panels in County Galway range from €600 to €1,000 per year on electricity bills, depending on your system size, household consumption, and whether you're home during the day. A 4kW solar PV system installed on a home in Galway City, Tuam, Athenry, Oranmore, and Loughrea can generate approximately 3,400 to 3,800 kWh of clean electricity annually. With current electricity prices in Ireland, this translates to significant annual savings — and the savings grow every time electricity prices increase. If you add battery storage, you can increase your savings further by storing excess daytime generation for evening use, potentially saving €800 to €1,300 per year. Over a 25-year panel lifespan, a solar system in Galway can save you €15,000 to €25,000 or more. With the SEAI grant reducing your upfront cost by up to €1,800, most homeowners in County Galway achieve full payback within five to seven years — leaving roughly 18 to 20 years of virtually free electricity. Your solar installation also reduces your carbon footprint by approximately 1.5 to 2 tonnes of CO₂ annually."
+    },
+    {
+      question: "Does solar work in Galway's weather and climate?",
+      answer: "Yes — absolutely. Solar panels generate electricity from daylight, not direct sunshine, which is why they work effectively throughout Ireland's seasons. County Galway receives approximately 1,000 to 1,150 kilowatt-hours (kWh) of solar irradiance per square metre annually. Galway's mix of city and countryside means diverse installation opportunities, from compact urban roofs to expansive rural properties. Modern solar panels are highly efficient in diffuse light conditions, meaning even on the cloudiest days in Galway City or Tuam, your system will still produce meaningful electricity. As a coastal county, Galway does experience more wind and rainfall, but quality solar panels are manufactured to withstand harsh weather conditions including salt air exposure, heavy rain, and wind speeds well above what Ireland experiences. We use marine-grade mounting systems for properties near the coast. In fact, cooler temperatures actually improve panel efficiency — solar panels work slightly better in Irish temperatures than in extreme heat. Our monitoring systems allow you to track daily, monthly, and annual generation so you can see exactly how well your system performs through every season."
+    },
+    {
+      question: "What size solar panel system do I need for my home in Galway?",
+      answer: "The ideal solar panel system size for your home in County Galway depends on your electricity consumption, roof space, and budget. For most three- to four-bedroom households in Galway City, Tuam, Athenry, Oranmore, and Loughrea, a 4kW system (approximately 10 to 12 panels) is the sweet spot — generating around 3,400 to 3,800 kWh annually and covering 40 to 50% of a typical household's electricity needs. If you have a larger home, use an electric vehicle, or have a heat pump, a 6kW system (15 to 18 panels) may be more appropriate, generating 5,000 to 5,800 kWh per year. Smaller two-bedroom homes in areas like Athenry or Oranmore may only need a 3kW system. During your free site survey, we analyse your ESB bills, assess your roof dimensions and orientation, and use satellite shading analysis to recommend the optimally sized system for your specific property. There's no one-size-fits-all — every installation in Galway is tailored to your home's unique characteristics and your family's energy usage patterns."
+    },
+    {
+      question: "Are solar panels worth it for older homes in Galway?",
+      answer: "Solar panels are absolutely worth it for older homes in County Galway — and they may actually benefit you more than newer properties. Older homes in Galway City, Tuam, and surrounding areas often have solid fuel heating systems, electric immersion heaters, or storage heaters that consume large amounts of electricity. A solar panel system can offset these running costs significantly, especially if you time your immersion heating to coincide with peak solar generation hours. Furthermore, installing solar panels on an older property in Galway can improve your BER (Building Energy Rating) by one to two rating bands, which is increasingly important for property value and for accessing future green mortgage rates. Many period homes in Galway City and the surrounding areas have large roof areas with south-facing pitches — ideal for solar installations. While we always check structural integrity during our survey, most older Irish homes can easily support the lightweight mounting systems used for modern solar panels. With the SEAI grant of up to €1,800 and typical payback periods of five to seven years, solar panels are one of the smartest investments you can make in an older Galway home."
+    },
+    {
+      question: "Do solar panels work on flat roofs in Galway?",
+      answer: "Yes, solar panels work very well on flat roofs in County Galway. While most homes in Galway City and Tuam have pitched roofs, we regularly install on flat-roofed properties including extensions, garages, commercial buildings, and farm outbuildings across Galway. On a flat roof, panels are mounted on angled frame systems — typically tilted at 15 to 30 degrees — to optimise solar exposure and allow rainwater runoff. The main consideration for flat roof installations in Galway is ensuring the roof structure can bear the additional weight, which is typically around 15 to 20 kilograms per square metre. We assess this during every survey. Flat roof systems can actually be more productive than some pitched roof installations because the mounting frames allow us to orient panels at the perfect angle regardless of the roof itself. For homeowners in Athenry and Oranmore with flat-roof extensions or outbuildings, these spaces can provide excellent additional generation capacity beyond what the main house roof offers. All our flat roof installations comply with SEAI standards and come with the same comprehensive warranties as pitched roof systems."
+    },
+    {
+      question: "What is the best orientation for solar panels in Galway?",
+      answer: "The best orientation for solar panels in County Galway is south-facing, which maximises annual electricity generation. However, this doesn't mean your roof must face exactly due south. Panels facing south-east or south-west still produce approximately 85 to 95% of the output of a perfectly south-facing system — a relatively small reduction that still delivers excellent savings. In fact, east-west split installations (panels on both sides of a roof) are increasingly popular in Galway City, Tuam, Athenry, Oranmore, and Loughrea because they generate electricity more evenly throughout the day, which better matches the consumption patterns of households where people are out at work during the middle of the day. Properties along Galway's coastline sometimes face unusual orientations due to their location — we've successfully installed solar on roofs facing nearly every direction. During your free survey, we use satellite imagery and shading analysis tools to determine the optimal panel layout for your specific roof in Galway. We never recommend an installation unless we're confident it will deliver strong returns on your investment."
+    }
   ],
   avgSystemCost: "€4,500 – €6,500",
   avgPaybackYears: "5–7 years",
@@ -845,8 +1121,8 @@ const kerry: CountyData = {
   province: "Munster",
   country: "IE",
   phone: "+353-66-712-3100",
-  email: "info@solarkerry.ie",
-  domain: "solarkerry.ie",
+  email: "info@renewablekerry.ie",
+  domain: "renewablekerry.ie",
   mainTown: "Tralee",
   areaTowns: ["Tralee", "Killarney", "Listowel", "Kenmare", "Dingle", "Cahersiveen"],
   lat: "52.2781",
@@ -859,18 +1135,54 @@ const kerry: CountyData = {
     "TACs (Tax Exemption for Solar PV under €1,000 annual income)",
   ],
   heroSubtitle:
-    "SEAI registered solar panel installers serving County Kerry — from Tralee to Killarney, Listowel to Dingle.",
+    "The Kingdom's clean energy secret — Kerry homes generate impressive solar yields thanks to long summer daylight hours.",
+  heroTitle: "Solar Panels Kerry.\nThe Kingdom's Clean Energy Revolution.",
   testimonials: [
     { name: "Denis O'Connor", location: "Tralee", rating: 5, text: "Solar Kerry did a superb job on our home. Professional installation, great communication, and the SEAI grant was handled without any fuss." },
     { name: "Eileen Murphy", location: "Killarney", rating: 5, text: "We were worried about the impact of Kerry's weather but Solar Kerry explained everything clearly. Our panels are performing well above expectations." },
     { name: "Michael O'Shea", location: "Listowel", rating: 5, text: "Excellent service from the Solar Kerry team. The installation was done quickly and cleanly, and we're seeing great savings on our electricity bills." },
   ],
-  faqs: [
-    { question: "How much do solar panels cost in Kerry?", answer: "A 4kW system in County Kerry costs between €4,500 and €6,500. The SEAI grant can reduce this by up to €1,800." },
-    { question: "What SEAI grants are available in Kerry?", answer: "The Domestic Solar PV Grant offers up to €1,800 for home installations. We manage the application process." },
-    { question: "How long does installation take?", answer: "Most residential installations in Kerry are completed in one working day. We coordinate all logistics." },
-    { question: "Do I need planning permission?", answer: "Domestic solar panels in Ireland are planning-exempt within size limits. Heritage areas may have restrictions." },
-    { question: "Do you offer battery storage?", answer: "Yes. We install batteries from leading brands including GivEnergy, FoxESS, and others to maximise your solar self-consumption." },
+    faqs: [
+    {
+      question: "How much do solar panels cost in Kerry?",
+      answer: "The cost of solar panels in County Kerry depends on system size, panel quality, and roof complexity. A typical 4kW residential solar PV system — suitable for most three- to four-bedroom homes in Tralee, Killarney, Listowel, Kenmare, and Dingle — costs between €4,500 and €6,500 before any grants. This price usually includes all scaffolding, SEAI-registered installation, grid connection application, and a monitoring system. A larger 6kW system, ideal for homes with heat pumps or electric vehicles, ranges from €6,000 to €9,500. With the SEAI Domestic Solar PV Grant reducing your cost by up to €1,800, the net outlay for a standard 4kW system in Kerry can be as low as €2,700–€4,700. We provide free, no-obligation site surveys for every home in County Kerry and a detailed written quote so you know exactly what you're paying for. There are no hidden fees — ever."
+    },
+    {
+      question: "What SEAI grants are available in Kerry?",
+      answer: "Homeowners in County Kerry can access the SEAI Domestic Solar PV Grant, which offers up to €1,800 towards the cost of a solar panel installation. To qualify, your home must have been built and occupied before 2021, and you must use an SEAI-registered installer — which we are. The grant is paid directly to you after installation, typically within four to six weeks of submitting your claim. For properties built before 2007, there may also be additional SEAI grants available for insulation and heating upgrades through the Better Energy Homes scheme, which can further improve your home's energy performance. We handle the entire SEAI grant application process on your behalf at no extra cost, making it completely hassle-free for homeowners across Tralee, Killarney, Listowel, Kenmare, and Dingle. Many of our Kerry customers combine their solar grant with other energy upgrades for even greater savings on their electricity bills and carbon footprint."
+    },
+    {
+      question: "How long does a solar installation take in Kerry?",
+      answer: "A standard residential solar panel installation in County Kerry is typically completed in a single working day. Our SEAI-certified installers arrive early, erect scaffolding, mount the panel rails to your roof, fit and wire the solar panels, install the inverter, connect everything to your consumer unit (fuse board), and commission the system — all within roughly six to eight hours. Before installation day, we've already completed your ESB grid connection application, which takes two to four weeks for approval. The total timeline from your initial free survey in Tralee or Killarney to your system generating electricity is typically four to six weeks. Larger installations — such as 6kW+ systems, properties with complex roof shapes, or battery storage additions — may require a second day. We always confirm the exact timeline during your quote and keep you informed every step of the way. Every installation in Kerry comes with a thorough handover, including a demonstration of your monitoring app and system controls."
+    },
+    {
+      question: "Do I need planning permission for solar panels in Kerry?",
+      answer: "In the vast majority of cases, no — domestic solar panel installations in County Kerry are exempt from planning permission under Irish building regulations. The exemption covers rooftop solar panels on private homes, provided the panels do not protrude more than 300mm from the roof surface and do not cover more than 50% of the total roof area. Ground-mounted solar arrays under 25 square metres are also generally exempt. However, there are exceptions: if your home in Tralee or Killarney is a listed or protected structure, located within an architectural conservation area, or near a national monument, you may need planning permission or at least a declaration of exemption from your local county council. Properties in or near Kerry's tourist areas and scenic landscapes may require additional consideration. We check all planning requirements during your free site survey and advise you if any consent is needed before we proceed. For most homeowners across County Kerry, the answer is a straightforward no — you can go ahead with your solar installation without any planning involvement."
+    },
+    {
+      question: "How much will I save with solar panels in Kerry?",
+      answer: "Typical savings from solar panels in County Kerry range from €600 to €1,000 per year on electricity bills, depending on your system size, household consumption, and whether you're home during the day. A 4kW solar PV system installed on a home in Tralee, Killarney, Listowel, Kenmare, and Dingle can generate approximately 3,400 to 3,800 kWh of clean electricity annually. With current electricity prices in Ireland, this translates to significant annual savings — and the savings grow every time electricity prices increase. If you add battery storage, you can increase your savings further by storing excess daytime generation for evening use, potentially saving €800 to €1,300 per year. Over a 25-year panel lifespan, a solar system in Kerry can save you €15,000 to €25,000 or more. With the SEAI grant reducing your upfront cost by up to €1,800, most homeowners in County Kerry achieve full payback within five to seven years — leaving roughly 18 to 20 years of virtually free electricity. Your solar installation also reduces your carbon footprint by approximately 1.5 to 2 tonnes of CO₂ annually."
+    },
+    {
+      question: "Does solar work in Kerry's weather and climate?",
+      answer: "Yes — absolutely. Solar panels generate electricity from daylight, not direct sunshine, which is why they work effectively throughout Ireland's seasons. County Kerry receives approximately 1,000 to 1,150 kilowatt-hours (kWh) of solar irradiance per square metre annually. Kerry's south-west location delivers impressive solar irradiance, and the county benefits from some of Ireland's longest summer daylight hours. Modern solar panels are highly efficient in diffuse light conditions, meaning even on the cloudiest days in Tralee or Killarney, your system will still produce meaningful electricity. As a coastal county, Kerry does experience more wind and rainfall, but quality solar panels are manufactured to withstand harsh weather conditions including salt air exposure, heavy rain, and wind speeds well above what Ireland experiences. We use marine-grade mounting systems for properties near the coast. In fact, cooler temperatures actually improve panel efficiency — solar panels work slightly better in Irish temperatures than in extreme heat. Our monitoring systems allow you to track daily, monthly, and annual generation so you can see exactly how well your system performs through every season."
+    },
+    {
+      question: "What size solar panel system do I need for my home in Kerry?",
+      answer: "The ideal solar panel system size for your home in County Kerry depends on your electricity consumption, roof space, and budget. For most three- to four-bedroom households in Tralee, Killarney, Listowel, Kenmare, and Dingle, a 4kW system (approximately 10 to 12 panels) is the sweet spot — generating around 3,400 to 3,800 kWh annually and covering 40 to 50% of a typical household's electricity needs. If you have a larger home, use an electric vehicle, or have a heat pump, a 6kW system (15 to 18 panels) may be more appropriate, generating 5,000 to 5,800 kWh per year. Smaller two-bedroom homes in areas like Listowel or Kenmare may only need a 3kW system. During your free site survey, we analyse your ESB bills, assess your roof dimensions and orientation, and use satellite shading analysis to recommend the optimally sized system for your specific property. There's no one-size-fits-all — every installation in Kerry is tailored to your home's unique characteristics and your family's energy usage patterns."
+    },
+    {
+      question: "Are solar panels worth it for older homes in Kerry?",
+      answer: "Solar panels are absolutely worth it for older homes in County Kerry — and they may actually benefit you more than newer properties. Older homes in Tralee, Killarney, and surrounding areas often have solid fuel heating systems, electric immersion heaters, or storage heaters that consume large amounts of electricity. A solar panel system can offset these running costs significantly, especially if you time your immersion heating to coincide with peak solar generation hours. Furthermore, installing solar panels on an older property in Kerry can improve your BER (Building Energy Rating) by one to two rating bands, which is increasingly important for property value and for accessing future green mortgage rates. Many period homes in Kerry's tourist areas and scenic landscapes have large roof areas with south-facing pitches — ideal for solar installations. While we always check structural integrity during our survey, most older Irish homes can easily support the lightweight mounting systems used for modern solar panels. With the SEAI grant of up to €1,800 and typical payback periods of five to seven years, solar panels are one of the smartest investments you can make in an older Kerry home."
+    },
+    {
+      question: "Do solar panels work on flat roofs in Kerry?",
+      answer: "Yes, solar panels work very well on flat roofs in County Kerry. While most homes in Tralee and Killarney have pitched roofs, we regularly install on flat-roofed properties including extensions, garages, commercial buildings, and farm outbuildings across Kerry. On a flat roof, panels are mounted on angled frame systems — typically tilted at 15 to 30 degrees — to optimise solar exposure and allow rainwater runoff. The main consideration for flat roof installations in Kerry is ensuring the roof structure can bear the additional weight, which is typically around 15 to 20 kilograms per square metre. We assess this during every survey. Flat roof systems can actually be more productive than some pitched roof installations because the mounting frames allow us to orient panels at the perfect angle regardless of the roof itself. For homeowners in Listowel and Kenmare with flat-roof extensions or outbuildings, these spaces can provide excellent additional generation capacity beyond what the main house roof offers. All our flat roof installations comply with SEAI standards and come with the same comprehensive warranties as pitched roof systems."
+    },
+    {
+      question: "What is the best orientation for solar panels in Kerry?",
+      answer: "The best orientation for solar panels in County Kerry is south-facing, which maximises annual electricity generation. However, this doesn't mean your roof must face exactly due south. Panels facing south-east or south-west still produce approximately 85 to 95% of the output of a perfectly south-facing system — a relatively small reduction that still delivers excellent savings. In fact, east-west split installations (panels on both sides of a roof) are increasingly popular in Tralee, Killarney, Listowel, Kenmare, and Dingle because they generate electricity more evenly throughout the day, which better matches the consumption patterns of households where people are out at work during the middle of the day. Properties along Kerry's coastline sometimes face unusual orientations due to their location — we've successfully installed solar on roofs facing nearly every direction. During your free survey, we use satellite imagery and shading analysis tools to determine the optimal panel layout for your specific roof in Kerry. We never recommend an installation unless we're confident it will deliver strong returns on your investment."
+    }
   ],
   avgSystemCost: "€4,500 – €6,500",
   avgPaybackYears: "5–7 years",
@@ -885,8 +1197,8 @@ const kildare: CountyData = {
   province: "Leinster",
   country: "IE",
   phone: "+353-45-891-3100",
-  email: "info@solarkildare.ie",
-  domain: "solarkildare.ie",
+  email: "info@renewablekildare.ie",
+  domain: "renewablekildare.ie",
   mainTown: "Naas",
   areaTowns: ["Naas", "Newbridge", "Kildare Town", "Celbridge", "Maynooth", "Leixlip"],
   lat: "53.2163",
@@ -899,18 +1211,54 @@ const kildare: CountyData = {
     "TACs (Tax Exemption for Solar PV under €1,000 annual income)",
   ],
   heroSubtitle:
-    "SEAI registered solar panel installers serving County Kildare — from Naas to Newbridge, Celbridge to Maynooth.",
+    "Kildare's commuter belt homes are going green. Slash your energy bills and boost your BER rating with our solar systems.",
+  heroTitle: "Solar Panels Kildare.\nCommuter Belt Homes Leading the Charge.",
   testimonials: [
     { name: "Robert Whelan", location: "Naas", rating: 5, text: "Solar Kildare provided excellent service from start to finish. The SEAI grant was sorted and the installation was completed efficiently in a single day." },
     { name: "Laura Maher", location: "Newbridge", rating: 5, text: "Very professional operation. The survey was thorough, the quote was clear, and the installation was spotless. Highly recommend." },
     { name: "Andrew Byrne", location: "Celbridge", rating: 5, text: "We chose Solar Kildare based on local recommendations and they exceeded expectations. Great communication throughout the process." },
   ],
-  faqs: [
-    { question: "How much do solar panels cost in Kildare?", answer: "A 4kW system in Kildare costs between €4,500 and €6,500. The SEAI grant of up to €1,800 can reduce your cost significantly." },
-    { question: "What SEAI grants are available?", answer: "The Domestic Solar PV Grant provides up to €1,800. We manage the application process at no extra charge." },
-    { question: "How long does installation take?", answer: "Residential installations in Kildare typically take one day. We handle all scaffolding and grid connection." },
-    { question: "Do I need planning permission?", answer: "No. Domestic solar panels in Ireland are exempt from planning permission within standard size limits." },
-    { question: "Do you offer EV charger installations?", answer: "Yes. We can install solar panels alongside EV charge points, allowing you to charge your vehicle for free using solar energy." },
+    faqs: [
+    {
+      question: "How much do solar panels cost in Kildare?",
+      answer: "The cost of solar panels in County Kildare depends on system size, panel quality, and roof complexity. A typical 4kW residential solar PV system — suitable for most three- to four-bedroom homes in Naas, Newbridge, Kildare Town, Celbridge, and Maynooth — costs between €4,500 and €6,500 before any grants. This price usually includes all scaffolding, SEAI-registered installation, grid connection application, and a monitoring system. A larger 6kW system, ideal for homes with heat pumps or electric vehicles, ranges from €6,000 to €9,500. With the SEAI Domestic Solar PV Grant reducing your cost by up to €1,800, the net outlay for a standard 4kW system in Kildare can be as low as €2,700–€4,700. We provide free, no-obligation site surveys for every home in County Kildare and a detailed written quote so you know exactly what you're paying for. There are no hidden fees — ever."
+    },
+    {
+      question: "What SEAI grants are available in Kildare?",
+      answer: "Homeowners in County Kildare can access the SEAI Domestic Solar PV Grant, which offers up to €1,800 towards the cost of a solar panel installation. To qualify, your home must have been built and occupied before 2021, and you must use an SEAI-registered installer — which we are. The grant is paid directly to you after installation, typically within four to six weeks of submitting your claim. For properties built before 2007, there may also be additional SEAI grants available for insulation and heating upgrades through the Better Energy Homes scheme, which can further improve your home's energy performance. We handle the entire SEAI grant application process on your behalf at no extra cost, making it completely hassle-free for homeowners across Naas, Newbridge, Kildare Town, Celbridge, and Maynooth. Many of our Kildare customers combine their solar grant with other energy upgrades for even greater savings on their electricity bills and carbon footprint."
+    },
+    {
+      question: "How long does a solar installation take in Kildare?",
+      answer: "A standard residential solar panel installation in County Kildare is typically completed in a single working day. Our SEAI-certified installers arrive early, erect scaffolding, mount the panel rails to your roof, fit and wire the solar panels, install the inverter, connect everything to your consumer unit (fuse board), and commission the system — all within roughly six to eight hours. Before installation day, we've already completed your ESB grid connection application, which takes two to four weeks for approval. The total timeline from your initial free survey in Naas or Newbridge to your system generating electricity is typically four to six weeks. Larger installations — such as 6kW+ systems, properties with complex roof shapes, or battery storage additions — may require a second day. We always confirm the exact timeline during your quote and keep you informed every step of the way. Every installation in Kildare comes with a thorough handover, including a demonstration of your monitoring app and system controls."
+    },
+    {
+      question: "Do I need planning permission for solar panels in Kildare?",
+      answer: "In the vast majority of cases, no — domestic solar panel installations in County Kildare are exempt from planning permission under Irish building regulations. The exemption covers rooftop solar panels on private homes, provided the panels do not protrude more than 300mm from the roof surface and do not cover more than 50% of the total roof area. Ground-mounted solar arrays under 25 square metres are also generally exempt. However, there are exceptions: if your home in Naas or Newbridge is a listed or protected structure, located within an architectural conservation area, or near a national monument, you may need planning permission or at least a declaration of exemption from your local county council. Properties in or near Kildare may require additional consideration. We check all planning requirements during your free site survey and advise you if any consent is needed before we proceed. For most homeowners across County Kildare, the answer is a straightforward no — you can go ahead with your solar installation without any planning involvement."
+    },
+    {
+      question: "How much will I save with solar panels in Kildare?",
+      answer: "Typical savings from solar panels in County Kildare range from €600 to €1,000 per year on electricity bills, depending on your system size, household consumption, and whether you're home during the day. A 4kW solar PV system installed on a home in Naas, Newbridge, Kildare Town, Celbridge, and Maynooth can generate approximately 3,400 to 3,800 kWh of clean electricity annually. With current electricity prices in Ireland, this translates to significant annual savings — and the savings grow every time electricity prices increase. If you add battery storage, you can increase your savings further by storing excess daytime generation for evening use, potentially saving €800 to €1,300 per year. Over a 25-year panel lifespan, a solar system in Kildare can save you €15,000 to €25,000 or more. With the SEAI grant reducing your upfront cost by up to €1,800, most homeowners in County Kildare achieve full payback within five to seven years — leaving roughly 18 to 20 years of virtually free electricity. Your solar installation also reduces your carbon footprint by approximately 1.5 to 2 tonnes of CO₂ annually."
+    },
+    {
+      question: "Does solar work in Kildare's weather and climate?",
+      answer: "Yes — absolutely. Solar panels generate electricity from daylight, not direct sunshine, which is why they work effectively throughout Ireland's seasons. County Kildare receives approximately 1,000 to 1,150 kilowatt-hours (kWh) of solar irradiance per square metre annually. Kildare's large new-build estates are particularly well-suited to solar, with modern roofs, good insulation, and south-facing orientations common in housing developments. Modern solar panels are highly efficient in diffuse light conditions, meaning even on the cloudiest days in Naas or Newbridge, your system will still produce meaningful electricity. While Kildare is the commuter belt and experiences typical Irish weather patterns, solar panels are designed and tested to perform reliably in these conditions for 25 to 30 years. In fact, cooler temperatures actually improve panel efficiency — solar panels work slightly better in Irish temperatures than in extreme heat. Our monitoring systems allow you to track daily, monthly, and annual generation so you can see exactly how well your system performs through every season."
+    },
+    {
+      question: "What size solar panel system do I need for my home in Kildare?",
+      answer: "The ideal solar panel system size for your home in County Kildare depends on your electricity consumption, roof space, and budget. For most three- to four-bedroom households in Naas, Newbridge, Kildare Town, Celbridge, and Maynooth, a 4kW system (approximately 10 to 12 panels) is the sweet spot — generating around 3,400 to 3,800 kWh annually and covering 40 to 50% of a typical household's electricity needs. If you have a larger home, use an electric vehicle, or have a heat pump, a 6kW system (15 to 18 panels) may be more appropriate, generating 5,000 to 5,800 kWh per year. Smaller two-bedroom homes in areas like Kildare Town or Celbridge may only need a 3kW system. During your free site survey, we analyse your ESB bills, assess your roof dimensions and orientation, and use satellite shading analysis to recommend the optimally sized system for your specific property. There's no one-size-fits-all — every installation in Kildare is tailored to your home's unique characteristics and your family's energy usage patterns."
+    },
+    {
+      question: "Are solar panels worth it for older homes in Kildare?",
+      answer: "Solar panels are absolutely worth it for older homes in County Kildare — and they may actually benefit you more than newer properties. Older homes in Naas, Newbridge, and surrounding areas often have solid fuel heating systems, electric immersion heaters, or storage heaters that consume large amounts of electricity. A solar panel system can offset these running costs significantly, especially if you time your immersion heating to coincide with peak solar generation hours. Furthermore, installing solar panels on an older property in Kildare can improve your BER (Building Energy Rating) by one to two rating bands, which is increasingly important for property value and for accessing future green mortgage rates. Many period homes in Kildare have large roof areas with south-facing pitches — ideal for solar installations. While we always check structural integrity during our survey, most older Irish homes can easily support the lightweight mounting systems used for modern solar panels. With the SEAI grant of up to €1,800 and typical payback periods of five to seven years, solar panels are one of the smartest investments you can make in an older Kildare home."
+    },
+    {
+      question: "Do solar panels work on flat roofs in Kildare?",
+      answer: "Yes, solar panels work very well on flat roofs in County Kildare. While most homes in Naas and Newbridge have pitched roofs, we regularly install on flat-roofed properties including extensions, garages, commercial buildings, and farm outbuildings across Kildare. On a flat roof, panels are mounted on angled frame systems — typically tilted at 15 to 30 degrees — to optimise solar exposure and allow rainwater runoff. The main consideration for flat roof installations in Kildare is ensuring the roof structure can bear the additional weight, which is typically around 15 to 20 kilograms per square metre. We assess this during every survey. Flat roof systems can actually be more productive than some pitched roof installations because the mounting frames allow us to orient panels at the perfect angle regardless of the roof itself. For homeowners in Kildare Town and Celbridge with flat-roof extensions or outbuildings, these spaces can provide excellent additional generation capacity beyond what the main house roof offers. All our flat roof installations comply with SEAI standards and come with the same comprehensive warranties as pitched roof systems."
+    },
+    {
+      question: "What is the best orientation for solar panels in Kildare?",
+      answer: "The best orientation for solar panels in County Kildare is south-facing, which maximises annual electricity generation. However, this doesn't mean your roof must face exactly due south. Panels facing south-east or south-west still produce approximately 85 to 95% of the output of a perfectly south-facing system — a relatively small reduction that still delivers excellent savings. In fact, east-west split installations (panels on both sides of a roof) are increasingly popular in Naas, Newbridge, Kildare Town, Celbridge, and Maynooth because they generate electricity more evenly throughout the day, which better matches the consumption patterns of households where people are out at work during the middle of the day. Properties in the commuter belt with varied roof lines often benefit from our expert assessment to find the most productive configuration. During your free survey, we use satellite imagery and shading analysis tools to determine the optimal panel layout for your specific roof in Kildare. We never recommend an installation unless we're confident it will deliver strong returns on your investment."
+    }
   ],
   avgSystemCost: "€4,500 – €6,500",
   avgPaybackYears: "5–7 years",
@@ -925,8 +1273,8 @@ const kilkenny: CountyData = {
   province: "Leinster",
   country: "IE",
   phone: "+353-56-772-3100",
-  email: "info@solarkilkenny.ie",
-  domain: "solarkilkenny.ie",
+  email: "info@renewablekilkenny.ie",
+  domain: "renewablekilkenny.ie",
   mainTown: "Kilkenny",
   areaTowns: ["Kilkenny City", "Thomastown", "Castlecomer", "Callan", "Ferrybank", "Graiguenamanagh"],
   lat: "52.6541",
@@ -939,18 +1287,54 @@ const kilkenny: CountyData = {
     "TACs (Tax Exemption for Solar PV under €1,000 annual income)",
   ],
   heroSubtitle:
-    "SEAI registered solar panel installers serving County Kilkenny — from Kilkenny City to Thomastown, Castlecomer to Callan.",
+    "The Marble City leads the way — solar installations that blend seamlessly with Kilkenny's heritage streetscapes.",
+  heroTitle: "Solar Panels Kilkenny.\nThe Marble City Shines Brighter.",
   testimonials: [
     { name: "Pat Ryan", location: "Kilkenny City", rating: 5, text: "Solar Kilkenny provided a thorough survey and transparent pricing. The installation was done professionally and the system is performing very well." },
     { name: "Aisling Brennan", location: "Thomastown", rating: 5, text: "We're very happy with our solar installation. The SEAI grant was straightforward and the team was excellent from start to finish." },
     { name: "John Phelan", location: "Castlecomer", rating: 5, text: "Great local company that delivers on its promises. The installation was clean and efficient, and we're seeing excellent generation figures." },
   ],
-  faqs: [
-    { question: "How much do solar panels cost in Kilkenny?", answer: "A 4kW system costs between €4,500 and €6,500. The SEAI grant of up to €1,800 reduces this further." },
-    { question: "What SEAI grants are available?", answer: "The Domestic Solar PV Grant offers up to €1,800. We handle the full application process for you." },
-    { question: "How long does installation take?", answer: "Most installations in Kilkenny are completed in one working day." },
-    { question: "Do I need planning permission?", answer: "Domestic solar panels are planning-exempt in Ireland within standard limits." },
-    { question: "Do you install battery storage?", answer: "Yes. Battery storage lets you save excess solar for evening and night use, increasing your self-consumption significantly." },
+    faqs: [
+    {
+      question: "How much do solar panels cost in Kilkenny?",
+      answer: "The cost of solar panels in County Kilkenny depends on system size, panel quality, and roof complexity. A typical 4kW residential solar PV system — suitable for most three- to four-bedroom homes in Kilkenny City, Thomastown, Castlecomer, Callan, and Ferrybank — costs between €4,500 and €6,500 before any grants. This price usually includes all scaffolding, SEAI-registered installation, grid connection application, and a monitoring system. A larger 6kW system, ideal for homes with heat pumps or electric vehicles, ranges from €6,000 to €9,500. With the SEAI Domestic Solar PV Grant reducing your cost by up to €1,800, the net outlay for a standard 4kW system in Kilkenny can be as low as €2,700–€4,700. We provide free, no-obligation site surveys for every home in County Kilkenny and a detailed written quote so you know exactly what you're paying for. There are no hidden fees — ever."
+    },
+    {
+      question: "What SEAI grants are available in Kilkenny?",
+      answer: "Homeowners in County Kilkenny can access the SEAI Domestic Solar PV Grant, which offers up to €1,800 towards the cost of a solar panel installation. To qualify, your home must have been built and occupied before 2021, and you must use an SEAI-registered installer — which we are. The grant is paid directly to you after installation, typically within four to six weeks of submitting your claim. For properties built before 2007, there may also be additional SEAI grants available for insulation and heating upgrades through the Better Energy Homes scheme, which can further improve your home's energy performance. We handle the entire SEAI grant application process on your behalf at no extra cost, making it completely hassle-free for homeowners across Kilkenny City, Thomastown, Castlecomer, Callan, and Ferrybank. Many of our Kilkenny customers combine their solar grant with other energy upgrades for even greater savings on their electricity bills and carbon footprint."
+    },
+    {
+      question: "How long does a solar installation take in Kilkenny?",
+      answer: "A standard residential solar panel installation in County Kilkenny is typically completed in a single working day. Our SEAI-certified installers arrive early, erect scaffolding, mount the panel rails to your roof, fit and wire the solar panels, install the inverter, connect everything to your consumer unit (fuse board), and commission the system — all within roughly six to eight hours. Before installation day, we've already completed your ESB grid connection application, which takes two to four weeks for approval. The total timeline from your initial free survey in Kilkenny City or Thomastown to your system generating electricity is typically four to six weeks. Larger installations — such as 6kW+ systems, properties with complex roof shapes, or battery storage additions — may require a second day. We always confirm the exact timeline during your quote and keep you informed every step of the way. Every installation in Kilkenny comes with a thorough handover, including a demonstration of your monitoring app and system controls."
+    },
+    {
+      question: "Do I need planning permission for solar panels in Kilkenny?",
+      answer: "In the vast majority of cases, no — domestic solar panel installations in County Kilkenny are exempt from planning permission under Irish building regulations. The exemption covers rooftop solar panels on private homes, provided the panels do not protrude more than 300mm from the roof surface and do not cover more than 50% of the total roof area. Ground-mounted solar arrays under 25 square metres are also generally exempt. However, there are exceptions: if your home in Kilkenny City or Thomastown is a listed or protected structure, located within an architectural conservation area, or near a national monument, you may need planning permission or at least a declaration of exemption from your local county council. Properties in or near Kilkenny's medieval city centre and heritage buildings may require additional consideration. We check all planning requirements during your free site survey and advise you if any consent is needed before we proceed. For most homeowners across County Kilkenny, the answer is a straightforward no — you can go ahead with your solar installation without any planning involvement."
+    },
+    {
+      question: "How much will I save with solar panels in Kilkenny?",
+      answer: "Typical savings from solar panels in County Kilkenny range from €600 to €1,000 per year on electricity bills, depending on your system size, household consumption, and whether you're home during the day. A 4kW solar PV system installed on a home in Kilkenny City, Thomastown, Castlecomer, Callan, and Ferrybank can generate approximately 3,400 to 3,800 kWh of clean electricity annually. With current electricity prices in Ireland, this translates to significant annual savings — and the savings grow every time electricity prices increase. If you add battery storage, you can increase your savings further by storing excess daytime generation for evening use, potentially saving €800 to €1,300 per year. Over a 25-year panel lifespan, a solar system in Kilkenny can save you €15,000 to €25,000 or more. With the SEAI grant reducing your upfront cost by up to €1,800, most homeowners in County Kilkenny achieve full payback within five to seven years — leaving roughly 18 to 20 years of virtually free electricity. Your solar installation also reduces your carbon footprint by approximately 1.5 to 2 tonnes of CO₂ annually."
+    },
+    {
+      question: "Does solar work in Kilkenny's weather and climate?",
+      answer: "Yes — absolutely. Solar panels generate electricity from daylight, not direct sunshine, which is why they work effectively throughout Ireland's seasons. County Kilkenny receives approximately 1,000 to 1,150 kilowatt-hours (kWh) of solar irradiance per square metre annually. Kilkenny's inland location provides stable solar conditions without the extreme coastal weather experienced by western counties. Modern solar panels are highly efficient in diffuse light conditions, meaning even on the cloudiest days in Kilkenny City or Thomastown, your system will still produce meaningful electricity. While Kilkenny is the south-east and experiences typical Irish weather patterns, solar panels are designed and tested to perform reliably in these conditions for 25 to 30 years. In fact, cooler temperatures actually improve panel efficiency — solar panels work slightly better in Irish temperatures than in extreme heat. Our monitoring systems allow you to track daily, monthly, and annual generation so you can see exactly how well your system performs through every season."
+    },
+    {
+      question: "What size solar panel system do I need for my home in Kilkenny?",
+      answer: "The ideal solar panel system size for your home in County Kilkenny depends on your electricity consumption, roof space, and budget. For most three- to four-bedroom households in Kilkenny City, Thomastown, Castlecomer, Callan, and Ferrybank, a 4kW system (approximately 10 to 12 panels) is the sweet spot — generating around 3,400 to 3,800 kWh annually and covering 40 to 50% of a typical household's electricity needs. If you have a larger home, use an electric vehicle, or have a heat pump, a 6kW system (15 to 18 panels) may be more appropriate, generating 5,000 to 5,800 kWh per year. Smaller two-bedroom homes in areas like Castlecomer or Callan may only need a 3kW system. During your free site survey, we analyse your ESB bills, assess your roof dimensions and orientation, and use satellite shading analysis to recommend the optimally sized system for your specific property. There's no one-size-fits-all — every installation in Kilkenny is tailored to your home's unique characteristics and your family's energy usage patterns."
+    },
+    {
+      question: "Are solar panels worth it for older homes in Kilkenny?",
+      answer: "Solar panels are absolutely worth it for older homes in County Kilkenny — and they may actually benefit you more than newer properties. Older homes in Kilkenny City, Thomastown, and surrounding areas often have solid fuel heating systems, electric immersion heaters, or storage heaters that consume large amounts of electricity. A solar panel system can offset these running costs significantly, especially if you time your immersion heating to coincide with peak solar generation hours. Furthermore, installing solar panels on an older property in Kilkenny can improve your BER (Building Energy Rating) by one to two rating bands, which is increasingly important for property value and for accessing future green mortgage rates. Many period homes in Kilkenny's medieval city centre and heritage buildings have large roof areas with south-facing pitches — ideal for solar installations. While we always check structural integrity during our survey, most older Irish homes can easily support the lightweight mounting systems used for modern solar panels. With the SEAI grant of up to €1,800 and typical payback periods of five to seven years, solar panels are one of the smartest investments you can make in an older Kilkenny home."
+    },
+    {
+      question: "Do solar panels work on flat roofs in Kilkenny?",
+      answer: "Yes, solar panels work very well on flat roofs in County Kilkenny. While most homes in Kilkenny City and Thomastown have pitched roofs, we regularly install on flat-roofed properties including extensions, garages, commercial buildings, and farm outbuildings across Kilkenny. On a flat roof, panels are mounted on angled frame systems — typically tilted at 15 to 30 degrees — to optimise solar exposure and allow rainwater runoff. The main consideration for flat roof installations in Kilkenny is ensuring the roof structure can bear the additional weight, which is typically around 15 to 20 kilograms per square metre. We assess this during every survey. Flat roof systems can actually be more productive than some pitched roof installations because the mounting frames allow us to orient panels at the perfect angle regardless of the roof itself. For homeowners in Castlecomer and Callan with flat-roof extensions or outbuildings, these spaces can provide excellent additional generation capacity beyond what the main house roof offers. All our flat roof installations comply with SEAI standards and come with the same comprehensive warranties as pitched roof systems."
+    },
+    {
+      question: "What is the best orientation for solar panels in Kilkenny?",
+      answer: "The best orientation for solar panels in County Kilkenny is south-facing, which maximises annual electricity generation. However, this doesn't mean your roof must face exactly due south. Panels facing south-east or south-west still produce approximately 85 to 95% of the output of a perfectly south-facing system — a relatively small reduction that still delivers excellent savings. In fact, east-west split installations (panels on both sides of a roof) are increasingly popular in Kilkenny City, Thomastown, Castlecomer, Callan, and Ferrybank because they generate electricity more evenly throughout the day, which better matches the consumption patterns of households where people are out at work during the middle of the day. Properties in the south-east with varied roof lines often benefit from our expert assessment to find the most productive configuration. During your free survey, we use satellite imagery and shading analysis tools to determine the optimal panel layout for your specific roof in Kilkenny. We never recommend an installation unless we're confident it will deliver strong returns on your investment."
+    }
   ],
   avgSystemCost: "€4,500 – €6,500",
   avgPaybackYears: "5–7 years",
@@ -965,8 +1349,8 @@ const laois: CountyData = {
   province: "Leinster",
   country: "IE",
   phone: "+353-57-862-3100",
-  email: "info@solarlaois.ie",
-  domain: "solarlaois.ie",
+  email: "info@renewablelaois.ie",
+  domain: "renewablelaois.ie",
   mainTown: "Portlaoise",
   areaTowns: ["Portlaoise", "Portarlington", "Mountmellick", "Abbeyleix", "Stradbally", "Rathdowney"],
   lat: "53.0327",
@@ -979,18 +1363,54 @@ const laois: CountyData = {
     "TACs (Tax Exemption for Solar PV under €1,000 annual income)",
   ],
   heroSubtitle:
-    "SEAI registered solar panel installers serving County Laois — from Portlaoise to Portarlington, Mountmellick to Abbeyleix.",
+    "Laois homeowners are seeing payback in under 5 years. Discover why the Midlands is Ireland's hidden solar hotspot.",
+  heroTitle: "Solar Panels Laois.\nThe Midlands' Hidden Solar Gem.",
   testimonials: [
     { name: "James Delaney", location: "Portlaoise", rating: 5, text: "Solar Laois delivered exactly what they promised. Clean installation, good communication, and our electricity bills are significantly lower." },
     { name: "Margaret Dunne", location: "Abbeyleix", rating: 5, text: "We're very pleased with our solar panels. The SEAI grant was easy to apply for with Solar Laois's help, and the installation was done in a day." },
     { name: "Liam Fitzpatrick", location: "Mountmellick", rating: 5, text: "Professional and reliable. Solar Laois installed our system efficiently and it's been generating well above the quoted figures." },
   ],
-  faqs: [
-    { question: "How much do solar panels cost in Laois?", answer: "A 4kW system in County Laois costs between €4,500 and €6,500 before the SEAI grant." },
-    { question: "What SEAI grants are available?", answer: "The Domestic Solar PV Grant offers up to €1,800 for home installations." },
-    { question: "How long does installation take?", answer: "Most residential installations in Laois are completed in one working day." },
-    { question: "Do I need planning permission?", answer: "No. Domestic solar panels are planning-exempt in Ireland within standard limits." },
-    { question: "Do you install commercial systems?", answer: "Yes. We design and install solar systems for businesses, farms, and commercial properties across Laois." },
+    faqs: [
+    {
+      question: "How much do solar panels cost in Laois?",
+      answer: "The cost of solar panels in County Laois depends on system size, panel quality, and roof complexity. A typical 4kW residential solar PV system — suitable for most three- to four-bedroom homes in Portlaoise, Portarlington, Mountmellick, Abbeyleix, and Stradbally — costs between €4,500 and €6,500 before any grants. This price usually includes all scaffolding, SEAI-registered installation, grid connection application, and a monitoring system. A larger 6kW system, ideal for homes with heat pumps or electric vehicles, ranges from €6,000 to €9,500. With the SEAI Domestic Solar PV Grant reducing your cost by up to €1,800, the net outlay for a standard 4kW system in Laois can be as low as €2,700–€4,700. We provide free, no-obligation site surveys for every home in County Laois and a detailed written quote so you know exactly what you're paying for. There are no hidden fees — ever."
+    },
+    {
+      question: "What SEAI grants are available in Laois?",
+      answer: "Homeowners in County Laois can access the SEAI Domestic Solar PV Grant, which offers up to €1,800 towards the cost of a solar panel installation. To qualify, your home must have been built and occupied before 2021, and you must use an SEAI-registered installer — which we are. The grant is paid directly to you after installation, typically within four to six weeks of submitting your claim. For properties built before 2007, there may also be additional SEAI grants available for insulation and heating upgrades through the Better Energy Homes scheme, which can further improve your home's energy performance. We handle the entire SEAI grant application process on your behalf at no extra cost, making it completely hassle-free for homeowners across Portlaoise, Portarlington, Mountmellick, Abbeyleix, and Stradbally. Many of our Laois customers combine their solar grant with other energy upgrades for even greater savings on their electricity bills and carbon footprint."
+    },
+    {
+      question: "How long does a solar installation take in Laois?",
+      answer: "A standard residential solar panel installation in County Laois is typically completed in a single working day. Our SEAI-certified installers arrive early, erect scaffolding, mount the panel rails to your roof, fit and wire the solar panels, install the inverter, connect everything to your consumer unit (fuse board), and commission the system — all within roughly six to eight hours. Before installation day, we've already completed your ESB grid connection application, which takes two to four weeks for approval. The total timeline from your initial free survey in Portlaoise or Portarlington to your system generating electricity is typically four to six weeks. Larger installations — such as 6kW+ systems, properties with complex roof shapes, or battery storage additions — may require a second day. We always confirm the exact timeline during your quote and keep you informed every step of the way. Every installation in Laois comes with a thorough handover, including a demonstration of your monitoring app and system controls."
+    },
+    {
+      question: "Do I need planning permission for solar panels in Laois?",
+      answer: "In the vast majority of cases, no — domestic solar panel installations in County Laois are exempt from planning permission under Irish building regulations. The exemption covers rooftop solar panels on private homes, provided the panels do not protrude more than 300mm from the roof surface and do not cover more than 50% of the total roof area. Ground-mounted solar arrays under 25 square metres are also generally exempt. However, there are exceptions: if your home in Portlaoise or Portarlington is a listed or protected structure, located within an architectural conservation area, or near a national monument, you may need planning permission or at least a declaration of exemption from your local county council. Properties in or near Laois may require additional consideration. We check all planning requirements during your free site survey and advise you if any consent is needed before we proceed. For most homeowners across County Laois, the answer is a straightforward no — you can go ahead with your solar installation without any planning involvement."
+    },
+    {
+      question: "How much will I save with solar panels in Laois?",
+      answer: "Typical savings from solar panels in County Laois range from €600 to €1,000 per year on electricity bills, depending on your system size, household consumption, and whether you're home during the day. A 4kW solar PV system installed on a home in Portlaoise, Portarlington, Mountmellick, Abbeyleix, and Stradbally can generate approximately 3,400 to 3,800 kWh of clean electricity annually. With current electricity prices in Ireland, this translates to significant annual savings — and the savings grow every time electricity prices increase. If you add battery storage, you can increase your savings further by storing excess daytime generation for evening use, potentially saving €800 to €1,300 per year. Over a 25-year panel lifespan, a solar system in Laois can save you €15,000 to €25,000 or more. With the SEAI grant reducing your upfront cost by up to €1,800, most homeowners in County Laois achieve full payback within five to seven years — leaving roughly 18 to 20 years of virtually free electricity. Your solar installation also reduces your carbon footprint by approximately 1.5 to 2 tonnes of CO₂ annually."
+    },
+    {
+      question: "Does solar work in Laois's weather and climate?",
+      answer: "Yes — absolutely. Solar panels generate electricity from daylight, not direct sunshine, which is why they work effectively throughout Ireland's seasons. County Laois receives approximately 1,000 to 1,150 kilowatt-hours (kWh) of solar irradiance per square metre annually. Laois sits in the heart of Ireland's Midlands, where the mix of farmland and growing towns creates excellent opportunities for both residential and agricultural solar installations. Modern solar panels are highly efficient in diffuse light conditions, meaning even on the cloudiest days in Portlaoise or Portarlington, your system will still produce meaningful electricity. While Laois is the Midlands and experiences typical Irish weather patterns, solar panels are designed and tested to perform reliably in these conditions for 25 to 30 years. In fact, cooler temperatures actually improve panel efficiency — solar panels work slightly better in Irish temperatures than in extreme heat. Our monitoring systems allow you to track daily, monthly, and annual generation so you can see exactly how well your system performs through every season."
+    },
+    {
+      question: "What size solar panel system do I need for my home in Laois?",
+      answer: "The ideal solar panel system size for your home in County Laois depends on your electricity consumption, roof space, and budget. For most three- to four-bedroom households in Portlaoise, Portarlington, Mountmellick, Abbeyleix, and Stradbally, a 4kW system (approximately 10 to 12 panels) is the sweet spot — generating around 3,400 to 3,800 kWh annually and covering 40 to 50% of a typical household's electricity needs. If you have a larger home, use an electric vehicle, or have a heat pump, a 6kW system (15 to 18 panels) may be more appropriate, generating 5,000 to 5,800 kWh per year. Smaller two-bedroom homes in areas like Mountmellick or Abbeyleix may only need a 3kW system. During your free site survey, we analyse your ESB bills, assess your roof dimensions and orientation, and use satellite shading analysis to recommend the optimally sized system for your specific property. There's no one-size-fits-all — every installation in Laois is tailored to your home's unique characteristics and your family's energy usage patterns."
+    },
+    {
+      question: "Are solar panels worth it for older homes in Laois?",
+      answer: "Solar panels are absolutely worth it for older homes in County Laois — and they may actually benefit you more than newer properties. Older homes in Portlaoise, Portarlington, and surrounding areas often have solid fuel heating systems, electric immersion heaters, or storage heaters that consume large amounts of electricity. A solar panel system can offset these running costs significantly, especially if you time your immersion heating to coincide with peak solar generation hours. Furthermore, installing solar panels on an older property in Laois can improve your BER (Building Energy Rating) by one to two rating bands, which is increasingly important for property value and for accessing future green mortgage rates. Many period homes in Laois have large roof areas with south-facing pitches — ideal for solar installations. While we always check structural integrity during our survey, most older Irish homes can easily support the lightweight mounting systems used for modern solar panels. With the SEAI grant of up to €1,800 and typical payback periods of five to seven years, solar panels are one of the smartest investments you can make in an older Laois home."
+    },
+    {
+      question: "Do solar panels work on flat roofs in Laois?",
+      answer: "Yes, solar panels work very well on flat roofs in County Laois. While most homes in Portlaoise and Portarlington have pitched roofs, we regularly install on flat-roofed properties including extensions, garages, commercial buildings, and farm outbuildings across Laois. On a flat roof, panels are mounted on angled frame systems — typically tilted at 15 to 30 degrees — to optimise solar exposure and allow rainwater runoff. The main consideration for flat roof installations in Laois is ensuring the roof structure can bear the additional weight, which is typically around 15 to 20 kilograms per square metre. We assess this during every survey. Flat roof systems can actually be more productive than some pitched roof installations because the mounting frames allow us to orient panels at the perfect angle regardless of the roof itself. For homeowners in Mountmellick and Abbeyleix with flat-roof extensions or outbuildings, these spaces can provide excellent additional generation capacity beyond what the main house roof offers. All our flat roof installations comply with SEAI standards and come with the same comprehensive warranties as pitched roof systems."
+    },
+    {
+      question: "What is the best orientation for solar panels in Laois?",
+      answer: "The best orientation for solar panels in County Laois is south-facing, which maximises annual electricity generation. However, this doesn't mean your roof must face exactly due south. Panels facing south-east or south-west still produce approximately 85 to 95% of the output of a perfectly south-facing system — a relatively small reduction that still delivers excellent savings. In fact, east-west split installations (panels on both sides of a roof) are increasingly popular in Portlaoise, Portarlington, Mountmellick, Abbeyleix, and Stradbally because they generate electricity more evenly throughout the day, which better matches the consumption patterns of households where people are out at work during the middle of the day. Properties in the Midlands with varied roof lines often benefit from our expert assessment to find the most productive configuration. During your free survey, we use satellite imagery and shading analysis tools to determine the optimal panel layout for your specific roof in Laois. We never recommend an installation unless we're confident it will deliver strong returns on your investment."
+    }
   ],
   avgSystemCost: "€4,500 – €6,500",
   avgPaybackYears: "5–7 years",
@@ -1005,8 +1425,8 @@ const leitrim: CountyData = {
   province: "Connacht",
   country: "IE",
   phone: "+353-71-962-3100",
-  email: "info@solarleitrim.ie",
-  domain: "solarleitrim.ie",
+  email: "info@renewableleitrim.ie",
+  domain: "renewableleitrim.ie",
   mainTown: "Carrick-on-Shannon",
   areaTowns: ["Carrick-on-Shannon", "Manorhamilton", "Drumshanbo", "Mohill", "Ballinamore", "Kinlough"],
   lat: "53.9330",
@@ -1019,18 +1439,54 @@ const leitrim: CountyData = {
     "TACs (Tax Exemption for Solar PV under €1,000 annual income)",
   ],
   heroSubtitle:
-    "SEAI registered solar panel installers serving County Leitrim — from Carrick-on-Shannon to Manorhamilton, Drumshanbo to Ballinamore.",
+    "Leitrim's unspoilt landscapes deserve clean energy. Off-grid capable solar and battery systems for rural and residential homes.",
+  heroTitle: "Solar Panels Leitrim.\nUntouched Landscapes, Unlimited Potential.",
   testimonials: [
     { name: "Michael Gallagher", location: "Carrick-on-Shannon", rating: 5, text: "Solar Leitrim provided a great service. The installation was efficient and we're very happy with the performance of our system." },
     { name: "Bernie Feeney", location: "Drumshanbo", rating: 5, text: "We chose Solar Leitrim for their local knowledge and competitive pricing. The installation was done in a day and the results are excellent." },
     { name: "Paddy Reynolds", location: "Manorhamilton", rating: 5, text: "Very professional outfit. The team was courteous, tidy, and clearly experienced. We'd recommend Solar Leitrim without hesitation." },
   ],
-  faqs: [
-    { question: "How much do solar panels cost in Leitrim?", answer: "A 4kW system in County Leitrim costs between €4,500 and €6,500, with the SEAI grant reducing this by up to €1,800." },
-    { question: "What SEAI grants are available?", answer: "The Domestic Solar PV Grant provides up to €1,800. We manage the application on your behalf." },
-    { question: "How long does installation take?", answer: "Residential installations in Leitrim typically take one working day." },
-    { question: "Do I need planning permission?", answer: "Domestic solar installations are planning-exempt in Ireland within standard limits." },
-    { question: "Do you install on farm buildings?", answer: "Yes. We have extensive experience with agricultural solar installations across County Leitrim." },
+    faqs: [
+    {
+      question: "How much do solar panels cost in Leitrim?",
+      answer: "The cost of solar panels in County Leitrim depends on system size, panel quality, and roof complexity. A typical 4kW residential solar PV system — suitable for most three- to four-bedroom homes in Carrick-on-Shannon, Manorhamilton, Drumshanbo, Mohill, and Ballinamore — costs between €4,500 and €6,500 before any grants. This price usually includes all scaffolding, SEAI-registered installation, grid connection application, and a monitoring system. A larger 6kW system, ideal for homes with heat pumps or electric vehicles, ranges from €6,000 to €9,500. With the SEAI Domestic Solar PV Grant reducing your cost by up to €1,800, the net outlay for a standard 4kW system in Leitrim can be as low as €2,700–€4,700. We provide free, no-obligation site surveys for every home in County Leitrim and a detailed written quote so you know exactly what you're paying for. There are no hidden fees — ever."
+    },
+    {
+      question: "What SEAI grants are available in Leitrim?",
+      answer: "Homeowners in County Leitrim can access the SEAI Domestic Solar PV Grant, which offers up to €1,800 towards the cost of a solar panel installation. To qualify, your home must have been built and occupied before 2021, and you must use an SEAI-registered installer — which we are. The grant is paid directly to you after installation, typically within four to six weeks of submitting your claim. For properties built before 2007, there may also be additional SEAI grants available for insulation and heating upgrades through the Better Energy Homes scheme, which can further improve your home's energy performance. We handle the entire SEAI grant application process on your behalf at no extra cost, making it completely hassle-free for homeowners across Carrick-on-Shannon, Manorhamilton, Drumshanbo, Mohill, and Ballinamore. Many of our Leitrim customers combine their solar grant with other energy upgrades for even greater savings on their electricity bills and carbon footprint."
+    },
+    {
+      question: "How long does a solar installation take in Leitrim?",
+      answer: "A standard residential solar panel installation in County Leitrim is typically completed in a single working day. Our SEAI-certified installers arrive early, erect scaffolding, mount the panel rails to your roof, fit and wire the solar panels, install the inverter, connect everything to your consumer unit (fuse board), and commission the system — all within roughly six to eight hours. Before installation day, we've already completed your ESB grid connection application, which takes two to four weeks for approval. The total timeline from your initial free survey in Carrick-on-Shannon or Manorhamilton to your system generating electricity is typically four to six weeks. Larger installations — such as 6kW+ systems, properties with complex roof shapes, or battery storage additions — may require a second day. We always confirm the exact timeline during your quote and keep you informed every step of the way. Every installation in Leitrim comes with a thorough handover, including a demonstration of your monitoring app and system controls."
+    },
+    {
+      question: "Do I need planning permission for solar panels in Leitrim?",
+      answer: "In the vast majority of cases, no — domestic solar panel installations in County Leitrim are exempt from planning permission under Irish building regulations. The exemption covers rooftop solar panels on private homes, provided the panels do not protrude more than 300mm from the roof surface and do not cover more than 50% of the total roof area. Ground-mounted solar arrays under 25 square metres are also generally exempt. However, there are exceptions: if your home in Carrick-on-Shannon or Manorhamilton is a listed or protected structure, located within an architectural conservation area, or near a national monument, you may need planning permission or at least a declaration of exemption from your local county council. Properties in or near Leitrim may require additional consideration. We check all planning requirements during your free site survey and advise you if any consent is needed before we proceed. For most homeowners across County Leitrim, the answer is a straightforward no — you can go ahead with your solar installation without any planning involvement."
+    },
+    {
+      question: "How much will I save with solar panels in Leitrim?",
+      answer: "Typical savings from solar panels in County Leitrim range from €600 to €1,000 per year on electricity bills, depending on your system size, household consumption, and whether you're home during the day. A 4kW solar PV system installed on a home in Carrick-on-Shannon, Manorhamilton, Drumshanbo, Mohill, and Ballinamore can generate approximately 3,400 to 3,800 kWh of clean electricity annually. With current electricity prices in Ireland, this translates to significant annual savings — and the savings grow every time electricity prices increase. If you add battery storage, you can increase your savings further by storing excess daytime generation for evening use, potentially saving €800 to €1,300 per year. Over a 25-year panel lifespan, a solar system in Leitrim can save you €15,000 to €25,000 or more. With the SEAI grant reducing your upfront cost by up to €1,800, most homeowners in County Leitrim achieve full payback within five to seven years — leaving roughly 18 to 20 years of virtually free electricity. Your solar installation also reduces your carbon footprint by approximately 1.5 to 2 tonnes of CO₂ annually."
+    },
+    {
+      question: "Does solar work in Leitrim's weather and climate?",
+      answer: "Yes — absolutely. Solar panels generate electricity from daylight, not direct sunshine, which is why they work effectively throughout Ireland's seasons. County Leitrim receives approximately 1,000 to 1,150 kilowatt-hours (kWh) of solar irradiance per square metre annually. Leitrim's unspoilt rural landscape means large roof areas and minimal shading — ideal conditions for maximising solar panel output. Modern solar panels are highly efficient in diffuse light conditions, meaning even on the cloudiest days in Carrick-on-Shannon or Manorhamilton, your system will still produce meaningful electricity. While Leitrim is the north-west and experiences typical Irish weather patterns, solar panels are designed and tested to perform reliably in these conditions for 25 to 30 years. In fact, cooler temperatures actually improve panel efficiency — solar panels work slightly better in Irish temperatures than in extreme heat. Our monitoring systems allow you to track daily, monthly, and annual generation so you can see exactly how well your system performs through every season."
+    },
+    {
+      question: "What size solar panel system do I need for my home in Leitrim?",
+      answer: "The ideal solar panel system size for your home in County Leitrim depends on your electricity consumption, roof space, and budget. For most three- to four-bedroom households in Carrick-on-Shannon, Manorhamilton, Drumshanbo, Mohill, and Ballinamore, a 4kW system (approximately 10 to 12 panels) is the sweet spot — generating around 3,400 to 3,800 kWh annually and covering 40 to 50% of a typical household's electricity needs. If you have a larger home, use an electric vehicle, or have a heat pump, a 6kW system (15 to 18 panels) may be more appropriate, generating 5,000 to 5,800 kWh per year. Smaller two-bedroom homes in areas like Drumshanbo or Mohill may only need a 3kW system. During your free site survey, we analyse your ESB bills, assess your roof dimensions and orientation, and use satellite shading analysis to recommend the optimally sized system for your specific property. There's no one-size-fits-all — every installation in Leitrim is tailored to your home's unique characteristics and your family's energy usage patterns."
+    },
+    {
+      question: "Are solar panels worth it for older homes in Leitrim?",
+      answer: "Solar panels are absolutely worth it for older homes in County Leitrim — and they may actually benefit you more than newer properties. Older homes in Carrick-on-Shannon, Manorhamilton, and surrounding areas often have solid fuel heating systems, electric immersion heaters, or storage heaters that consume large amounts of electricity. A solar panel system can offset these running costs significantly, especially if you time your immersion heating to coincide with peak solar generation hours. Furthermore, installing solar panels on an older property in Leitrim can improve your BER (Building Energy Rating) by one to two rating bands, which is increasingly important for property value and for accessing future green mortgage rates. Many period homes in Leitrim have large roof areas with south-facing pitches — ideal for solar installations. While we always check structural integrity during our survey, most older Irish homes can easily support the lightweight mounting systems used for modern solar panels. With the SEAI grant of up to €1,800 and typical payback periods of five to seven years, solar panels are one of the smartest investments you can make in an older Leitrim home."
+    },
+    {
+      question: "Do solar panels work on flat roofs in Leitrim?",
+      answer: "Yes, solar panels work very well on flat roofs in County Leitrim. While most homes in Carrick-on-Shannon and Manorhamilton have pitched roofs, we regularly install on flat-roofed properties including extensions, garages, commercial buildings, and farm outbuildings across Leitrim. On a flat roof, panels are mounted on angled frame systems — typically tilted at 15 to 30 degrees — to optimise solar exposure and allow rainwater runoff. The main consideration for flat roof installations in Leitrim is ensuring the roof structure can bear the additional weight, which is typically around 15 to 20 kilograms per square metre. We assess this during every survey. Flat roof systems can actually be more productive than some pitched roof installations because the mounting frames allow us to orient panels at the perfect angle regardless of the roof itself. For homeowners in Drumshanbo and Mohill with flat-roof extensions or outbuildings, these spaces can provide excellent additional generation capacity beyond what the main house roof offers. All our flat roof installations comply with SEAI standards and come with the same comprehensive warranties as pitched roof systems."
+    },
+    {
+      question: "What is the best orientation for solar panels in Leitrim?",
+      answer: "The best orientation for solar panels in County Leitrim is south-facing, which maximises annual electricity generation. However, this doesn't mean your roof must face exactly due south. Panels facing south-east or south-west still produce approximately 85 to 95% of the output of a perfectly south-facing system — a relatively small reduction that still delivers excellent savings. In fact, east-west split installations (panels on both sides of a roof) are increasingly popular in Carrick-on-Shannon, Manorhamilton, Drumshanbo, Mohill, and Ballinamore because they generate electricity more evenly throughout the day, which better matches the consumption patterns of households where people are out at work during the middle of the day. Properties in the north-west with varied roof lines often benefit from our expert assessment to find the most productive configuration. During your free survey, we use satellite imagery and shading analysis tools to determine the optimal panel layout for your specific roof in Leitrim. We never recommend an installation unless we're confident it will deliver strong returns on your investment."
+    }
   ],
   avgSystemCost: "€4,500 – €6,500",
   avgPaybackYears: "5–7 years",
@@ -1045,8 +1501,8 @@ const limerick: CountyData = {
   province: "Munster",
   country: "IE",
   phone: "+353-61-412-3100",
-  email: "info@solarlimerick.ie",
-  domain: "solarlimerick.ie",
+  email: "info@renewablelimerick.ie",
+  domain: "renewablelimerick.ie",
   mainTown: "Limerick",
   areaTowns: ["Limerick City", "Newcastle West", "Rathkeale", "Kilmallock", "Abbeyfeale", "Bruff"],
   lat: "52.6680",
@@ -1059,18 +1515,54 @@ const limerick: CountyData = {
     "TACs (Tax Exemption for Solar PV under €1,000 annual income)",
   ],
   heroSubtitle:
-    "SEAI registered solar panel installers serving County Limerick — from Limerick City to Newcastle West, Rathkeale to Kilmallock.",
+    "Limerick's Georgian roofs and modern estates alike benefit from our tailored solar panel designs. Free surveys across the Treaty City.",
+  heroTitle: "Solar Panels Limerick.\nTreaty City Homes, Future-Proofed.",
   testimonials: [
     { name: "Timothy O'Brien", location: "Limerick City", rating: 5, text: "Solar Limerick installed a 5kW system on our home and the results have been outstanding. The SEAI grant was handled efficiently and the installation was done in a day." },
     { name: "Catherine O'Sullivan", location: "Kilmallock", rating: 5, text: "We added battery storage to our solar installation and are now virtually self-sufficient during the summer months. Excellent service from Solar Limerick." },
     { name: "Gerard Meaney", location: "Newcastle West", rating: 5, text: "Professional, reliable, and competitively priced. Solar Limerick did a great job on our property and we're seeing significant electricity savings." },
   ],
-  faqs: [
-    { question: "How much do solar panels cost in Limerick?", answer: "A 4kW system in Limerick costs between €4,500 and €6,500 before the SEAI grant of up to €1,800." },
-    { question: "What SEAI grants are available?", answer: "The Domestic Solar PV Grant offers up to €1,800 for homes. We handle the full application process." },
-    { question: "How long does installation take?", answer: "Most Limerick installations take one working day. Larger systems may take 2–3 days." },
-    { question: "Do I need planning permission?", answer: "Domestic solar panels are planning-exempt in Ireland within standard size limits." },
-    { question: "Do you install EV chargers?", answer: "Yes. We can pair your solar system with an EV charge point so you can charge your car using free solar electricity." },
+    faqs: [
+    {
+      question: "How much do solar panels cost in Limerick?",
+      answer: "The cost of solar panels in County Limerick depends on system size, panel quality, and roof complexity. A typical 4kW residential solar PV system — suitable for most three- to four-bedroom homes in Limerick City, Newcastle West, Rathkeale, Kilmallock, and Abbeyfeale — costs between €4,500 and €6,500 before any grants. This price usually includes all scaffolding, SEAI-registered installation, grid connection application, and a monitoring system. A larger 6kW system, ideal for homes with heat pumps or electric vehicles, ranges from €6,000 to €9,500. With the SEAI Domestic Solar PV Grant reducing your cost by up to €1,800, the net outlay for a standard 4kW system in Limerick can be as low as €2,700–€4,700. We provide free, no-obligation site surveys for every home in County Limerick and a detailed written quote so you know exactly what you're paying for. There are no hidden fees — ever."
+    },
+    {
+      question: "What SEAI grants are available in Limerick?",
+      answer: "Homeowners in County Limerick can access the SEAI Domestic Solar PV Grant, which offers up to €1,800 towards the cost of a solar panel installation. To qualify, your home must have been built and occupied before 2021, and you must use an SEAI-registered installer — which we are. The grant is paid directly to you after installation, typically within four to six weeks of submitting your claim. For properties built before 2007, there may also be additional SEAI grants available for insulation and heating upgrades through the Better Energy Homes scheme, which can further improve your home's energy performance. We handle the entire SEAI grant application process on your behalf at no extra cost, making it completely hassle-free for homeowners across Limerick City, Newcastle West, Rathkeale, Kilmallock, and Abbeyfeale. Many of our Limerick customers combine their solar grant with other energy upgrades for even greater savings on their electricity bills and carbon footprint."
+    },
+    {
+      question: "How long does a solar installation take in Limerick?",
+      answer: "A standard residential solar panel installation in County Limerick is typically completed in a single working day. Our SEAI-certified installers arrive early, erect scaffolding, mount the panel rails to your roof, fit and wire the solar panels, install the inverter, connect everything to your consumer unit (fuse board), and commission the system — all within roughly six to eight hours. Before installation day, we've already completed your ESB grid connection application, which takes two to four weeks for approval. The total timeline from your initial free survey in Limerick City or Newcastle West to your system generating electricity is typically four to six weeks. Larger installations — such as 6kW+ systems, properties with complex roof shapes, or battery storage additions — may require a second day. We always confirm the exact timeline during your quote and keep you informed every step of the way. Every installation in Limerick comes with a thorough handover, including a demonstration of your monitoring app and system controls."
+    },
+    {
+      question: "Do I need planning permission for solar panels in Limerick?",
+      answer: "In the vast majority of cases, no — domestic solar panel installations in County Limerick are exempt from planning permission under Irish building regulations. The exemption covers rooftop solar panels on private homes, provided the panels do not protrude more than 300mm from the roof surface and do not cover more than 50% of the total roof area. Ground-mounted solar arrays under 25 square metres are also generally exempt. However, there are exceptions: if your home in Limerick City or Newcastle West is a listed or protected structure, located within an architectural conservation area, or near a national monument, you may need planning permission or at least a declaration of exemption from your local county council. Properties in or near Limerick City's Georgian Quarter may require additional consideration. We check all planning requirements during your free site survey and advise you if any consent is needed before we proceed. For most homeowners across County Limerick, the answer is a straightforward no — you can go ahead with your solar installation without any planning involvement."
+    },
+    {
+      question: "How much will I save with solar panels in Limerick?",
+      answer: "Typical savings from solar panels in County Limerick range from €600 to €1,000 per year on electricity bills, depending on your system size, household consumption, and whether you're home during the day. A 4kW solar PV system installed on a home in Limerick City, Newcastle West, Rathkeale, Kilmallock, and Abbeyfeale can generate approximately 3,400 to 3,800 kWh of clean electricity annually. With current electricity prices in Ireland, this translates to significant annual savings — and the savings grow every time electricity prices increase. If you add battery storage, you can increase your savings further by storing excess daytime generation for evening use, potentially saving €800 to €1,300 per year. Over a 25-year panel lifespan, a solar system in Limerick can save you €15,000 to €25,000 or more. With the SEAI grant reducing your upfront cost by up to €1,800, most homeowners in County Limerick achieve full payback within five to seven years — leaving roughly 18 to 20 years of virtually free electricity. Your solar installation also reduces your carbon footprint by approximately 1.5 to 2 tonnes of CO₂ annually."
+    },
+    {
+      question: "Does solar work in Limerick's weather and climate?",
+      answer: "Yes — absolutely. Solar panels generate electricity from daylight, not direct sunshine, which is why they work effectively throughout Ireland's seasons. County Limerick receives approximately 1,000 to 1,150 kilowatt-hours (kWh) of solar irradiance per square metre annually. Limerick's mix of urban and rural environments, from the Treaty City to the Golden Vale farmlands, provides diverse solar installation opportunities. Modern solar panels are highly efficient in diffuse light conditions, meaning even on the cloudiest days in Limerick City or Newcastle West, your system will still produce meaningful electricity. While Limerick is the mid-west and experiences typical Irish weather patterns, solar panels are designed and tested to perform reliably in these conditions for 25 to 30 years. In fact, cooler temperatures actually improve panel efficiency — solar panels work slightly better in Irish temperatures than in extreme heat. Our monitoring systems allow you to track daily, monthly, and annual generation so you can see exactly how well your system performs through every season."
+    },
+    {
+      question: "What size solar panel system do I need for my home in Limerick?",
+      answer: "The ideal solar panel system size for your home in County Limerick depends on your electricity consumption, roof space, and budget. For most three- to four-bedroom households in Limerick City, Newcastle West, Rathkeale, Kilmallock, and Abbeyfeale, a 4kW system (approximately 10 to 12 panels) is the sweet spot — generating around 3,400 to 3,800 kWh annually and covering 40 to 50% of a typical household's electricity needs. If you have a larger home, use an electric vehicle, or have a heat pump, a 6kW system (15 to 18 panels) may be more appropriate, generating 5,000 to 5,800 kWh per year. Smaller two-bedroom homes in areas like Rathkeale or Kilmallock may only need a 3kW system. During your free site survey, we analyse your ESB bills, assess your roof dimensions and orientation, and use satellite shading analysis to recommend the optimally sized system for your specific property. There's no one-size-fits-all — every installation in Limerick is tailored to your home's unique characteristics and your family's energy usage patterns."
+    },
+    {
+      question: "Are solar panels worth it for older homes in Limerick?",
+      answer: "Solar panels are absolutely worth it for older homes in County Limerick — and they may actually benefit you more than newer properties. Older homes in Limerick City, Newcastle West, and surrounding areas often have solid fuel heating systems, electric immersion heaters, or storage heaters that consume large amounts of electricity. A solar panel system can offset these running costs significantly, especially if you time your immersion heating to coincide with peak solar generation hours. Furthermore, installing solar panels on an older property in Limerick can improve your BER (Building Energy Rating) by one to two rating bands, which is increasingly important for property value and for accessing future green mortgage rates. Many period homes in Limerick City's Georgian Quarter have large roof areas with south-facing pitches — ideal for solar installations. While we always check structural integrity during our survey, most older Irish homes can easily support the lightweight mounting systems used for modern solar panels. With the SEAI grant of up to €1,800 and typical payback periods of five to seven years, solar panels are one of the smartest investments you can make in an older Limerick home."
+    },
+    {
+      question: "Do solar panels work on flat roofs in Limerick?",
+      answer: "Yes, solar panels work very well on flat roofs in County Limerick. While most homes in Limerick City and Newcastle West have pitched roofs, we regularly install on flat-roofed properties including extensions, garages, commercial buildings, and farm outbuildings across Limerick. On a flat roof, panels are mounted on angled frame systems — typically tilted at 15 to 30 degrees — to optimise solar exposure and allow rainwater runoff. The main consideration for flat roof installations in Limerick is ensuring the roof structure can bear the additional weight, which is typically around 15 to 20 kilograms per square metre. We assess this during every survey. Flat roof systems can actually be more productive than some pitched roof installations because the mounting frames allow us to orient panels at the perfect angle regardless of the roof itself. For homeowners in Rathkeale and Kilmallock with flat-roof extensions or outbuildings, these spaces can provide excellent additional generation capacity beyond what the main house roof offers. All our flat roof installations comply with SEAI standards and come with the same comprehensive warranties as pitched roof systems."
+    },
+    {
+      question: "What is the best orientation for solar panels in Limerick?",
+      answer: "The best orientation for solar panels in County Limerick is south-facing, which maximises annual electricity generation. However, this doesn't mean your roof must face exactly due south. Panels facing south-east or south-west still produce approximately 85 to 95% of the output of a perfectly south-facing system — a relatively small reduction that still delivers excellent savings. In fact, east-west split installations (panels on both sides of a roof) are increasingly popular in Limerick City, Newcastle West, Rathkeale, Kilmallock, and Abbeyfeale because they generate electricity more evenly throughout the day, which better matches the consumption patterns of households where people are out at work during the middle of the day. Properties in the mid-west with varied roof lines often benefit from our expert assessment to find the most productive configuration. During your free survey, we use satellite imagery and shading analysis tools to determine the optimal panel layout for your specific roof in Limerick. We never recommend an installation unless we're confident it will deliver strong returns on your investment."
+    }
   ],
   avgSystemCost: "€4,500 – €6,500",
   avgPaybackYears: "5–7 years",
@@ -1085,8 +1577,8 @@ const longford: CountyData = {
   province: "Leinster",
   country: "IE",
   phone: "+353-43-334-5100",
-  email: "info@solarlongford.ie",
-  domain: "solarlongford.ie",
+  email: "info@renewablelongford.ie",
+  domain: "renewablelongford.ie",
   mainTown: "Longford",
   areaTowns: ["Longford Town", "Ballymahon", "Granard", "Edgeworthstown", "Ardagh", "Lanesborough"],
   lat: "53.7267",
@@ -1099,18 +1591,54 @@ const longford: CountyData = {
     "TACs (Tax Exemption for Solar PV under €1,000 annual income)",
   ],
   heroSubtitle:
-    "SEAI registered solar panel installers serving County Longford — from Longford Town to Ballymahon, Granard to Edgeworthstown.",
+    "Longford's agricultural roots make it perfect for solar — farm buildings and family homes both earning from the sun.",
+  heroTitle: "Solar Panels Longford.\nFarms & Family Homes, All Generating.",
   testimonials: [
     { name: "Brian Kenny", location: "Longford Town", rating: 5, text: "Solar Longford were excellent. They handled everything from survey to SEAI grant, and the installation was done in a single day." },
     { name: "Rose Brady", location: "Ballymahon", rating: 5, text: "We're very pleased with our solar panels. The system is generating well and we've seen a real reduction in our electricity bills." },
     { name: "Francis McCabe", location: "Granard", rating: 5, text: "Great service from a local company. Solar Longford were professional, competitively priced, and the installation was done to a high standard." },
   ],
-  faqs: [
-    { question: "How much do solar panels cost in Longford?", answer: "A 4kW system in County Longford costs between €4,500 and €6,500. The SEAI grant of up to €1,800 applies." },
-    { question: "What SEAI grants are available?", answer: "The Domestic Solar PV Grant offers up to €1,800. We manage the application for you." },
-    { question: "How long does installation take?", answer: "Residential installations in Longford typically take one working day." },
-    { question: "Do I need planning permission?", answer: "No. Domestic solar panels are exempt from planning in Ireland within standard limits." },
-    { question: "Do you install on farms?", answer: "Yes. We design and install agricultural solar systems across County Longford." },
+    faqs: [
+    {
+      question: "How much do solar panels cost in Longford?",
+      answer: "The cost of solar panels in County Longford depends on system size, panel quality, and roof complexity. A typical 4kW residential solar PV system — suitable for most three- to four-bedroom homes in Longford Town, Ballymahon, Granard, Edgeworthstown, and Ardagh — costs between €4,500 and €6,500 before any grants. This price usually includes all scaffolding, SEAI-registered installation, grid connection application, and a monitoring system. A larger 6kW system, ideal for homes with heat pumps or electric vehicles, ranges from €6,000 to €9,500. With the SEAI Domestic Solar PV Grant reducing your cost by up to €1,800, the net outlay for a standard 4kW system in Longford can be as low as €2,700–€4,700. We provide free, no-obligation site surveys for every home in County Longford and a detailed written quote so you know exactly what you're paying for. There are no hidden fees — ever."
+    },
+    {
+      question: "What SEAI grants are available in Longford?",
+      answer: "Homeowners in County Longford can access the SEAI Domestic Solar PV Grant, which offers up to €1,800 towards the cost of a solar panel installation. To qualify, your home must have been built and occupied before 2021, and you must use an SEAI-registered installer — which we are. The grant is paid directly to you after installation, typically within four to six weeks of submitting your claim. For properties built before 2007, there may also be additional SEAI grants available for insulation and heating upgrades through the Better Energy Homes scheme, which can further improve your home's energy performance. We handle the entire SEAI grant application process on your behalf at no extra cost, making it completely hassle-free for homeowners across Longford Town, Ballymahon, Granard, Edgeworthstown, and Ardagh. Many of our Longford customers combine their solar grant with other energy upgrades for even greater savings on their electricity bills and carbon footprint."
+    },
+    {
+      question: "How long does a solar installation take in Longford?",
+      answer: "A standard residential solar panel installation in County Longford is typically completed in a single working day. Our SEAI-certified installers arrive early, erect scaffolding, mount the panel rails to your roof, fit and wire the solar panels, install the inverter, connect everything to your consumer unit (fuse board), and commission the system — all within roughly six to eight hours. Before installation day, we've already completed your ESB grid connection application, which takes two to four weeks for approval. The total timeline from your initial free survey in Longford Town or Ballymahon to your system generating electricity is typically four to six weeks. Larger installations — such as 6kW+ systems, properties with complex roof shapes, or battery storage additions — may require a second day. We always confirm the exact timeline during your quote and keep you informed every step of the way. Every installation in Longford comes with a thorough handover, including a demonstration of your monitoring app and system controls."
+    },
+    {
+      question: "Do I need planning permission for solar panels in Longford?",
+      answer: "In the vast majority of cases, no — domestic solar panel installations in County Longford are exempt from planning permission under Irish building regulations. The exemption covers rooftop solar panels on private homes, provided the panels do not protrude more than 300mm from the roof surface and do not cover more than 50% of the total roof area. Ground-mounted solar arrays under 25 square metres are also generally exempt. However, there are exceptions: if your home in Longford Town or Ballymahon is a listed or protected structure, located within an architectural conservation area, or near a national monument, you may need planning permission or at least a declaration of exemption from your local county council. Properties in or near Longford may require additional consideration. We check all planning requirements during your free site survey and advise you if any consent is needed before we proceed. For most homeowners across County Longford, the answer is a straightforward no — you can go ahead with your solar installation without any planning involvement."
+    },
+    {
+      question: "How much will I save with solar panels in Longford?",
+      answer: "Typical savings from solar panels in County Longford range from €600 to €1,000 per year on electricity bills, depending on your system size, household consumption, and whether you're home during the day. A 4kW solar PV system installed on a home in Longford Town, Ballymahon, Granard, Edgeworthstown, and Ardagh can generate approximately 3,400 to 3,800 kWh of clean electricity annually. With current electricity prices in Ireland, this translates to significant annual savings — and the savings grow every time electricity prices increase. If you add battery storage, you can increase your savings further by storing excess daytime generation for evening use, potentially saving €800 to €1,300 per year. Over a 25-year panel lifespan, a solar system in Longford can save you €15,000 to €25,000 or more. With the SEAI grant reducing your upfront cost by up to €1,800, most homeowners in County Longford achieve full payback within five to seven years — leaving roughly 18 to 20 years of virtually free electricity. Your solar installation also reduces your carbon footprint by approximately 1.5 to 2 tonnes of CO₂ annually."
+    },
+    {
+      question: "Does solar work in Longford's weather and climate?",
+      answer: "Yes — absolutely. Solar panels generate electricity from daylight, not direct sunshine, which is why they work effectively throughout Ireland's seasons. County Longford receives approximately 1,000 to 1,150 kilowatt-hours (kWh) of solar irradiance per square metre annually. Longford's strong agricultural community means many properties have both a family home and farm buildings — both ideal for solar panel installations. Modern solar panels are highly efficient in diffuse light conditions, meaning even on the cloudiest days in Longford Town or Ballymahon, your system will still produce meaningful electricity. While Longford is the Midlands and experiences typical Irish weather patterns, solar panels are designed and tested to perform reliably in these conditions for 25 to 30 years. In fact, cooler temperatures actually improve panel efficiency — solar panels work slightly better in Irish temperatures than in extreme heat. Our monitoring systems allow you to track daily, monthly, and annual generation so you can see exactly how well your system performs through every season."
+    },
+    {
+      question: "What size solar panel system do I need for my home in Longford?",
+      answer: "The ideal solar panel system size for your home in County Longford depends on your electricity consumption, roof space, and budget. For most three- to four-bedroom households in Longford Town, Ballymahon, Granard, Edgeworthstown, and Ardagh, a 4kW system (approximately 10 to 12 panels) is the sweet spot — generating around 3,400 to 3,800 kWh annually and covering 40 to 50% of a typical household's electricity needs. If you have a larger home, use an electric vehicle, or have a heat pump, a 6kW system (15 to 18 panels) may be more appropriate, generating 5,000 to 5,800 kWh per year. Smaller two-bedroom homes in areas like Granard or Edgeworthstown may only need a 3kW system. During your free site survey, we analyse your ESB bills, assess your roof dimensions and orientation, and use satellite shading analysis to recommend the optimally sized system for your specific property. There's no one-size-fits-all — every installation in Longford is tailored to your home's unique characteristics and your family's energy usage patterns."
+    },
+    {
+      question: "Are solar panels worth it for older homes in Longford?",
+      answer: "Solar panels are absolutely worth it for older homes in County Longford — and they may actually benefit you more than newer properties. Older homes in Longford Town, Ballymahon, and surrounding areas often have solid fuel heating systems, electric immersion heaters, or storage heaters that consume large amounts of electricity. A solar panel system can offset these running costs significantly, especially if you time your immersion heating to coincide with peak solar generation hours. Furthermore, installing solar panels on an older property in Longford can improve your BER (Building Energy Rating) by one to two rating bands, which is increasingly important for property value and for accessing future green mortgage rates. Many period homes in Longford have large roof areas with south-facing pitches — ideal for solar installations. While we always check structural integrity during our survey, most older Irish homes can easily support the lightweight mounting systems used for modern solar panels. With the SEAI grant of up to €1,800 and typical payback periods of five to seven years, solar panels are one of the smartest investments you can make in an older Longford home."
+    },
+    {
+      question: "Do solar panels work on flat roofs in Longford?",
+      answer: "Yes, solar panels work very well on flat roofs in County Longford. While most homes in Longford Town and Ballymahon have pitched roofs, we regularly install on flat-roofed properties including extensions, garages, commercial buildings, and farm outbuildings across Longford. On a flat roof, panels are mounted on angled frame systems — typically tilted at 15 to 30 degrees — to optimise solar exposure and allow rainwater runoff. The main consideration for flat roof installations in Longford is ensuring the roof structure can bear the additional weight, which is typically around 15 to 20 kilograms per square metre. We assess this during every survey. Flat roof systems can actually be more productive than some pitched roof installations because the mounting frames allow us to orient panels at the perfect angle regardless of the roof itself. For homeowners in Granard and Edgeworthstown with flat-roof extensions or outbuildings, these spaces can provide excellent additional generation capacity beyond what the main house roof offers. All our flat roof installations comply with SEAI standards and come with the same comprehensive warranties as pitched roof systems."
+    },
+    {
+      question: "What is the best orientation for solar panels in Longford?",
+      answer: "The best orientation for solar panels in County Longford is south-facing, which maximises annual electricity generation. However, this doesn't mean your roof must face exactly due south. Panels facing south-east or south-west still produce approximately 85 to 95% of the output of a perfectly south-facing system — a relatively small reduction that still delivers excellent savings. In fact, east-west split installations (panels on both sides of a roof) are increasingly popular in Longford Town, Ballymahon, Granard, Edgeworthstown, and Ardagh because they generate electricity more evenly throughout the day, which better matches the consumption patterns of households where people are out at work during the middle of the day. Properties in the Midlands with varied roof lines often benefit from our expert assessment to find the most productive configuration. During your free survey, we use satellite imagery and shading analysis tools to determine the optimal panel layout for your specific roof in Longford. We never recommend an installation unless we're confident it will deliver strong returns on your investment."
+    }
   ],
   avgSystemCost: "€4,500 – €6,500",
   avgPaybackYears: "5–7 years",
@@ -1125,8 +1653,8 @@ const louth: CountyData = {
   province: "Leinster",
   country: "IE",
   phone: "+353-42-932-6100",
-  email: "info@solarlouth.ie",
-  domain: "solarlouth.ie",
+  email: "info@renewablelouth.ie",
+  domain: "renewablelouth.ie",
   mainTown: "Dundalk",
   areaTowns: ["Dundalk", "Drogheda", "Ardee", "Dunleer", "Collon", "Carlingford"],
   lat: "53.9179",
@@ -1139,18 +1667,54 @@ const louth: CountyData = {
     "TACs (Tax Exemption for Solar PV under €1,000 annual income)",
   ],
   heroSubtitle:
-    "SEAI registered solar panel installers serving County Louth — from Dundalk to Drogheda, Ardee to Carlingford.",
+    "The Wee County packs a big solar punch. Dundalk to Drogheda installations backed by our 25-year panel warranty.",
+  heroTitle: "Solar Panels Louth.\nThe Wee County Packs a Solar Punch.",
   testimonials: [
     { name: "John Callan", location: "Dundalk", rating: 5, text: "Solar Louth delivered a first-class installation. The system is performing exactly as quoted and the SEAI grant was handled efficiently." },
     { name: "Michelle Mackin", location: "Drogheda", rating: 5, text: "We chose Solar Louth based on their local reputation and they didn't disappoint. Clean, professional installation with excellent aftercare." },
     { name: "Eugene Mathews", location: "Ardee", rating: 5, text: "Very happy with our solar panels. The installation was done quickly and we've seen a significant reduction in our electricity bills." },
   ],
-  faqs: [
-    { question: "How much do solar panels cost in Louth?", answer: "A 4kW system in County Louth costs between €4,500 and €6,500 before the SEAI grant." },
-    { question: "What SEAI grants are available?", answer: "The Domestic Solar PV Grant offers up to €1,800 for homes. We manage the full application." },
-    { question: "How long does installation take?", answer: "Most installations in Louth are completed in one working day." },
-    { question: "Do I need planning permission?", answer: "Domestic solar panels are planning-exempt in Ireland within standard limits." },
-    { question: "Do you offer battery storage?", answer: "Yes. We install battery systems that store excess solar for use when the sun isn't shining." },
+    faqs: [
+    {
+      question: "How much do solar panels cost in Louth?",
+      answer: "The cost of solar panels in County Louth depends on system size, panel quality, and roof complexity. A typical 4kW residential solar PV system — suitable for most three- to four-bedroom homes in Dundalk, Drogheda, Ardee, Dunleer, and Collon — costs between €4,500 and €6,500 before any grants. This price usually includes all scaffolding, SEAI-registered installation, grid connection application, and a monitoring system. A larger 6kW system, ideal for homes with heat pumps or electric vehicles, ranges from €6,000 to €9,500. With the SEAI Domestic Solar PV Grant reducing your cost by up to €1,800, the net outlay for a standard 4kW system in Louth can be as low as €2,700–€4,700. We provide free, no-obligation site surveys for every home in County Louth and a detailed written quote so you know exactly what you're paying for. There are no hidden fees — ever."
+    },
+    {
+      question: "What SEAI grants are available in Louth?",
+      answer: "Homeowners in County Louth can access the SEAI Domestic Solar PV Grant, which offers up to €1,800 towards the cost of a solar panel installation. To qualify, your home must have been built and occupied before 2021, and you must use an SEAI-registered installer — which we are. The grant is paid directly to you after installation, typically within four to six weeks of submitting your claim. For properties built before 2007, there may also be additional SEAI grants available for insulation and heating upgrades through the Better Energy Homes scheme, which can further improve your home's energy performance. We handle the entire SEAI grant application process on your behalf at no extra cost, making it completely hassle-free for homeowners across Dundalk, Drogheda, Ardee, Dunleer, and Collon. Many of our Louth customers combine their solar grant with other energy upgrades for even greater savings on their electricity bills and carbon footprint."
+    },
+    {
+      question: "How long does a solar installation take in Louth?",
+      answer: "A standard residential solar panel installation in County Louth is typically completed in a single working day. Our SEAI-certified installers arrive early, erect scaffolding, mount the panel rails to your roof, fit and wire the solar panels, install the inverter, connect everything to your consumer unit (fuse board), and commission the system — all within roughly six to eight hours. Before installation day, we've already completed your ESB grid connection application, which takes two to four weeks for approval. The total timeline from your initial free survey in Dundalk or Drogheda to your system generating electricity is typically four to six weeks. Larger installations — such as 6kW+ systems, properties with complex roof shapes, or battery storage additions — may require a second day. We always confirm the exact timeline during your quote and keep you informed every step of the way. Every installation in Louth comes with a thorough handover, including a demonstration of your monitoring app and system controls."
+    },
+    {
+      question: "Do I need planning permission for solar panels in Louth?",
+      answer: "In the vast majority of cases, no — domestic solar panel installations in County Louth are exempt from planning permission under Irish building regulations. The exemption covers rooftop solar panels on private homes, provided the panels do not protrude more than 300mm from the roof surface and do not cover more than 50% of the total roof area. Ground-mounted solar arrays under 25 square metres are also generally exempt. However, there are exceptions: if your home in Dundalk or Drogheda is a listed or protected structure, located within an architectural conservation area, or near a national monument, you may need planning permission or at least a declaration of exemption from your local county council. Properties in or near historic Drogheda and Dundalk may require additional consideration. We check all planning requirements during your free site survey and advise you if any consent is needed before we proceed. For most homeowners across County Louth, the answer is a straightforward no — you can go ahead with your solar installation without any planning involvement."
+    },
+    {
+      question: "How much will I save with solar panels in Louth?",
+      answer: "Typical savings from solar panels in County Louth range from €600 to €1,000 per year on electricity bills, depending on your system size, household consumption, and whether you're home during the day. A 4kW solar PV system installed on a home in Dundalk, Drogheda, Ardee, Dunleer, and Collon can generate approximately 3,400 to 3,800 kWh of clean electricity annually. With current electricity prices in Ireland, this translates to significant annual savings — and the savings grow every time electricity prices increase. If you add battery storage, you can increase your savings further by storing excess daytime generation for evening use, potentially saving €800 to €1,300 per year. Over a 25-year panel lifespan, a solar system in Louth can save you €15,000 to €25,000 or more. With the SEAI grant reducing your upfront cost by up to €1,800, most homeowners in County Louth achieve full payback within five to seven years — leaving roughly 18 to 20 years of virtually free electricity. Your solar installation also reduces your carbon footprint by approximately 1.5 to 2 tonnes of CO₂ annually."
+    },
+    {
+      question: "Does solar work in Louth's weather and climate?",
+      answer: "Yes — absolutely. Solar panels generate electricity from daylight, not direct sunshine, which is why they work effectively throughout Ireland's seasons. County Louth receives approximately 1,000 to 1,150 kilowatt-hours (kWh) of solar irradiance per square metre annually. Louth's east-coast location means it receives some of the highest solar irradiance levels in Ireland, particularly along the Cooley Peninsula. Modern solar panels are highly efficient in diffuse light conditions, meaning even on the cloudiest days in Dundalk or Drogheda, your system will still produce meaningful electricity. As a coastal county, Louth does experience more wind and rainfall, but quality solar panels are manufactured to withstand harsh weather conditions including salt air exposure, heavy rain, and wind speeds well above what Ireland experiences. We use marine-grade mounting systems for properties near the coast. In fact, cooler temperatures actually improve panel efficiency — solar panels work slightly better in Irish temperatures than in extreme heat. Our monitoring systems allow you to track daily, monthly, and annual generation so you can see exactly how well your system performs through every season."
+    },
+    {
+      question: "What size solar panel system do I need for my home in Louth?",
+      answer: "The ideal solar panel system size for your home in County Louth depends on your electricity consumption, roof space, and budget. For most three- to four-bedroom households in Dundalk, Drogheda, Ardee, Dunleer, and Collon, a 4kW system (approximately 10 to 12 panels) is the sweet spot — generating around 3,400 to 3,800 kWh annually and covering 40 to 50% of a typical household's electricity needs. If you have a larger home, use an electric vehicle, or have a heat pump, a 6kW system (15 to 18 panels) may be more appropriate, generating 5,000 to 5,800 kWh per year. Smaller two-bedroom homes in areas like Ardee or Dunleer may only need a 3kW system. During your free site survey, we analyse your ESB bills, assess your roof dimensions and orientation, and use satellite shading analysis to recommend the optimally sized system for your specific property. There's no one-size-fits-all — every installation in Louth is tailored to your home's unique characteristics and your family's energy usage patterns."
+    },
+    {
+      question: "Are solar panels worth it for older homes in Louth?",
+      answer: "Solar panels are absolutely worth it for older homes in County Louth — and they may actually benefit you more than newer properties. Older homes in Dundalk, Drogheda, and surrounding areas often have solid fuel heating systems, electric immersion heaters, or storage heaters that consume large amounts of electricity. A solar panel system can offset these running costs significantly, especially if you time your immersion heating to coincide with peak solar generation hours. Furthermore, installing solar panels on an older property in Louth can improve your BER (Building Energy Rating) by one to two rating bands, which is increasingly important for property value and for accessing future green mortgage rates. Many period homes in historic Drogheda and Dundalk have large roof areas with south-facing pitches — ideal for solar installations. While we always check structural integrity during our survey, most older Irish homes can easily support the lightweight mounting systems used for modern solar panels. With the SEAI grant of up to €1,800 and typical payback periods of five to seven years, solar panels are one of the smartest investments you can make in an older Louth home."
+    },
+    {
+      question: "Do solar panels work on flat roofs in Louth?",
+      answer: "Yes, solar panels work very well on flat roofs in County Louth. While most homes in Dundalk and Drogheda have pitched roofs, we regularly install on flat-roofed properties including extensions, garages, commercial buildings, and farm outbuildings across Louth. On a flat roof, panels are mounted on angled frame systems — typically tilted at 15 to 30 degrees — to optimise solar exposure and allow rainwater runoff. The main consideration for flat roof installations in Louth is ensuring the roof structure can bear the additional weight, which is typically around 15 to 20 kilograms per square metre. We assess this during every survey. Flat roof systems can actually be more productive than some pitched roof installations because the mounting frames allow us to orient panels at the perfect angle regardless of the roof itself. For homeowners in Ardee and Dunleer with flat-roof extensions or outbuildings, these spaces can provide excellent additional generation capacity beyond what the main house roof offers. All our flat roof installations comply with SEAI standards and come with the same comprehensive warranties as pitched roof systems."
+    },
+    {
+      question: "What is the best orientation for solar panels in Louth?",
+      answer: "The best orientation for solar panels in County Louth is south-facing, which maximises annual electricity generation. However, this doesn't mean your roof must face exactly due south. Panels facing south-east or south-west still produce approximately 85 to 95% of the output of a perfectly south-facing system — a relatively small reduction that still delivers excellent savings. In fact, east-west split installations (panels on both sides of a roof) are increasingly popular in Dundalk, Drogheda, Ardee, Dunleer, and Collon because they generate electricity more evenly throughout the day, which better matches the consumption patterns of households where people are out at work during the middle of the day. Properties along Louth's coastline sometimes face unusual orientations due to their location — we've successfully installed solar on roofs facing nearly every direction. During your free survey, we use satellite imagery and shading analysis tools to determine the optimal panel layout for your specific roof in Louth. We never recommend an installation unless we're confident it will deliver strong returns on your investment."
+    }
   ],
   avgSystemCost: "€4,500 – €6,500",
   avgPaybackYears: "5–7 years",
@@ -1165,8 +1729,8 @@ const meath: CountyData = {
   province: "Leinster",
   country: "IE",
   phone: "+353-46-902-3100",
-  email: "info@solarMeath.ie",
-  domain: "solarMeath.ie",
+  email: "info@renewableMeath.ie",
+  domain: "renewableMeath.ie",
   mainTown: "Navan",
   areaTowns: ["Navan", "Ashbourne", "Dunboyne", "Kells", "Trim", "Laytown"],
   lat: "53.6535",
@@ -1179,23 +1743,135 @@ const meath: CountyData = {
     "TACs (Tax Exemption for Solar PV under €1,000 annual income)",
   ],
   heroSubtitle:
-    "SEAI registered solar panel installers serving County Meath — from Navan to Ashbourne, Kells to Trim.",
+    "Meath's Royal heritage meets cutting-edge solar technology. New builds and period properties — we've done them all.",
+  heroTitle: "Solar Panels Meath.\nRoyal Heritage Meets Clean Energy.",
   testimonials: [
     { name: "Derek Farrell", location: "Navan", rating: 5, text: "Solar Meath provided an excellent end-to-end service. From survey to installation, everything was professional and well-coordinated." },
     { name: "Orla Smith", location: "Ashbourne", rating: 5, text: "We're very happy with our solar installation. The SEAI grant process was handled smoothly and the system is performing well." },
     { name: "Gareth Reilly", location: "Dunboyne", rating: 5, text: "Great service from a knowledgeable team. Solar Meath delivered exactly what they promised and we're seeing real savings." },
   ],
-  faqs: [
-    { question: "How much do solar panels cost in Meath?", answer: "A 4kW system in County Meath costs between €4,500 and €6,500. The SEAI grant can reduce this by up to €1,800." },
-    { question: "What SEAI grants are available?", answer: "The Domestic Solar PV Grant offers up to €1,800. We handle the full application." },
-    { question: "How long does installation take?", answer: "Most Meath installations are completed in one working day." },
-    { question: "Do I need planning permission?", answer: "Domestic solar panels are planning-exempt within standard limits in Ireland." },
-    { question: "Do you install EV chargers?", answer: "Yes. We can install EV charge points alongside your solar system for free solar-powered charging." },
+    faqs: [
+    {
+      question: "How much do solar panels cost in Meath?",
+      answer: "The cost of solar panels in County Meath depends on system size, panel quality, and roof complexity. A typical 4kW residential solar PV system — suitable for most three- to four-bedroom homes in Navan, Ashbourne, Dunboyne, Kells, and Trim — costs between €4,500 and €6,500 before any grants. This price usually includes all scaffolding, SEAI-registered installation, grid connection application, and a monitoring system. A larger 6kW system, ideal for homes with heat pumps or electric vehicles, ranges from €6,000 to €9,500. With the SEAI Domestic Solar PV Grant reducing your cost by up to €1,800, the net outlay for a standard 4kW system in Meath can be as low as €2,700–€4,700. We provide free, no-obligation site surveys for every home in County Meath and a detailed written quote so you know exactly what you're paying for. There are no hidden fees — ever."
+    },
+    {
+      question: "What SEAI grants are available in Meath?",
+      answer: "Homeowners in County Meath can access the SEAI Domestic Solar PV Grant, which offers up to €1,800 towards the cost of a solar panel installation. To qualify, your home must have been built and occupied before 2021, and you must use an SEAI-registered installer — which we are. The grant is paid directly to you after installation, typically within four to six weeks of submitting your claim. For properties built before 2007, there may also be additional SEAI grants available for insulation and heating upgrades through the Better Energy Homes scheme, which can further improve your home's energy performance. We handle the entire SEAI grant application process on your behalf at no extra cost, making it completely hassle-free for homeowners across Navan, Ashbourne, Dunboyne, Kells, and Trim. Many of our Meath customers combine their solar grant with other energy upgrades for even greater savings on their electricity bills and carbon footprint."
+    },
+    {
+      question: "How long does a solar installation take in Meath?",
+      answer: "A standard residential solar panel installation in County Meath is typically completed in a single working day. Our SEAI-certified installers arrive early, erect scaffolding, mount the panel rails to your roof, fit and wire the solar panels, install the inverter, connect everything to your consumer unit (fuse board), and commission the system — all within roughly six to eight hours. Before installation day, we've already completed your ESB grid connection application, which takes two to four weeks for approval. The total timeline from your initial free survey in Navan or Ashbourne to your system generating electricity is typically four to six weeks. Larger installations — such as 6kW+ systems, properties with complex roof shapes, or battery storage additions — may require a second day. We always confirm the exact timeline during your quote and keep you informed every step of the way. Every installation in Meath comes with a thorough handover, including a demonstration of your monitoring app and system controls."
+    },
+    {
+      question: "Do I need planning permission for solar panels in Meath?",
+      answer: "In the vast majority of cases, no — domestic solar panel installations in County Meath are exempt from planning permission under Irish building regulations. The exemption covers rooftop solar panels on private homes, provided the panels do not protrude more than 300mm from the roof surface and do not cover more than 50% of the total roof area. Ground-mounted solar arrays under 25 square metres are also generally exempt. However, there are exceptions: if your home in Navan or Ashbourne is a listed or protected structure, located within an architectural conservation area, or near a national monument, you may need planning permission or at least a declaration of exemption from your local county council. Properties in or near Meath's heritage towns and conservation areas may require additional consideration. We check all planning requirements during your free site survey and advise you if any consent is needed before we proceed. For most homeowners across County Meath, the answer is a straightforward no — you can go ahead with your solar installation without any planning involvement."
+    },
+    {
+      question: "How much will I save with solar panels in Meath?",
+      answer: "Typical savings from solar panels in County Meath range from €600 to €1,000 per year on electricity bills, depending on your system size, household consumption, and whether you're home during the day. A 4kW solar PV system installed on a home in Navan, Ashbourne, Dunboyne, Kells, and Trim can generate approximately 3,400 to 3,800 kWh of clean electricity annually. With current electricity prices in Ireland, this translates to significant annual savings — and the savings grow every time electricity prices increase. If you add battery storage, you can increase your savings further by storing excess daytime generation for evening use, potentially saving €800 to €1,300 per year. Over a 25-year panel lifespan, a solar system in Meath can save you €15,000 to €25,000 or more. With the SEAI grant reducing your upfront cost by up to €1,800, most homeowners in County Meath achieve full payback within five to seven years — leaving roughly 18 to 20 years of virtually free electricity. Your solar installation also reduces your carbon footprint by approximately 1.5 to 2 tonnes of CO₂ annually."
+    },
+    {
+      question: "Does solar work in Meath's weather and climate?",
+      answer: "Yes — absolutely. Solar panels generate electricity from daylight, not direct sunshine, which is why they work effectively throughout Ireland's seasons. County Meath receives approximately 1,000 to 1,150 kilowatt-hours (kWh) of solar irradiance per square metre annually. Meath's rapid residential growth around Navan, Ashbourne and Dunboyne has created thousands of homes ideally suited to solar energy. Modern solar panels are highly efficient in diffuse light conditions, meaning even on the cloudiest days in Navan or Ashbourne, your system will still produce meaningful electricity. As a coastal county, Meath does experience more wind and rainfall, but quality solar panels are manufactured to withstand harsh weather conditions including salt air exposure, heavy rain, and wind speeds well above what Ireland experiences. We use marine-grade mounting systems for properties near the coast. In fact, cooler temperatures actually improve panel efficiency — solar panels work slightly better in Irish temperatures than in extreme heat. Our monitoring systems allow you to track daily, monthly, and annual generation so you can see exactly how well your system performs through every season."
+    },
+    {
+      question: "What size solar panel system do I need for my home in Meath?",
+      answer: "The ideal solar panel system size for your home in County Meath depends on your electricity consumption, roof space, and budget. For most three- to four-bedroom households in Navan, Ashbourne, Dunboyne, Kells, and Trim, a 4kW system (approximately 10 to 12 panels) is the sweet spot — generating around 3,400 to 3,800 kWh annually and covering 40 to 50% of a typical household's electricity needs. If you have a larger home, use an electric vehicle, or have a heat pump, a 6kW system (15 to 18 panels) may be more appropriate, generating 5,000 to 5,800 kWh per year. Smaller two-bedroom homes in areas like Dunboyne or Kells may only need a 3kW system. During your free site survey, we analyse your ESB bills, assess your roof dimensions and orientation, and use satellite shading analysis to recommend the optimally sized system for your specific property. There's no one-size-fits-all — every installation in Meath is tailored to your home's unique characteristics and your family's energy usage patterns."
+    },
+    {
+      question: "Are solar panels worth it for older homes in Meath?",
+      answer: "Solar panels are absolutely worth it for older homes in County Meath — and they may actually benefit you more than newer properties. Older homes in Navan, Ashbourne, and surrounding areas often have solid fuel heating systems, electric immersion heaters, or storage heaters that consume large amounts of electricity. A solar panel system can offset these running costs significantly, especially if you time your immersion heating to coincide with peak solar generation hours. Furthermore, installing solar panels on an older property in Meath can improve your BER (Building Energy Rating) by one to two rating bands, which is increasingly important for property value and for accessing future green mortgage rates. Many period homes in Meath's heritage towns and conservation areas have large roof areas with south-facing pitches — ideal for solar installations. While we always check structural integrity during our survey, most older Irish homes can easily support the lightweight mounting systems used for modern solar panels. With the SEAI grant of up to €1,800 and typical payback periods of five to seven years, solar panels are one of the smartest investments you can make in an older Meath home."
+    },
+    {
+      question: "Do solar panels work on flat roofs in Meath?",
+      answer: "Yes, solar panels work very well on flat roofs in County Meath. While most homes in Navan and Ashbourne have pitched roofs, we regularly install on flat-roofed properties including extensions, garages, commercial buildings, and farm outbuildings across Meath. On a flat roof, panels are mounted on angled frame systems — typically tilted at 15 to 30 degrees — to optimise solar exposure and allow rainwater runoff. The main consideration for flat roof installations in Meath is ensuring the roof structure can bear the additional weight, which is typically around 15 to 20 kilograms per square metre. We assess this during every survey. Flat roof systems can actually be more productive than some pitched roof installations because the mounting frames allow us to orient panels at the perfect angle regardless of the roof itself. For homeowners in Dunboyne and Kells with flat-roof extensions or outbuildings, these spaces can provide excellent additional generation capacity beyond what the main house roof offers. All our flat roof installations comply with SEAI standards and come with the same comprehensive warranties as pitched roof systems."
+    },
+    {
+      question: "What is the best orientation for solar panels in Meath?",
+      answer: "The best orientation for solar panels in County Meath is south-facing, which maximises annual electricity generation. However, this doesn't mean your roof must face exactly due south. Panels facing south-east or south-west still produce approximately 85 to 95% of the output of a perfectly south-facing system — a relatively small reduction that still delivers excellent savings. In fact, east-west split installations (panels on both sides of a roof) are increasingly popular in Navan, Ashbourne, Dunboyne, Kells, and Trim because they generate electricity more evenly throughout the day, which better matches the consumption patterns of households where people are out at work during the middle of the day. Properties along Meath's coastline sometimes face unusual orientations due to their location — we've successfully installed solar on roofs facing nearly every direction. During your free survey, we use satellite imagery and shading analysis tools to determine the optimal panel layout for your specific roof in Meath. We never recommend an installation unless we're confident it will deliver strong returns on your investment."
+    }
   ],
   avgSystemCost: "€4,500 – €6,500",
   avgPaybackYears: "5–7 years",
   accentColor: "#b2ff59",
   accentHover: "#c5ff82",
+};
+
+const mayo: CountyData = {
+  slug: "mayo",
+  name: "Mayo",
+  region: "West",
+  province: "Connacht",
+  country: "IE",
+  phone: "+353-94-902-4000",
+  email: "info@renewablemayo.ie",
+  domain: "renewablemayo.ie",
+  mainTown: "Castlebar",
+  areaTowns: ["Westport", "Ballina", "Castlebar", "Claremorris", "Swinford", "Foxford"],
+  lat: "53.8603",
+  lng: "-9.2876",
+  currency: "€",
+  accreditation: "SEAI",
+  grants: [
+    "SEAI Domestic Solar PV Grant — up to €1,800 for homes",
+    "SEAI Better Energy Homes: Available for insulation upgrades",
+    "BER Improvement Grant: Available",
+  ],
+  heroSubtitle:
+    "Mayo's spectacular Atlantic exposure delivers outstanding solar generation. From Westport to Ballina, we're the county's most trusted installer.",
+  heroTitle: "Solar Panels Mayo.\nAtlantic Exposure. Outstanding Returns.",
+  testimonials: [
+    { name: "Patrick Gallagher", location: "Westport", rating: 5, text: "Fantastic service from start to finish. The team was professional and the panels are already saving us money. Highly recommend for anyone in Mayo." },
+    { name: "Margaret O'Malley", location: "Castlebar", rating: 5, text: "We got quotes from several companies but Renewable Ireland offered the best value. Installation was quick and the results exceeded our expectations." },
+    { name: "Tommy Walsh", location: "Ballina", rating: 5, text: "The whole process was seamless. From the initial survey to the final commissioning, everything was handled professionally. Great aftercare too." },
+  ],
+    faqs: [
+    {
+      question: "How much do solar panels cost in Mayo?",
+      answer: "The cost of solar panels in County Mayo depends on system size, panel quality, and roof complexity. A typical 4kW residential solar PV system — suitable for most three- to four-bedroom homes in Westport, Ballina, Castlebar, Claremorris, and Swinford — costs between €4,500 and €6,500 before any grants. This price usually includes all scaffolding, SEAI-registered installation, grid connection application, and a monitoring system. A larger 6kW system, ideal for homes with heat pumps or electric vehicles, ranges from €6,000 to €9,500. With the SEAI Domestic Solar PV Grant reducing your cost by up to €1,800, the net outlay for a standard 4kW system in Mayo can be as low as €2,700–€4,700. We provide free, no-obligation site surveys for every home in County Mayo and a detailed written quote so you know exactly what you're paying for. There are no hidden fees — ever."
+    },
+    {
+      question: "What SEAI grants are available in Mayo?",
+      answer: "Homeowners in County Mayo can access the SEAI Domestic Solar PV Grant, which offers up to €1,800 towards the cost of a solar panel installation. To qualify, your home must have been built and occupied before 2021, and you must use an SEAI-registered installer — which we are. The grant is paid directly to you after installation, typically within four to six weeks of submitting your claim. For properties built before 2007, there may also be additional SEAI grants available for insulation and heating upgrades through the Better Energy Homes scheme, which can further improve your home's energy performance. We handle the entire SEAI grant application process on your behalf at no extra cost, making it completely hassle-free for homeowners across Westport, Ballina, Castlebar, Claremorris, and Swinford. Many of our Mayo customers combine their solar grant with other energy upgrades for even greater savings on their electricity bills and carbon footprint."
+    },
+    {
+      question: "How long does a solar installation take in Mayo?",
+      answer: "A standard residential solar panel installation in County Mayo is typically completed in a single working day. Our SEAI-certified installers arrive early, erect scaffolding, mount the panel rails to your roof, fit and wire the solar panels, install the inverter, connect everything to your consumer unit (fuse board), and commission the system — all within roughly six to eight hours. Before installation day, we've already completed your ESB grid connection application, which takes two to four weeks for approval. The total timeline from your initial free survey in Westport or Ballina to your system generating electricity is typically four to six weeks. Larger installations — such as 6kW+ systems, properties with complex roof shapes, or battery storage additions — may require a second day. We always confirm the exact timeline during your quote and keep you informed every step of the way. Every installation in Mayo comes with a thorough handover, including a demonstration of your monitoring app and system controls."
+    },
+    {
+      question: "Do I need planning permission for solar panels in Mayo?",
+      answer: "In the vast majority of cases, no — domestic solar panel installations in County Mayo are exempt from planning permission under Irish building regulations. The exemption covers rooftop solar panels on private homes, provided the panels do not protrude more than 300mm from the roof surface and do not cover more than 50% of the total roof area. Ground-mounted solar arrays under 25 square metres are also generally exempt. However, there are exceptions: if your home in Westport or Ballina is a listed or protected structure, located within an architectural conservation area, or near a national monument, you may need planning permission or at least a declaration of exemption from your local county council. Properties in or near Mayo may require additional consideration. We check all planning requirements during your free site survey and advise you if any consent is needed before we proceed. For most homeowners across County Mayo, the answer is a straightforward no — you can go ahead with your solar installation without any planning involvement."
+    },
+    {
+      question: "How much will I save with solar panels in Mayo?",
+      answer: "Typical savings from solar panels in County Mayo range from €600 to €1,000 per year on electricity bills, depending on your system size, household consumption, and whether you're home during the day. A 4kW solar PV system installed on a home in Westport, Ballina, Castlebar, Claremorris, and Swinford can generate approximately 3,400 to 3,800 kWh of clean electricity annually. With current electricity prices in Ireland, this translates to significant annual savings — and the savings grow every time electricity prices increase. If you add battery storage, you can increase your savings further by storing excess daytime generation for evening use, potentially saving €800 to €1,300 per year. Over a 25-year panel lifespan, a solar system in Mayo can save you €15,000 to €25,000 or more. With the SEAI grant reducing your upfront cost by up to €1,800, most homeowners in County Mayo achieve full payback within five to seven years — leaving roughly 18 to 20 years of virtually free electricity. Your solar installation also reduces your carbon footprint by approximately 1.5 to 2 tonnes of CO₂ annually."
+    },
+    {
+      question: "Does solar work in Mayo's weather and climate?",
+      answer: "Yes — absolutely. Solar panels generate electricity from daylight, not direct sunshine, which is why they work effectively throughout Ireland's seasons. County Mayo receives approximately 1,000 to 1,150 kilowatt-hours (kWh) of solar irradiance per square metre annually. Mayo's Atlantic coastline actually receives excellent solar irradiance, and the county's northerly latitude brings exceptionally long summer daylight hours. Modern solar panels are highly efficient in diffuse light conditions, meaning even on the cloudiest days in Westport or Ballina, your system will still produce meaningful electricity. As a coastal county, Mayo does experience more wind and rainfall, but quality solar panels are manufactured to withstand harsh weather conditions including salt air exposure, heavy rain, and wind speeds well above what Ireland experiences. We use marine-grade mounting systems for properties near the coast. In fact, cooler temperatures actually improve panel efficiency — solar panels work slightly better in Irish temperatures than in extreme heat. Our monitoring systems allow you to track daily, monthly, and annual generation so you can see exactly how well your system performs through every season."
+    },
+    {
+      question: "What size solar panel system do I need for my home in Mayo?",
+      answer: "The ideal solar panel system size for your home in County Mayo depends on your electricity consumption, roof space, and budget. For most three- to four-bedroom households in Westport, Ballina, Castlebar, Claremorris, and Swinford, a 4kW system (approximately 10 to 12 panels) is the sweet spot — generating around 3,400 to 3,800 kWh annually and covering 40 to 50% of a typical household's electricity needs. If you have a larger home, use an electric vehicle, or have a heat pump, a 6kW system (15 to 18 panels) may be more appropriate, generating 5,000 to 5,800 kWh per year. Smaller two-bedroom homes in areas like Castlebar or Claremorris may only need a 3kW system. During your free site survey, we analyse your ESB bills, assess your roof dimensions and orientation, and use satellite shading analysis to recommend the optimally sized system for your specific property. There's no one-size-fits-all — every installation in Mayo is tailored to your home's unique characteristics and your family's energy usage patterns."
+    },
+    {
+      question: "Are solar panels worth it for older homes in Mayo?",
+      answer: "Solar panels are absolutely worth it for older homes in County Mayo — and they may actually benefit you more than newer properties. Older homes in Westport, Ballina, and surrounding areas often have solid fuel heating systems, electric immersion heaters, or storage heaters that consume large amounts of electricity. A solar panel system can offset these running costs significantly, especially if you time your immersion heating to coincide with peak solar generation hours. Furthermore, installing solar panels on an older property in Mayo can improve your BER (Building Energy Rating) by one to two rating bands, which is increasingly important for property value and for accessing future green mortgage rates. Many period homes in Mayo have large roof areas with south-facing pitches — ideal for solar installations. While we always check structural integrity during our survey, most older Irish homes can easily support the lightweight mounting systems used for modern solar panels. With the SEAI grant of up to €1,800 and typical payback periods of five to seven years, solar panels are one of the smartest investments you can make in an older Mayo home."
+    },
+    {
+      question: "Do solar panels work on flat roofs in Mayo?",
+      answer: "Yes, solar panels work very well on flat roofs in County Mayo. While most homes in Westport and Ballina have pitched roofs, we regularly install on flat-roofed properties including extensions, garages, commercial buildings, and farm outbuildings across Mayo. On a flat roof, panels are mounted on angled frame systems — typically tilted at 15 to 30 degrees — to optimise solar exposure and allow rainwater runoff. The main consideration for flat roof installations in Mayo is ensuring the roof structure can bear the additional weight, which is typically around 15 to 20 kilograms per square metre. We assess this during every survey. Flat roof systems can actually be more productive than some pitched roof installations because the mounting frames allow us to orient panels at the perfect angle regardless of the roof itself. For homeowners in Castlebar and Claremorris with flat-roof extensions or outbuildings, these spaces can provide excellent additional generation capacity beyond what the main house roof offers. All our flat roof installations comply with SEAI standards and come with the same comprehensive warranties as pitched roof systems."
+    },
+    {
+      question: "What is the best orientation for solar panels in Mayo?",
+      answer: "The best orientation for solar panels in County Mayo is south-facing, which maximises annual electricity generation. However, this doesn't mean your roof must face exactly due south. Panels facing south-east or south-west still produce approximately 85 to 95% of the output of a perfectly south-facing system — a relatively small reduction that still delivers excellent savings. In fact, east-west split installations (panels on both sides of a roof) are increasingly popular in Westport, Ballina, Castlebar, Claremorris, and Swinford because they generate electricity more evenly throughout the day, which better matches the consumption patterns of households where people are out at work during the middle of the day. Properties along Mayo's coastline sometimes face unusual orientations due to their location — we've successfully installed solar on roofs facing nearly every direction. During your free survey, we use satellite imagery and shading analysis tools to determine the optimal panel layout for your specific roof in Mayo. We never recommend an installation unless we're confident it will deliver strong returns on your investment."
+    }
+  ],
+  avgSystemCost: "€4,500 – €6,500",
+  avgPaybackYears: "5–7 years",
+  accentColor: "#26a69a",
+  accentHover: "#2bbbad",
 };
 
 const monaghan: CountyData = {
@@ -1205,8 +1881,8 @@ const monaghan: CountyData = {
   province: "Ulster",
   country: "IE",
   phone: "+353-47-812-3100",
-  email: "info@solarmonaghan.ie",
-  domain: "solarmonaghan.ie",
+  email: "info@renewablemonaghan.ie",
+  domain: "renewablemonaghan.ie",
   mainTown: "Monaghan",
   areaTowns: ["Monaghan Town", "Castleblayney", "Carrickmacross", "Clones", "Ballybay", "Newbliss"],
   lat: "54.2493",
@@ -1219,18 +1895,54 @@ const monaghan: CountyData = {
     "TACs (Tax Exemption for Solar PV under €1,000 annual income)",
   ],
   heroSubtitle:
-    "SEAI registered solar panel installers serving County Monaghan — from Monaghan Town to Castleblayney, Carrickmacross to Clones.",
+    "Monaghan's drumlin landscape and scattered farms are ideal for rooftop and ground-mount solar. Maximise your land's earning potential.",
+  heroTitle: "Solar Panels Monaghan.\nDrumlin Country, Generating Power.",
   testimonials: [
     { name: "Raymond McEntee", location: "Monaghan Town", rating: 5, text: "Solar Monaghan did an excellent job on our home. The installation was done efficiently and the SEAI grant was handled without any hassle." },
     { name: "Anne Sherry", location: "Carrickmacross", rating: 5, text: "We're delighted with our solar panels. The system is performing well and we've seen a real reduction in our electricity costs." },
     { name: "Thomas McNally", location: "Castleblayney", rating: 5, text: "Professional and thorough. Solar Monaghan provided a great service at a competitive price. Highly recommend them." },
   ],
-  faqs: [
-    { question: "How much do solar panels cost in Monaghan?", answer: "A 4kW system in County Monaghan costs between €4,500 and €6,500. The SEAI grant of up to €1,800 applies." },
-    { question: "What SEAI grants are available?", answer: "The Domestic Solar PV Grant offers up to €1,800. We manage the application for you." },
-    { question: "How long does installation take?", answer: "Residential installations in Monaghan take one working day." },
-    { question: "Do I need planning permission?", answer: "No. Domestic solar panels are planning-exempt within standard limits." },
-    { question: "Do you install on farms?", answer: "Yes. We have extensive experience with agricultural solar systems in County Monaghan." },
+    faqs: [
+    {
+      question: "How much do solar panels cost in Monaghan?",
+      answer: "The cost of solar panels in County Monaghan depends on system size, panel quality, and roof complexity. A typical 4kW residential solar PV system — suitable for most three- to four-bedroom homes in Monaghan Town, Castleblayney, Carrickmacross, Clones, and Ballybay — costs between €4,500 and €6,500 before any grants. This price usually includes all scaffolding, SEAI-registered installation, grid connection application, and a monitoring system. A larger 6kW system, ideal for homes with heat pumps or electric vehicles, ranges from €6,000 to €9,500. With the SEAI Domestic Solar PV Grant reducing your cost by up to €1,800, the net outlay for a standard 4kW system in Monaghan can be as low as €2,700–€4,700. We provide free, no-obligation site surveys for every home in County Monaghan and a detailed written quote so you know exactly what you're paying for. There are no hidden fees — ever."
+    },
+    {
+      question: "What SEAI grants are available in Monaghan?",
+      answer: "Homeowners in County Monaghan can access the SEAI Domestic Solar PV Grant, which offers up to €1,800 towards the cost of a solar panel installation. To qualify, your home must have been built and occupied before 2021, and you must use an SEAI-registered installer — which we are. The grant is paid directly to you after installation, typically within four to six weeks of submitting your claim. For properties built before 2007, there may also be additional SEAI grants available for insulation and heating upgrades through the Better Energy Homes scheme, which can further improve your home's energy performance. We handle the entire SEAI grant application process on your behalf at no extra cost, making it completely hassle-free for homeowners across Monaghan Town, Castleblayney, Carrickmacross, Clones, and Ballybay. Many of our Monaghan customers combine their solar grant with other energy upgrades for even greater savings on their electricity bills and carbon footprint."
+    },
+    {
+      question: "How long does a solar installation take in Monaghan?",
+      answer: "A standard residential solar panel installation in County Monaghan is typically completed in a single working day. Our SEAI-certified installers arrive early, erect scaffolding, mount the panel rails to your roof, fit and wire the solar panels, install the inverter, connect everything to your consumer unit (fuse board), and commission the system — all within roughly six to eight hours. Before installation day, we've already completed your ESB grid connection application, which takes two to four weeks for approval. The total timeline from your initial free survey in Monaghan Town or Castleblayney to your system generating electricity is typically four to six weeks. Larger installations — such as 6kW+ systems, properties with complex roof shapes, or battery storage additions — may require a second day. We always confirm the exact timeline during your quote and keep you informed every step of the way. Every installation in Monaghan comes with a thorough handover, including a demonstration of your monitoring app and system controls."
+    },
+    {
+      question: "Do I need planning permission for solar panels in Monaghan?",
+      answer: "In the vast majority of cases, no — domestic solar panel installations in County Monaghan are exempt from planning permission under Irish building regulations. The exemption covers rooftop solar panels on private homes, provided the panels do not protrude more than 300mm from the roof surface and do not cover more than 50% of the total roof area. Ground-mounted solar arrays under 25 square metres are also generally exempt. However, there are exceptions: if your home in Monaghan Town or Castleblayney is a listed or protected structure, located within an architectural conservation area, or near a national monument, you may need planning permission or at least a declaration of exemption from your local county council. Properties in or near Monaghan may require additional consideration. We check all planning requirements during your free site survey and advise you if any consent is needed before we proceed. For most homeowners across County Monaghan, the answer is a straightforward no — you can go ahead with your solar installation without any planning involvement."
+    },
+    {
+      question: "How much will I save with solar panels in Monaghan?",
+      answer: "Typical savings from solar panels in County Monaghan range from €600 to €1,000 per year on electricity bills, depending on your system size, household consumption, and whether you're home during the day. A 4kW solar PV system installed on a home in Monaghan Town, Castleblayney, Carrickmacross, Clones, and Ballybay can generate approximately 3,400 to 3,800 kWh of clean electricity annually. With current electricity prices in Ireland, this translates to significant annual savings — and the savings grow every time electricity prices increase. If you add battery storage, you can increase your savings further by storing excess daytime generation for evening use, potentially saving €800 to €1,300 per year. Over a 25-year panel lifespan, a solar system in Monaghan can save you €15,000 to €25,000 or more. With the SEAI grant reducing your upfront cost by up to €1,800, most homeowners in County Monaghan achieve full payback within five to seven years — leaving roughly 18 to 20 years of virtually free electricity. Your solar installation also reduces your carbon footprint by approximately 1.5 to 2 tonnes of CO₂ annually."
+    },
+    {
+      question: "Does solar work in Monaghan's weather and climate?",
+      answer: "Yes — absolutely. Solar panels generate electricity from daylight, not direct sunshine, which is why they work effectively throughout Ireland's seasons. County Monaghan receives approximately 1,000 to 1,150 kilowatt-hours (kWh) of solar irradiance per square metre annually. Monaghan's drumlin landscape creates varied roof orientations, but experienced installers can optimise panel placement to capture maximum daylight across all roof pitches. Modern solar panels are highly efficient in diffuse light conditions, meaning even on the cloudiest days in Monaghan Town or Castleblayney, your system will still produce meaningful electricity. While Monaghan is the border region and experiences typical Irish weather patterns, solar panels are designed and tested to perform reliably in these conditions for 25 to 30 years. In fact, cooler temperatures actually improve panel efficiency — solar panels work slightly better in Irish temperatures than in extreme heat. Our monitoring systems allow you to track daily, monthly, and annual generation so you can see exactly how well your system performs through every season."
+    },
+    {
+      question: "What size solar panel system do I need for my home in Monaghan?",
+      answer: "The ideal solar panel system size for your home in County Monaghan depends on your electricity consumption, roof space, and budget. For most three- to four-bedroom households in Monaghan Town, Castleblayney, Carrickmacross, Clones, and Ballybay, a 4kW system (approximately 10 to 12 panels) is the sweet spot — generating around 3,400 to 3,800 kWh annually and covering 40 to 50% of a typical household's electricity needs. If you have a larger home, use an electric vehicle, or have a heat pump, a 6kW system (15 to 18 panels) may be more appropriate, generating 5,000 to 5,800 kWh per year. Smaller two-bedroom homes in areas like Carrickmacross or Clones may only need a 3kW system. During your free site survey, we analyse your ESB bills, assess your roof dimensions and orientation, and use satellite shading analysis to recommend the optimally sized system for your specific property. There's no one-size-fits-all — every installation in Monaghan is tailored to your home's unique characteristics and your family's energy usage patterns."
+    },
+    {
+      question: "Are solar panels worth it for older homes in Monaghan?",
+      answer: "Solar panels are absolutely worth it for older homes in County Monaghan — and they may actually benefit you more than newer properties. Older homes in Monaghan Town, Castleblayney, and surrounding areas often have solid fuel heating systems, electric immersion heaters, or storage heaters that consume large amounts of electricity. A solar panel system can offset these running costs significantly, especially if you time your immersion heating to coincide with peak solar generation hours. Furthermore, installing solar panels on an older property in Monaghan can improve your BER (Building Energy Rating) by one to two rating bands, which is increasingly important for property value and for accessing future green mortgage rates. Many period homes in Monaghan have large roof areas with south-facing pitches — ideal for solar installations. While we always check structural integrity during our survey, most older Irish homes can easily support the lightweight mounting systems used for modern solar panels. With the SEAI grant of up to €1,800 and typical payback periods of five to seven years, solar panels are one of the smartest investments you can make in an older Monaghan home."
+    },
+    {
+      question: "Do solar panels work on flat roofs in Monaghan?",
+      answer: "Yes, solar panels work very well on flat roofs in County Monaghan. While most homes in Monaghan Town and Castleblayney have pitched roofs, we regularly install on flat-roofed properties including extensions, garages, commercial buildings, and farm outbuildings across Monaghan. On a flat roof, panels are mounted on angled frame systems — typically tilted at 15 to 30 degrees — to optimise solar exposure and allow rainwater runoff. The main consideration for flat roof installations in Monaghan is ensuring the roof structure can bear the additional weight, which is typically around 15 to 20 kilograms per square metre. We assess this during every survey. Flat roof systems can actually be more productive than some pitched roof installations because the mounting frames allow us to orient panels at the perfect angle regardless of the roof itself. For homeowners in Carrickmacross and Clones with flat-roof extensions or outbuildings, these spaces can provide excellent additional generation capacity beyond what the main house roof offers. All our flat roof installations comply with SEAI standards and come with the same comprehensive warranties as pitched roof systems."
+    },
+    {
+      question: "What is the best orientation for solar panels in Monaghan?",
+      answer: "The best orientation for solar panels in County Monaghan is south-facing, which maximises annual electricity generation. However, this doesn't mean your roof must face exactly due south. Panels facing south-east or south-west still produce approximately 85 to 95% of the output of a perfectly south-facing system — a relatively small reduction that still delivers excellent savings. In fact, east-west split installations (panels on both sides of a roof) are increasingly popular in Monaghan Town, Castleblayney, Carrickmacross, Clones, and Ballybay because they generate electricity more evenly throughout the day, which better matches the consumption patterns of households where people are out at work during the middle of the day. Properties in the border region with varied roof lines often benefit from our expert assessment to find the most productive configuration. During your free survey, we use satellite imagery and shading analysis tools to determine the optimal panel layout for your specific roof in Monaghan. We never recommend an installation unless we're confident it will deliver strong returns on your investment."
+    }
   ],
   avgSystemCost: "€4,500 – €6,500",
   avgPaybackYears: "5–7 years",
@@ -1245,8 +1957,8 @@ const offaly: CountyData = {
   province: "Leinster",
   country: "IE",
   phone: "+353-57-932-3100",
-  email: "info@solaroffaly.ie",
-  domain: "solaroffaly.ie",
+  email: "info@renewableoffaly.ie",
+  domain: "renewableoffaly.ie",
   mainTown: "Tullamore",
   areaTowns: ["Tullamore", "Birr", "Clara", "Edenderry", "Banagher", "Ferbane"],
   lat: "53.2706",
@@ -1259,18 +1971,54 @@ const offaly: CountyData = {
     "TACs (Tax Exemption for Solar PV under €1,000 annual income)",
   ],
   heroSubtitle:
-    "SEAI registered solar panel installers serving County Offaly — from Tullamore to Birr, Edenderry to Banagher.",
+    "Offaly's heartland location means some of Ireland's best solar irradiance levels. Turn your roof into a power station.",
+  heroTitle: "Solar Panels Offaly.\nTurn Your Roof Into a Power Station.",
   testimonials: [
     { name: "Pat O'Meara", location: "Tullamore", rating: 5, text: "Solar Offaly provided an excellent service. The installation was efficient and the system is performing very well. Great local company." },
     { name: "Deirdre Flanagan", location: "Birr", rating: 5, text: "We're very pleased with our solar installation. The SEAI grant was handled smoothly and the team was professional throughout." },
     { name: "Thomas Breslin", location: "Edenderry", rating: 5, text: "Top-notch installation. Solar Offaly delivered on every promise and we're seeing significant savings on our bills." },
   ],
-  faqs: [
-    { question: "How much do solar panels cost in Offaly?", answer: "A 4kW system in County Offaly costs between €4,500 and €6,500 before the SEAI grant." },
-    { question: "What SEAI grants are available?", answer: "The Domestic Solar PV Grant offers up to €1,800 for home installations." },
-    { question: "How long does installation take?", answer: "Most Offaly installations are completed in one working day." },
-    { question: "Do I need planning permission?", answer: "Domestic solar panels are planning-exempt within standard limits in Ireland." },
-    { question: "Do you install battery storage?", answer: "Yes. We install battery systems to store excess solar energy for later use." },
+    faqs: [
+    {
+      question: "How much do solar panels cost in Offaly?",
+      answer: "The cost of solar panels in County Offaly depends on system size, panel quality, and roof complexity. A typical 4kW residential solar PV system — suitable for most three- to four-bedroom homes in Tullamore, Birr, Clara, Edenderry, and Banagher — costs between €4,500 and €6,500 before any grants. This price usually includes all scaffolding, SEAI-registered installation, grid connection application, and a monitoring system. A larger 6kW system, ideal for homes with heat pumps or electric vehicles, ranges from €6,000 to €9,500. With the SEAI Domestic Solar PV Grant reducing your cost by up to €1,800, the net outlay for a standard 4kW system in Offaly can be as low as €2,700–€4,700. We provide free, no-obligation site surveys for every home in County Offaly and a detailed written quote so you know exactly what you're paying for. There are no hidden fees — ever."
+    },
+    {
+      question: "What SEAI grants are available in Offaly?",
+      answer: "Homeowners in County Offaly can access the SEAI Domestic Solar PV Grant, which offers up to €1,800 towards the cost of a solar panel installation. To qualify, your home must have been built and occupied before 2021, and you must use an SEAI-registered installer — which we are. The grant is paid directly to you after installation, typically within four to six weeks of submitting your claim. For properties built before 2007, there may also be additional SEAI grants available for insulation and heating upgrades through the Better Energy Homes scheme, which can further improve your home's energy performance. We handle the entire SEAI grant application process on your behalf at no extra cost, making it completely hassle-free for homeowners across Tullamore, Birr, Clara, Edenderry, and Banagher. Many of our Offaly customers combine their solar grant with other energy upgrades for even greater savings on their electricity bills and carbon footprint."
+    },
+    {
+      question: "How long does a solar installation take in Offaly?",
+      answer: "A standard residential solar panel installation in County Offaly is typically completed in a single working day. Our SEAI-certified installers arrive early, erect scaffolding, mount the panel rails to your roof, fit and wire the solar panels, install the inverter, connect everything to your consumer unit (fuse board), and commission the system — all within roughly six to eight hours. Before installation day, we've already completed your ESB grid connection application, which takes two to four weeks for approval. The total timeline from your initial free survey in Tullamore or Birr to your system generating electricity is typically four to six weeks. Larger installations — such as 6kW+ systems, properties with complex roof shapes, or battery storage additions — may require a second day. We always confirm the exact timeline during your quote and keep you informed every step of the way. Every installation in Offaly comes with a thorough handover, including a demonstration of your monitoring app and system controls."
+    },
+    {
+      question: "Do I need planning permission for solar panels in Offaly?",
+      answer: "In the vast majority of cases, no — domestic solar panel installations in County Offaly are exempt from planning permission under Irish building regulations. The exemption covers rooftop solar panels on private homes, provided the panels do not protrude more than 300mm from the roof surface and do not cover more than 50% of the total roof area. Ground-mounted solar arrays under 25 square metres are also generally exempt. However, there are exceptions: if your home in Tullamore or Birr is a listed or protected structure, located within an architectural conservation area, or near a national monument, you may need planning permission or at least a declaration of exemption from your local county council. Properties in or near Offaly may require additional consideration. We check all planning requirements during your free site survey and advise you if any consent is needed before we proceed. For most homeowners across County Offaly, the answer is a straightforward no — you can go ahead with your solar installation without any planning involvement."
+    },
+    {
+      question: "How much will I save with solar panels in Offaly?",
+      answer: "Typical savings from solar panels in County Offaly range from €600 to €1,000 per year on electricity bills, depending on your system size, household consumption, and whether you're home during the day. A 4kW solar PV system installed on a home in Tullamore, Birr, Clara, Edenderry, and Banagher can generate approximately 3,400 to 3,800 kWh of clean electricity annually. With current electricity prices in Ireland, this translates to significant annual savings — and the savings grow every time electricity prices increase. If you add battery storage, you can increase your savings further by storing excess daytime generation for evening use, potentially saving €800 to €1,300 per year. Over a 25-year panel lifespan, a solar system in Offaly can save you €15,000 to €25,000 or more. With the SEAI grant reducing your upfront cost by up to €1,800, most homeowners in County Offaly achieve full payback within five to seven years — leaving roughly 18 to 20 years of virtually free electricity. Your solar installation also reduces your carbon footprint by approximately 1.5 to 2 tonnes of CO₂ annually."
+    },
+    {
+      question: "Does solar work in Offaly's weather and climate?",
+      answer: "Yes — absolutely. Solar panels generate electricity from daylight, not direct sunshine, which is why they work effectively throughout Ireland's seasons. County Offaly receives approximately 1,000 to 1,150 kilowatt-hours (kWh) of solar irradiance per square metre annually. Offaly's central location means it sits in one of Ireland's most consistent solar irradiance zones, with reliable year-round generation potential. Modern solar panels are highly efficient in diffuse light conditions, meaning even on the cloudiest days in Tullamore or Birr, your system will still produce meaningful electricity. While Offaly is the Midlands and experiences typical Irish weather patterns, solar panels are designed and tested to perform reliably in these conditions for 25 to 30 years. In fact, cooler temperatures actually improve panel efficiency — solar panels work slightly better in Irish temperatures than in extreme heat. Our monitoring systems allow you to track daily, monthly, and annual generation so you can see exactly how well your system performs through every season."
+    },
+    {
+      question: "What size solar panel system do I need for my home in Offaly?",
+      answer: "The ideal solar panel system size for your home in County Offaly depends on your electricity consumption, roof space, and budget. For most three- to four-bedroom households in Tullamore, Birr, Clara, Edenderry, and Banagher, a 4kW system (approximately 10 to 12 panels) is the sweet spot — generating around 3,400 to 3,800 kWh annually and covering 40 to 50% of a typical household's electricity needs. If you have a larger home, use an electric vehicle, or have a heat pump, a 6kW system (15 to 18 panels) may be more appropriate, generating 5,000 to 5,800 kWh per year. Smaller two-bedroom homes in areas like Clara or Edenderry may only need a 3kW system. During your free site survey, we analyse your ESB bills, assess your roof dimensions and orientation, and use satellite shading analysis to recommend the optimally sized system for your specific property. There's no one-size-fits-all — every installation in Offaly is tailored to your home's unique characteristics and your family's energy usage patterns."
+    },
+    {
+      question: "Are solar panels worth it for older homes in Offaly?",
+      answer: "Solar panels are absolutely worth it for older homes in County Offaly — and they may actually benefit you more than newer properties. Older homes in Tullamore, Birr, and surrounding areas often have solid fuel heating systems, electric immersion heaters, or storage heaters that consume large amounts of electricity. A solar panel system can offset these running costs significantly, especially if you time your immersion heating to coincide with peak solar generation hours. Furthermore, installing solar panels on an older property in Offaly can improve your BER (Building Energy Rating) by one to two rating bands, which is increasingly important for property value and for accessing future green mortgage rates. Many period homes in Offaly have large roof areas with south-facing pitches — ideal for solar installations. While we always check structural integrity during our survey, most older Irish homes can easily support the lightweight mounting systems used for modern solar panels. With the SEAI grant of up to €1,800 and typical payback periods of five to seven years, solar panels are one of the smartest investments you can make in an older Offaly home."
+    },
+    {
+      question: "Do solar panels work on flat roofs in Offaly?",
+      answer: "Yes, solar panels work very well on flat roofs in County Offaly. While most homes in Tullamore and Birr have pitched roofs, we regularly install on flat-roofed properties including extensions, garages, commercial buildings, and farm outbuildings across Offaly. On a flat roof, panels are mounted on angled frame systems — typically tilted at 15 to 30 degrees — to optimise solar exposure and allow rainwater runoff. The main consideration for flat roof installations in Offaly is ensuring the roof structure can bear the additional weight, which is typically around 15 to 20 kilograms per square metre. We assess this during every survey. Flat roof systems can actually be more productive than some pitched roof installations because the mounting frames allow us to orient panels at the perfect angle regardless of the roof itself. For homeowners in Clara and Edenderry with flat-roof extensions or outbuildings, these spaces can provide excellent additional generation capacity beyond what the main house roof offers. All our flat roof installations comply with SEAI standards and come with the same comprehensive warranties as pitched roof systems."
+    },
+    {
+      question: "What is the best orientation for solar panels in Offaly?",
+      answer: "The best orientation for solar panels in County Offaly is south-facing, which maximises annual electricity generation. However, this doesn't mean your roof must face exactly due south. Panels facing south-east or south-west still produce approximately 85 to 95% of the output of a perfectly south-facing system — a relatively small reduction that still delivers excellent savings. In fact, east-west split installations (panels on both sides of a roof) are increasingly popular in Tullamore, Birr, Clara, Edenderry, and Banagher because they generate electricity more evenly throughout the day, which better matches the consumption patterns of households where people are out at work during the middle of the day. Properties in the Midlands with varied roof lines often benefit from our expert assessment to find the most productive configuration. During your free survey, we use satellite imagery and shading analysis tools to determine the optimal panel layout for your specific roof in Offaly. We never recommend an installation unless we're confident it will deliver strong returns on your investment."
+    }
   ],
   avgSystemCost: "€4,500 – €6,500",
   avgPaybackYears: "5–7 years",
@@ -1285,8 +2033,8 @@ const roscommon: CountyData = {
   province: "Connacht",
   country: "IE",
   phone: "+353-90-662-3100",
-  email: "info@solarroscommon.ie",
-  domain: "solarroscommon.ie",
+  email: "info@renewableroscommon.ie",
+  domain: "renewableroscommon.ie",
   mainTown: "Roscommon",
   areaTowns: ["Roscommon Town", "Castlerea", "Boyle", "Strokestown", "Ballaghaderreen", "Athlone"],
   lat: "53.6306",
@@ -1299,18 +2047,54 @@ const roscommon: CountyData = {
     "TACs (Tax Exemption for Solar PV under €1,000 annual income)",
   ],
   heroSubtitle:
-    "SEAI registered solar panel installers serving County Roscommon — from Roscommon Town to Boyle, Castlerea to Strokestown.",
+    "Roscommon's spacious rural properties are natural solar generators. Large roofs, big savings — we show you exactly what's possible.",
+  heroTitle: "Solar Panels Roscommon.\nLarge Roofs, Large Savings.",
   testimonials: [
     { name: "Thomas Mannion", location: "Roscommon Town", rating: 5, text: "Solar Roscommon did a fantastic job on our home. The installation was done efficiently and the SEAI grant was handled without any issues." },
     { name: "Brid Mulry", location: "Castlerea", rating: 5, text: "We're very happy with our solar installation. Professional team, clean work, and the system is performing well above expectations." },
     { name: "James Finan", location: "Boyle", rating: 5, text: "Great service from start to finish. Solar Roscommon delivered on everything they promised. Highly recommend." },
   ],
-  faqs: [
-    { question: "How much do solar panels cost in Roscommon?", answer: "A 4kW system in County Roscommon costs between €4,500 and €6,500. The SEAI grant of up to €1,800 applies." },
-    { question: "What SEAI grants are available?", answer: "The Domestic Solar PV Grant offers up to €1,800. We handle the full application process." },
-    { question: "How long does installation take?", answer: "Residential installations in Roscommon take one working day." },
-    { question: "Do I need planning permission?", answer: "No. Domestic solar panels are planning-exempt within standard limits." },
-    { question: "Do you install on farms?", answer: "Yes. We design and install agricultural solar systems for farms across County Roscommon." },
+    faqs: [
+    {
+      question: "How much do solar panels cost in Roscommon?",
+      answer: "The cost of solar panels in County Roscommon depends on system size, panel quality, and roof complexity. A typical 4kW residential solar PV system — suitable for most three- to four-bedroom homes in Roscommon Town, Castlerea, Boyle, Strokestown, and Ballaghaderreen — costs between €4,500 and €6,500 before any grants. This price usually includes all scaffolding, SEAI-registered installation, grid connection application, and a monitoring system. A larger 6kW system, ideal for homes with heat pumps or electric vehicles, ranges from €6,000 to €9,500. With the SEAI Domestic Solar PV Grant reducing your cost by up to €1,800, the net outlay for a standard 4kW system in Roscommon can be as low as €2,700–€4,700. We provide free, no-obligation site surveys for every home in County Roscommon and a detailed written quote so you know exactly what you're paying for. There are no hidden fees — ever."
+    },
+    {
+      question: "What SEAI grants are available in Roscommon?",
+      answer: "Homeowners in County Roscommon can access the SEAI Domestic Solar PV Grant, which offers up to €1,800 towards the cost of a solar panel installation. To qualify, your home must have been built and occupied before 2021, and you must use an SEAI-registered installer — which we are. The grant is paid directly to you after installation, typically within four to six weeks of submitting your claim. For properties built before 2007, there may also be additional SEAI grants available for insulation and heating upgrades through the Better Energy Homes scheme, which can further improve your home's energy performance. We handle the entire SEAI grant application process on your behalf at no extra cost, making it completely hassle-free for homeowners across Roscommon Town, Castlerea, Boyle, Strokestown, and Ballaghaderreen. Many of our Roscommon customers combine their solar grant with other energy upgrades for even greater savings on their electricity bills and carbon footprint."
+    },
+    {
+      question: "How long does a solar installation take in Roscommon?",
+      answer: "A standard residential solar panel installation in County Roscommon is typically completed in a single working day. Our SEAI-certified installers arrive early, erect scaffolding, mount the panel rails to your roof, fit and wire the solar panels, install the inverter, connect everything to your consumer unit (fuse board), and commission the system — all within roughly six to eight hours. Before installation day, we've already completed your ESB grid connection application, which takes two to four weeks for approval. The total timeline from your initial free survey in Roscommon Town or Castlerea to your system generating electricity is typically four to six weeks. Larger installations — such as 6kW+ systems, properties with complex roof shapes, or battery storage additions — may require a second day. We always confirm the exact timeline during your quote and keep you informed every step of the way. Every installation in Roscommon comes with a thorough handover, including a demonstration of your monitoring app and system controls."
+    },
+    {
+      question: "Do I need planning permission for solar panels in Roscommon?",
+      answer: "In the vast majority of cases, no — domestic solar panel installations in County Roscommon are exempt from planning permission under Irish building regulations. The exemption covers rooftop solar panels on private homes, provided the panels do not protrude more than 300mm from the roof surface and do not cover more than 50% of the total roof area. Ground-mounted solar arrays under 25 square metres are also generally exempt. However, there are exceptions: if your home in Roscommon Town or Castlerea is a listed or protected structure, located within an architectural conservation area, or near a national monument, you may need planning permission or at least a declaration of exemption from your local county council. Properties in or near Roscommon may require additional consideration. We check all planning requirements during your free site survey and advise you if any consent is needed before we proceed. For most homeowners across County Roscommon, the answer is a straightforward no — you can go ahead with your solar installation without any planning involvement."
+    },
+    {
+      question: "How much will I save with solar panels in Roscommon?",
+      answer: "Typical savings from solar panels in County Roscommon range from €600 to €1,000 per year on electricity bills, depending on your system size, household consumption, and whether you're home during the day. A 4kW solar PV system installed on a home in Roscommon Town, Castlerea, Boyle, Strokestown, and Ballaghaderreen can generate approximately 3,400 to 3,800 kWh of clean electricity annually. With current electricity prices in Ireland, this translates to significant annual savings — and the savings grow every time electricity prices increase. If you add battery storage, you can increase your savings further by storing excess daytime generation for evening use, potentially saving €800 to €1,300 per year. Over a 25-year panel lifespan, a solar system in Roscommon can save you €15,000 to €25,000 or more. With the SEAI grant reducing your upfront cost by up to €1,800, most homeowners in County Roscommon achieve full payback within five to seven years — leaving roughly 18 to 20 years of virtually free electricity. Your solar installation also reduces your carbon footprint by approximately 1.5 to 2 tonnes of CO₂ annually."
+    },
+    {
+      question: "Does solar work in Roscommon's weather and climate?",
+      answer: "Yes — absolutely. Solar panels generate electricity from daylight, not direct sunshine, which is why they work effectively throughout Ireland's seasons. County Roscommon receives approximately 1,000 to 1,150 kilowatt-hours (kWh) of solar irradiance per square metre annually. Roscommon's large rural properties often have expansive roof areas perfect for solar arrays, with minimal shading from surrounding buildings. Modern solar panels are highly efficient in diffuse light conditions, meaning even on the cloudiest days in Roscommon Town or Castlerea, your system will still produce meaningful electricity. While Roscommon is Connacht and experiences typical Irish weather patterns, solar panels are designed and tested to perform reliably in these conditions for 25 to 30 years. In fact, cooler temperatures actually improve panel efficiency — solar panels work slightly better in Irish temperatures than in extreme heat. Our monitoring systems allow you to track daily, monthly, and annual generation so you can see exactly how well your system performs through every season."
+    },
+    {
+      question: "What size solar panel system do I need for my home in Roscommon?",
+      answer: "The ideal solar panel system size for your home in County Roscommon depends on your electricity consumption, roof space, and budget. For most three- to four-bedroom households in Roscommon Town, Castlerea, Boyle, Strokestown, and Ballaghaderreen, a 4kW system (approximately 10 to 12 panels) is the sweet spot — generating around 3,400 to 3,800 kWh annually and covering 40 to 50% of a typical household's electricity needs. If you have a larger home, use an electric vehicle, or have a heat pump, a 6kW system (15 to 18 panels) may be more appropriate, generating 5,000 to 5,800 kWh per year. Smaller two-bedroom homes in areas like Boyle or Strokestown may only need a 3kW system. During your free site survey, we analyse your ESB bills, assess your roof dimensions and orientation, and use satellite shading analysis to recommend the optimally sized system for your specific property. There's no one-size-fits-all — every installation in Roscommon is tailored to your home's unique characteristics and your family's energy usage patterns."
+    },
+    {
+      question: "Are solar panels worth it for older homes in Roscommon?",
+      answer: "Solar panels are absolutely worth it for older homes in County Roscommon — and they may actually benefit you more than newer properties. Older homes in Roscommon Town, Castlerea, and surrounding areas often have solid fuel heating systems, electric immersion heaters, or storage heaters that consume large amounts of electricity. A solar panel system can offset these running costs significantly, especially if you time your immersion heating to coincide with peak solar generation hours. Furthermore, installing solar panels on an older property in Roscommon can improve your BER (Building Energy Rating) by one to two rating bands, which is increasingly important for property value and for accessing future green mortgage rates. Many period homes in Roscommon have large roof areas with south-facing pitches — ideal for solar installations. While we always check structural integrity during our survey, most older Irish homes can easily support the lightweight mounting systems used for modern solar panels. With the SEAI grant of up to €1,800 and typical payback periods of five to seven years, solar panels are one of the smartest investments you can make in an older Roscommon home."
+    },
+    {
+      question: "Do solar panels work on flat roofs in Roscommon?",
+      answer: "Yes, solar panels work very well on flat roofs in County Roscommon. While most homes in Roscommon Town and Castlerea have pitched roofs, we regularly install on flat-roofed properties including extensions, garages, commercial buildings, and farm outbuildings across Roscommon. On a flat roof, panels are mounted on angled frame systems — typically tilted at 15 to 30 degrees — to optimise solar exposure and allow rainwater runoff. The main consideration for flat roof installations in Roscommon is ensuring the roof structure can bear the additional weight, which is typically around 15 to 20 kilograms per square metre. We assess this during every survey. Flat roof systems can actually be more productive than some pitched roof installations because the mounting frames allow us to orient panels at the perfect angle regardless of the roof itself. For homeowners in Boyle and Strokestown with flat-roof extensions or outbuildings, these spaces can provide excellent additional generation capacity beyond what the main house roof offers. All our flat roof installations comply with SEAI standards and come with the same comprehensive warranties as pitched roof systems."
+    },
+    {
+      question: "What is the best orientation for solar panels in Roscommon?",
+      answer: "The best orientation for solar panels in County Roscommon is south-facing, which maximises annual electricity generation. However, this doesn't mean your roof must face exactly due south. Panels facing south-east or south-west still produce approximately 85 to 95% of the output of a perfectly south-facing system — a relatively small reduction that still delivers excellent savings. In fact, east-west split installations (panels on both sides of a roof) are increasingly popular in Roscommon Town, Castlerea, Boyle, Strokestown, and Ballaghaderreen because they generate electricity more evenly throughout the day, which better matches the consumption patterns of households where people are out at work during the middle of the day. Properties in Connacht with varied roof lines often benefit from our expert assessment to find the most productive configuration. During your free survey, we use satellite imagery and shading analysis tools to determine the optimal panel layout for your specific roof in Roscommon. We never recommend an installation unless we're confident it will deliver strong returns on your investment."
+    }
   ],
   avgSystemCost: "€4,500 – €6,500",
   avgPaybackYears: "5–7 years",
@@ -1325,8 +2109,8 @@ const sligo: CountyData = {
   province: "Connacht",
   country: "IE",
   phone: "+353-71-914-3100",
-  email: "info@solarsligo.ie",
-  domain: "solarsligo.ie",
+  email: "info@renewablesligo.ie",
+  domain: "renewablesligo.ie",
   mainTown: "Sligo",
   areaTowns: ["Sligo Town", "Tubbercurry", "Enniscrone", "Grange", "Ballymote", "Collooney"],
   lat: "54.2711",
@@ -1339,18 +2123,54 @@ const sligo: CountyData = {
     "TACs (Tax Exemption for Solar PV under €1,000 annual income)",
   ],
   heroSubtitle:
-    "SEAI registered solar panel installers serving County Sligo — from Sligo Town to Tubbercurry, Enniscrone to Grange.",
+    "Under Sligo's expansive skies, solar panels thrive. Yeats Country meets clean energy — installations that deliver year-round returns.",
+  heroTitle: "Solar Panels Sligo.\nYeats Country Meets Clean Energy.",
   testimonials: [
     { name: "Declan Gilmartin", location: "Sligo Town", rating: 5, text: "Solar Sligo provided a great service. The installation was done efficiently and our electricity bills have dropped significantly." },
     { name: "Ita Gallagher", location: "Tubbercurry", rating: 5, text: "Very happy with our solar panels. The SEAI grant was straightforward and the team at Solar Sligo was professional throughout." },
     { name: "Michael Brennan", location: "Enniscrone", rating: 5, text: "Excellent installation on our coastal property. Solar Sligo understood the specific considerations for our location and delivered a first-class result." },
   ],
-  faqs: [
-    { question: "How much do solar panels cost in Sligo?", answer: "A 4kW system in County Sligo costs between €4,500 and €6,500 before the SEAI grant." },
-    { question: "What SEAI grants are available?", answer: "The Domestic Solar PV Grant offers up to €1,800. We manage the application process." },
-    { question: "How long does installation take?", answer: "Most Sligo installations are completed in one working day." },
-    { question: "Do I need planning permission?", answer: "Domestic solar panels are planning-exempt in Ireland within standard limits." },
-    { question: "Do you install battery storage?", answer: "Yes. We install battery systems to maximise your solar self-consumption and reduce grid reliance." },
+    faqs: [
+    {
+      question: "How much do solar panels cost in Sligo?",
+      answer: "The cost of solar panels in County Sligo depends on system size, panel quality, and roof complexity. A typical 4kW residential solar PV system — suitable for most three- to four-bedroom homes in Sligo Town, Tubbercurry, Enniscrone, Grange, and Ballymote — costs between €4,500 and €6,500 before any grants. This price usually includes all scaffolding, SEAI-registered installation, grid connection application, and a monitoring system. A larger 6kW system, ideal for homes with heat pumps or electric vehicles, ranges from €6,000 to €9,500. With the SEAI Domestic Solar PV Grant reducing your cost by up to €1,800, the net outlay for a standard 4kW system in Sligo can be as low as €2,700–€4,700. We provide free, no-obligation site surveys for every home in County Sligo and a detailed written quote so you know exactly what you're paying for. There are no hidden fees — ever."
+    },
+    {
+      question: "What SEAI grants are available in Sligo?",
+      answer: "Homeowners in County Sligo can access the SEAI Domestic Solar PV Grant, which offers up to €1,800 towards the cost of a solar panel installation. To qualify, your home must have been built and occupied before 2021, and you must use an SEAI-registered installer — which we are. The grant is paid directly to you after installation, typically within four to six weeks of submitting your claim. For properties built before 2007, there may also be additional SEAI grants available for insulation and heating upgrades through the Better Energy Homes scheme, which can further improve your home's energy performance. We handle the entire SEAI grant application process on your behalf at no extra cost, making it completely hassle-free for homeowners across Sligo Town, Tubbercurry, Enniscrone, Grange, and Ballymote. Many of our Sligo customers combine their solar grant with other energy upgrades for even greater savings on their electricity bills and carbon footprint."
+    },
+    {
+      question: "How long does a solar installation take in Sligo?",
+      answer: "A standard residential solar panel installation in County Sligo is typically completed in a single working day. Our SEAI-certified installers arrive early, erect scaffolding, mount the panel rails to your roof, fit and wire the solar panels, install the inverter, connect everything to your consumer unit (fuse board), and commission the system — all within roughly six to eight hours. Before installation day, we've already completed your ESB grid connection application, which takes two to four weeks for approval. The total timeline from your initial free survey in Sligo Town or Tubbercurry to your system generating electricity is typically four to six weeks. Larger installations — such as 6kW+ systems, properties with complex roof shapes, or battery storage additions — may require a second day. We always confirm the exact timeline during your quote and keep you informed every step of the way. Every installation in Sligo comes with a thorough handover, including a demonstration of your monitoring app and system controls."
+    },
+    {
+      question: "Do I need planning permission for solar panels in Sligo?",
+      answer: "In the vast majority of cases, no — domestic solar panel installations in County Sligo are exempt from planning permission under Irish building regulations. The exemption covers rooftop solar panels on private homes, provided the panels do not protrude more than 300mm from the roof surface and do not cover more than 50% of the total roof area. Ground-mounted solar arrays under 25 square metres are also generally exempt. However, there are exceptions: if your home in Sligo Town or Tubbercurry is a listed or protected structure, located within an architectural conservation area, or near a national monument, you may need planning permission or at least a declaration of exemption from your local county council. Properties in or near Sligo's coastal and scenic areas may require additional consideration. We check all planning requirements during your free site survey and advise you if any consent is needed before we proceed. For most homeowners across County Sligo, the answer is a straightforward no — you can go ahead with your solar installation without any planning involvement."
+    },
+    {
+      question: "How much will I save with solar panels in Sligo?",
+      answer: "Typical savings from solar panels in County Sligo range from €600 to €1,000 per year on electricity bills, depending on your system size, household consumption, and whether you're home during the day. A 4kW solar PV system installed on a home in Sligo Town, Tubbercurry, Enniscrone, Grange, and Ballymote can generate approximately 3,400 to 3,800 kWh of clean electricity annually. With current electricity prices in Ireland, this translates to significant annual savings — and the savings grow every time electricity prices increase. If you add battery storage, you can increase your savings further by storing excess daytime generation for evening use, potentially saving €800 to €1,300 per year. Over a 25-year panel lifespan, a solar system in Sligo can save you €15,000 to €25,000 or more. With the SEAI grant reducing your upfront cost by up to €1,800, most homeowners in County Sligo achieve full payback within five to seven years — leaving roughly 18 to 20 years of virtually free electricity. Your solar installation also reduces your carbon footprint by approximately 1.5 to 2 tonnes of CO₂ annually."
+    },
+    {
+      question: "Does solar work in Sligo's weather and climate?",
+      answer: "Yes — absolutely. Solar panels generate electricity from daylight, not direct sunshine, which is why they work effectively throughout Ireland's seasons. County Sligo receives approximately 1,000 to 1,150 kilowatt-hours (kWh) of solar irradiance per square metre annually. Sligo's coastal location along the Atlantic provides excellent daylight exposure, and the county's open landscape minimises shading issues. Modern solar panels are highly efficient in diffuse light conditions, meaning even on the cloudiest days in Sligo Town or Tubbercurry, your system will still produce meaningful electricity. As a coastal county, Sligo does experience more wind and rainfall, but quality solar panels are manufactured to withstand harsh weather conditions including salt air exposure, heavy rain, and wind speeds well above what Ireland experiences. We use marine-grade mounting systems for properties near the coast. In fact, cooler temperatures actually improve panel efficiency — solar panels work slightly better in Irish temperatures than in extreme heat. Our monitoring systems allow you to track daily, monthly, and annual generation so you can see exactly how well your system performs through every season."
+    },
+    {
+      question: "What size solar panel system do I need for my home in Sligo?",
+      answer: "The ideal solar panel system size for your home in County Sligo depends on your electricity consumption, roof space, and budget. For most three- to four-bedroom households in Sligo Town, Tubbercurry, Enniscrone, Grange, and Ballymote, a 4kW system (approximately 10 to 12 panels) is the sweet spot — generating around 3,400 to 3,800 kWh annually and covering 40 to 50% of a typical household's electricity needs. If you have a larger home, use an electric vehicle, or have a heat pump, a 6kW system (15 to 18 panels) may be more appropriate, generating 5,000 to 5,800 kWh per year. Smaller two-bedroom homes in areas like Enniscrone or Grange may only need a 3kW system. During your free site survey, we analyse your ESB bills, assess your roof dimensions and orientation, and use satellite shading analysis to recommend the optimally sized system for your specific property. There's no one-size-fits-all — every installation in Sligo is tailored to your home's unique characteristics and your family's energy usage patterns."
+    },
+    {
+      question: "Are solar panels worth it for older homes in Sligo?",
+      answer: "Solar panels are absolutely worth it for older homes in County Sligo — and they may actually benefit you more than newer properties. Older homes in Sligo Town, Tubbercurry, and surrounding areas often have solid fuel heating systems, electric immersion heaters, or storage heaters that consume large amounts of electricity. A solar panel system can offset these running costs significantly, especially if you time your immersion heating to coincide with peak solar generation hours. Furthermore, installing solar panels on an older property in Sligo can improve your BER (Building Energy Rating) by one to two rating bands, which is increasingly important for property value and for accessing future green mortgage rates. Many period homes in Sligo's coastal and scenic areas have large roof areas with south-facing pitches — ideal for solar installations. While we always check structural integrity during our survey, most older Irish homes can easily support the lightweight mounting systems used for modern solar panels. With the SEAI grant of up to €1,800 and typical payback periods of five to seven years, solar panels are one of the smartest investments you can make in an older Sligo home."
+    },
+    {
+      question: "Do solar panels work on flat roofs in Sligo?",
+      answer: "Yes, solar panels work very well on flat roofs in County Sligo. While most homes in Sligo Town and Tubbercurry have pitched roofs, we regularly install on flat-roofed properties including extensions, garages, commercial buildings, and farm outbuildings across Sligo. On a flat roof, panels are mounted on angled frame systems — typically tilted at 15 to 30 degrees — to optimise solar exposure and allow rainwater runoff. The main consideration for flat roof installations in Sligo is ensuring the roof structure can bear the additional weight, which is typically around 15 to 20 kilograms per square metre. We assess this during every survey. Flat roof systems can actually be more productive than some pitched roof installations because the mounting frames allow us to orient panels at the perfect angle regardless of the roof itself. For homeowners in Enniscrone and Grange with flat-roof extensions or outbuildings, these spaces can provide excellent additional generation capacity beyond what the main house roof offers. All our flat roof installations comply with SEAI standards and come with the same comprehensive warranties as pitched roof systems."
+    },
+    {
+      question: "What is the best orientation for solar panels in Sligo?",
+      answer: "The best orientation for solar panels in County Sligo is south-facing, which maximises annual electricity generation. However, this doesn't mean your roof must face exactly due south. Panels facing south-east or south-west still produce approximately 85 to 95% of the output of a perfectly south-facing system — a relatively small reduction that still delivers excellent savings. In fact, east-west split installations (panels on both sides of a roof) are increasingly popular in Sligo Town, Tubbercurry, Enniscrone, Grange, and Ballymote because they generate electricity more evenly throughout the day, which better matches the consumption patterns of households where people are out at work during the middle of the day. Properties along Sligo's coastline sometimes face unusual orientations due to their location — we've successfully installed solar on roofs facing nearly every direction. During your free survey, we use satellite imagery and shading analysis tools to determine the optimal panel layout for your specific roof in Sligo. We never recommend an installation unless we're confident it will deliver strong returns on your investment."
+    }
   ],
   avgSystemCost: "€4,500 – €6,500",
   avgPaybackYears: "5–7 years",
@@ -1365,8 +2185,8 @@ const tipperary: CountyData = {
   province: "Munster",
   country: "IE",
   phone: "+353-62-512-3100",
-  email: "info@solartipperary.ie",
-  domain: "solartipperary.ie",
+  email: "info@renewabletipperary.ie",
+  domain: "renewabletipperary.ie",
   mainTown: "Clonmel",
   areaTowns: ["Clonmel", "Nenagh", "Thurles", "Carrick-on-Suir", "Cashel", "Templemore"],
   lat: "52.3382",
@@ -1379,18 +2199,54 @@ const tipperary: CountyData = {
     "TACs (Tax Exemption for Solar PV under €1,000 annual income)",
   ],
   heroSubtitle:
-    "SEAI registered solar panel installers serving County Tipperary — from Clonmel to Nenagh, Thurles to Cashel.",
+    "Tipperary's agricultural heritage meets the future of energy. Farm, home and business solar installations across the Premier County.",
+  heroTitle: "Solar Panels Tipperary.\nThe Premier County's Premier Investment.",
   testimonials: [
     { name: "Eddie Ryan", location: "Clonmel", rating: 5, text: "Solar Tipperary installed a 5kW system on our home and the results have been excellent. The SEAI grant was handled without any hassle." },
     { name: "Mary O'Dwyer", location: "Thurles", rating: 5, text: "Very professional service from start to finish. The installation was done in a day and we're very happy with the results." },
     { name: "John Maher", location: "Nenagh", rating: 5, text: "Solar Tipperary did a fantastic job. Clean installation, good communication, and the system is performing exactly as quoted." },
   ],
-  faqs: [
-    { question: "How much do solar panels cost in Tipperary?", answer: "A 4kW system in County Tipperary costs between €4,500 and €6,500. The SEAI grant of up to €1,800 applies." },
-    { question: "What SEAI grants are available?", answer: "The Domestic Solar PV Grant offers up to €1,800. We handle the application on your behalf." },
-    { question: "How long does installation take?", answer: "Residential installations in Tipperary take one working day." },
-    { question: "Do I need planning permission?", answer: "No. Domestic solar panels are planning-exempt within standard limits." },
-    { question: "Do you install on farms?", answer: "Yes. We have extensive experience with agricultural solar across County Tipperary." },
+    faqs: [
+    {
+      question: "How much do solar panels cost in Tipperary?",
+      answer: "The cost of solar panels in County Tipperary depends on system size, panel quality, and roof complexity. A typical 4kW residential solar PV system — suitable for most three- to four-bedroom homes in Clonmel, Nenagh, Thurles, Carrick-on-Suir, and Cashel — costs between €4,500 and €6,500 before any grants. This price usually includes all scaffolding, SEAI-registered installation, grid connection application, and a monitoring system. A larger 6kW system, ideal for homes with heat pumps or electric vehicles, ranges from €6,000 to €9,500. With the SEAI Domestic Solar PV Grant reducing your cost by up to €1,800, the net outlay for a standard 4kW system in Tipperary can be as low as €2,700–€4,700. We provide free, no-obligation site surveys for every home in County Tipperary and a detailed written quote so you know exactly what you're paying for. There are no hidden fees — ever."
+    },
+    {
+      question: "What SEAI grants are available in Tipperary?",
+      answer: "Homeowners in County Tipperary can access the SEAI Domestic Solar PV Grant, which offers up to €1,800 towards the cost of a solar panel installation. To qualify, your home must have been built and occupied before 2021, and you must use an SEAI-registered installer — which we are. The grant is paid directly to you after installation, typically within four to six weeks of submitting your claim. For properties built before 2007, there may also be additional SEAI grants available for insulation and heating upgrades through the Better Energy Homes scheme, which can further improve your home's energy performance. We handle the entire SEAI grant application process on your behalf at no extra cost, making it completely hassle-free for homeowners across Clonmel, Nenagh, Thurles, Carrick-on-Suir, and Cashel. Many of our Tipperary customers combine their solar grant with other energy upgrades for even greater savings on their electricity bills and carbon footprint."
+    },
+    {
+      question: "How long does a solar installation take in Tipperary?",
+      answer: "A standard residential solar panel installation in County Tipperary is typically completed in a single working day. Our SEAI-certified installers arrive early, erect scaffolding, mount the panel rails to your roof, fit and wire the solar panels, install the inverter, connect everything to your consumer unit (fuse board), and commission the system — all within roughly six to eight hours. Before installation day, we've already completed your ESB grid connection application, which takes two to four weeks for approval. The total timeline from your initial free survey in Clonmel or Nenagh to your system generating electricity is typically four to six weeks. Larger installations — such as 6kW+ systems, properties with complex roof shapes, or battery storage additions — may require a second day. We always confirm the exact timeline during your quote and keep you informed every step of the way. Every installation in Tipperary comes with a thorough handover, including a demonstration of your monitoring app and system controls."
+    },
+    {
+      question: "Do I need planning permission for solar panels in Tipperary?",
+      answer: "In the vast majority of cases, no — domestic solar panel installations in County Tipperary are exempt from planning permission under Irish building regulations. The exemption covers rooftop solar panels on private homes, provided the panels do not protrude more than 300mm from the roof surface and do not cover more than 50% of the total roof area. Ground-mounted solar arrays under 25 square metres are also generally exempt. However, there are exceptions: if your home in Clonmel or Nenagh is a listed or protected structure, located within an architectural conservation area, or near a national monument, you may need planning permission or at least a declaration of exemption from your local county council. Properties in or near Tipperary's heritage towns such as Cashel may require additional consideration. We check all planning requirements during your free site survey and advise you if any consent is needed before we proceed. For most homeowners across County Tipperary, the answer is a straightforward no — you can go ahead with your solar installation without any planning involvement."
+    },
+    {
+      question: "How much will I save with solar panels in Tipperary?",
+      answer: "Typical savings from solar panels in County Tipperary range from €600 to €1,000 per year on electricity bills, depending on your system size, household consumption, and whether you're home during the day. A 4kW solar PV system installed on a home in Clonmel, Nenagh, Thurles, Carrick-on-Suir, and Cashel can generate approximately 3,400 to 3,800 kWh of clean electricity annually. With current electricity prices in Ireland, this translates to significant annual savings — and the savings grow every time electricity prices increase. If you add battery storage, you can increase your savings further by storing excess daytime generation for evening use, potentially saving €800 to €1,300 per year. Over a 25-year panel lifespan, a solar system in Tipperary can save you €15,000 to €25,000 or more. With the SEAI grant reducing your upfront cost by up to €1,800, most homeowners in County Tipperary achieve full payback within five to seven years — leaving roughly 18 to 20 years of virtually free electricity. Your solar installation also reduces your carbon footprint by approximately 1.5 to 2 tonnes of CO₂ annually."
+    },
+    {
+      question: "Does solar work in Tipperary's weather and climate?",
+      answer: "Yes — absolutely. Solar panels generate electricity from daylight, not direct sunshine, which is why they work effectively throughout Ireland's seasons. County Tipperary receives approximately 1,000 to 1,150 kilowatt-hours (kWh) of solar irradiance per square metre annually. Tipperary's inland location and large agricultural properties create ideal conditions for both residential and farm-based solar installations. Modern solar panels are highly efficient in diffuse light conditions, meaning even on the cloudiest days in Clonmel or Nenagh, your system will still produce meaningful electricity. While Tipperary is Munster and experiences typical Irish weather patterns, solar panels are designed and tested to perform reliably in these conditions for 25 to 30 years. In fact, cooler temperatures actually improve panel efficiency — solar panels work slightly better in Irish temperatures than in extreme heat. Our monitoring systems allow you to track daily, monthly, and annual generation so you can see exactly how well your system performs through every season."
+    },
+    {
+      question: "What size solar panel system do I need for my home in Tipperary?",
+      answer: "The ideal solar panel system size for your home in County Tipperary depends on your electricity consumption, roof space, and budget. For most three- to four-bedroom households in Clonmel, Nenagh, Thurles, Carrick-on-Suir, and Cashel, a 4kW system (approximately 10 to 12 panels) is the sweet spot — generating around 3,400 to 3,800 kWh annually and covering 40 to 50% of a typical household's electricity needs. If you have a larger home, use an electric vehicle, or have a heat pump, a 6kW system (15 to 18 panels) may be more appropriate, generating 5,000 to 5,800 kWh per year. Smaller two-bedroom homes in areas like Thurles or Carrick-on-Suir may only need a 3kW system. During your free site survey, we analyse your ESB bills, assess your roof dimensions and orientation, and use satellite shading analysis to recommend the optimally sized system for your specific property. There's no one-size-fits-all — every installation in Tipperary is tailored to your home's unique characteristics and your family's energy usage patterns."
+    },
+    {
+      question: "Are solar panels worth it for older homes in Tipperary?",
+      answer: "Solar panels are absolutely worth it for older homes in County Tipperary — and they may actually benefit you more than newer properties. Older homes in Clonmel, Nenagh, and surrounding areas often have solid fuel heating systems, electric immersion heaters, or storage heaters that consume large amounts of electricity. A solar panel system can offset these running costs significantly, especially if you time your immersion heating to coincide with peak solar generation hours. Furthermore, installing solar panels on an older property in Tipperary can improve your BER (Building Energy Rating) by one to two rating bands, which is increasingly important for property value and for accessing future green mortgage rates. Many period homes in Tipperary's heritage towns such as Cashel have large roof areas with south-facing pitches — ideal for solar installations. While we always check structural integrity during our survey, most older Irish homes can easily support the lightweight mounting systems used for modern solar panels. With the SEAI grant of up to €1,800 and typical payback periods of five to seven years, solar panels are one of the smartest investments you can make in an older Tipperary home."
+    },
+    {
+      question: "Do solar panels work on flat roofs in Tipperary?",
+      answer: "Yes, solar panels work very well on flat roofs in County Tipperary. While most homes in Clonmel and Nenagh have pitched roofs, we regularly install on flat-roofed properties including extensions, garages, commercial buildings, and farm outbuildings across Tipperary. On a flat roof, panels are mounted on angled frame systems — typically tilted at 15 to 30 degrees — to optimise solar exposure and allow rainwater runoff. The main consideration for flat roof installations in Tipperary is ensuring the roof structure can bear the additional weight, which is typically around 15 to 20 kilograms per square metre. We assess this during every survey. Flat roof systems can actually be more productive than some pitched roof installations because the mounting frames allow us to orient panels at the perfect angle regardless of the roof itself. For homeowners in Thurles and Carrick-on-Suir with flat-roof extensions or outbuildings, these spaces can provide excellent additional generation capacity beyond what the main house roof offers. All our flat roof installations comply with SEAI standards and come with the same comprehensive warranties as pitched roof systems."
+    },
+    {
+      question: "What is the best orientation for solar panels in Tipperary?",
+      answer: "The best orientation for solar panels in County Tipperary is south-facing, which maximises annual electricity generation. However, this doesn't mean your roof must face exactly due south. Panels facing south-east or south-west still produce approximately 85 to 95% of the output of a perfectly south-facing system — a relatively small reduction that still delivers excellent savings. In fact, east-west split installations (panels on both sides of a roof) are increasingly popular in Clonmel, Nenagh, Thurles, Carrick-on-Suir, and Cashel because they generate electricity more evenly throughout the day, which better matches the consumption patterns of households where people are out at work during the middle of the day. Properties in Munster with varied roof lines often benefit from our expert assessment to find the most productive configuration. During your free survey, we use satellite imagery and shading analysis tools to determine the optimal panel layout for your specific roof in Tipperary. We never recommend an installation unless we're confident it will deliver strong returns on your investment."
+    }
   ],
   avgSystemCost: "€4,500 – €6,500",
   avgPaybackYears: "5–7 years",
@@ -1405,8 +2261,8 @@ const waterford: CountyData = {
   province: "Munster",
   country: "IE",
   phone: "+353-51-842-3100",
-  email: "info@solarwaterford.ie",
-  domain: "solarwaterford.ie",
+  email: "info@renewablewaterford.ie",
+  domain: "renewablewaterford.ie",
   mainTown: "Waterford",
   areaTowns: ["Waterford City", "Dungarvan", "Tramore", "Lismore", "Kilmacthomas", "Portlaw"],
   lat: "52.2593",
@@ -1419,18 +2275,54 @@ const waterford: CountyData = {
     "TACs (Tax Exemption for Solar PV under €1,000 annual income)",
   ],
   heroSubtitle:
-    "SEAI registered solar panel installers serving County Waterford — from Waterford City to Dungarvan, Tramore to Lismore.",
+    "Waterford's sunny south-east coast is Ireland's solar sweet spot. The Deise's brightest investment starts on your roof.",
+  heroTitle: "Solar Panels Waterford.\nThe Déise's Brightest Investment.",
   testimonials: [
     { name: "John Power", location: "Waterford City", rating: 5, text: "Solar Waterford provided an excellent service. The installation was done in a day and the SEAI grant was handled efficiently." },
     { name: "Sinead Kirwan", location: "Dungarvan", rating: 5, text: "We're very pleased with our solar panels. The system is generating well and the team was professional and knowledgeable." },
     { name: "Mike Foley", location: "Tramore", rating: 5, text: "Great installation on our coastal home. Solar Waterford were thorough, reliable, and the system has exceeded expectations." },
   ],
-  faqs: [
-    { question: "How much do solar panels cost in Waterford?", answer: "A 4kW system in County Waterford costs between €4,500 and €6,500 before the SEAI grant." },
-    { question: "What SEAI grants are available?", answer: "The Domestic Solar PV Grant offers up to €1,800 for homes. We manage the full application." },
-    { question: "How long does installation take?", answer: "Most Waterford installations are completed in one working day." },
-    { question: "Do I need planning permission?", answer: "Domestic solar panels are planning-exempt within standard limits." },
-    { question: "Do you install battery storage?", answer: "Yes. We install battery systems to store excess solar energy for evening and night use." },
+    faqs: [
+    {
+      question: "How much do solar panels cost in Waterford?",
+      answer: "The cost of solar panels in County Waterford depends on system size, panel quality, and roof complexity. A typical 4kW residential solar PV system — suitable for most three- to four-bedroom homes in Waterford City, Dungarvan, Tramore, Lismore, and Kilmacthomas — costs between €4,500 and €6,500 before any grants. This price usually includes all scaffolding, SEAI-registered installation, grid connection application, and a monitoring system. A larger 6kW system, ideal for homes with heat pumps or electric vehicles, ranges from €6,000 to €9,500. With the SEAI Domestic Solar PV Grant reducing your cost by up to €1,800, the net outlay for a standard 4kW system in Waterford can be as low as €2,700–€4,700. We provide free, no-obligation site surveys for every home in County Waterford and a detailed written quote so you know exactly what you're paying for. There are no hidden fees — ever."
+    },
+    {
+      question: "What SEAI grants are available in Waterford?",
+      answer: "Homeowners in County Waterford can access the SEAI Domestic Solar PV Grant, which offers up to €1,800 towards the cost of a solar panel installation. To qualify, your home must have been built and occupied before 2021, and you must use an SEAI-registered installer — which we are. The grant is paid directly to you after installation, typically within four to six weeks of submitting your claim. For properties built before 2007, there may also be additional SEAI grants available for insulation and heating upgrades through the Better Energy Homes scheme, which can further improve your home's energy performance. We handle the entire SEAI grant application process on your behalf at no extra cost, making it completely hassle-free for homeowners across Waterford City, Dungarvan, Tramore, Lismore, and Kilmacthomas. Many of our Waterford customers combine their solar grant with other energy upgrades for even greater savings on their electricity bills and carbon footprint."
+    },
+    {
+      question: "How long does a solar installation take in Waterford?",
+      answer: "A standard residential solar panel installation in County Waterford is typically completed in a single working day. Our SEAI-certified installers arrive early, erect scaffolding, mount the panel rails to your roof, fit and wire the solar panels, install the inverter, connect everything to your consumer unit (fuse board), and commission the system — all within roughly six to eight hours. Before installation day, we've already completed your ESB grid connection application, which takes two to four weeks for approval. The total timeline from your initial free survey in Waterford City or Dungarvan to your system generating electricity is typically four to six weeks. Larger installations — such as 6kW+ systems, properties with complex roof shapes, or battery storage additions — may require a second day. We always confirm the exact timeline during your quote and keep you informed every step of the way. Every installation in Waterford comes with a thorough handover, including a demonstration of your monitoring app and system controls."
+    },
+    {
+      question: "Do I need planning permission for solar panels in Waterford?",
+      answer: "In the vast majority of cases, no — domestic solar panel installations in County Waterford are exempt from planning permission under Irish building regulations. The exemption covers rooftop solar panels on private homes, provided the panels do not protrude more than 300mm from the roof surface and do not cover more than 50% of the total roof area. Ground-mounted solar arrays under 25 square metres are also generally exempt. However, there are exceptions: if your home in Waterford City or Dungarvan is a listed or protected structure, located within an architectural conservation area, or near a national monument, you may need planning permission or at least a declaration of exemption from your local county council. Properties in or near Waterford City's Viking Quarter and historic areas may require additional consideration. We check all planning requirements during your free site survey and advise you if any consent is needed before we proceed. For most homeowners across County Waterford, the answer is a straightforward no — you can go ahead with your solar installation without any planning involvement."
+    },
+    {
+      question: "How much will I save with solar panels in Waterford?",
+      answer: "Typical savings from solar panels in County Waterford range from €600 to €1,000 per year on electricity bills, depending on your system size, household consumption, and whether you're home during the day. A 4kW solar PV system installed on a home in Waterford City, Dungarvan, Tramore, Lismore, and Kilmacthomas can generate approximately 3,400 to 3,800 kWh of clean electricity annually. With current electricity prices in Ireland, this translates to significant annual savings — and the savings grow every time electricity prices increase. If you add battery storage, you can increase your savings further by storing excess daytime generation for evening use, potentially saving €800 to €1,300 per year. Over a 25-year panel lifespan, a solar system in Waterford can save you €15,000 to €25,000 or more. With the SEAI grant reducing your upfront cost by up to €1,800, most homeowners in County Waterford achieve full payback within five to seven years — leaving roughly 18 to 20 years of virtually free electricity. Your solar installation also reduces your carbon footprint by approximately 1.5 to 2 tonnes of CO₂ annually."
+    },
+    {
+      question: "Does solar work in Waterford's weather and climate?",
+      answer: "Yes — absolutely. Solar panels generate electricity from daylight, not direct sunshine, which is why they work effectively throughout Ireland's seasons. County Waterford receives approximately 1,000 to 1,150 kilowatt-hours (kWh) of solar irradiance per square metre annually. Waterford's south-east coastal location makes it one of Ireland's best counties for solar energy, with irradiance levels comparable to parts of northern France. Modern solar panels are highly efficient in diffuse light conditions, meaning even on the cloudiest days in Waterford City or Dungarvan, your system will still produce meaningful electricity. As a coastal county, Waterford does experience more wind and rainfall, but quality solar panels are manufactured to withstand harsh weather conditions including salt air exposure, heavy rain, and wind speeds well above what Ireland experiences. We use marine-grade mounting systems for properties near the coast. In fact, cooler temperatures actually improve panel efficiency — solar panels work slightly better in Irish temperatures than in extreme heat. Our monitoring systems allow you to track daily, monthly, and annual generation so you can see exactly how well your system performs through every season."
+    },
+    {
+      question: "What size solar panel system do I need for my home in Waterford?",
+      answer: "The ideal solar panel system size for your home in County Waterford depends on your electricity consumption, roof space, and budget. For most three- to four-bedroom households in Waterford City, Dungarvan, Tramore, Lismore, and Kilmacthomas, a 4kW system (approximately 10 to 12 panels) is the sweet spot — generating around 3,400 to 3,800 kWh annually and covering 40 to 50% of a typical household's electricity needs. If you have a larger home, use an electric vehicle, or have a heat pump, a 6kW system (15 to 18 panels) may be more appropriate, generating 5,000 to 5,800 kWh per year. Smaller two-bedroom homes in areas like Tramore or Lismore may only need a 3kW system. During your free site survey, we analyse your ESB bills, assess your roof dimensions and orientation, and use satellite shading analysis to recommend the optimally sized system for your specific property. There's no one-size-fits-all — every installation in Waterford is tailored to your home's unique characteristics and your family's energy usage patterns."
+    },
+    {
+      question: "Are solar panels worth it for older homes in Waterford?",
+      answer: "Solar panels are absolutely worth it for older homes in County Waterford — and they may actually benefit you more than newer properties. Older homes in Waterford City, Dungarvan, and surrounding areas often have solid fuel heating systems, electric immersion heaters, or storage heaters that consume large amounts of electricity. A solar panel system can offset these running costs significantly, especially if you time your immersion heating to coincide with peak solar generation hours. Furthermore, installing solar panels on an older property in Waterford can improve your BER (Building Energy Rating) by one to two rating bands, which is increasingly important for property value and for accessing future green mortgage rates. Many period homes in Waterford City's Viking Quarter and historic areas have large roof areas with south-facing pitches — ideal for solar installations. While we always check structural integrity during our survey, most older Irish homes can easily support the lightweight mounting systems used for modern solar panels. With the SEAI grant of up to €1,800 and typical payback periods of five to seven years, solar panels are one of the smartest investments you can make in an older Waterford home."
+    },
+    {
+      question: "Do solar panels work on flat roofs in Waterford?",
+      answer: "Yes, solar panels work very well on flat roofs in County Waterford. While most homes in Waterford City and Dungarvan have pitched roofs, we regularly install on flat-roofed properties including extensions, garages, commercial buildings, and farm outbuildings across Waterford. On a flat roof, panels are mounted on angled frame systems — typically tilted at 15 to 30 degrees — to optimise solar exposure and allow rainwater runoff. The main consideration for flat roof installations in Waterford is ensuring the roof structure can bear the additional weight, which is typically around 15 to 20 kilograms per square metre. We assess this during every survey. Flat roof systems can actually be more productive than some pitched roof installations because the mounting frames allow us to orient panels at the perfect angle regardless of the roof itself. For homeowners in Tramore and Lismore with flat-roof extensions or outbuildings, these spaces can provide excellent additional generation capacity beyond what the main house roof offers. All our flat roof installations comply with SEAI standards and come with the same comprehensive warranties as pitched roof systems."
+    },
+    {
+      question: "What is the best orientation for solar panels in Waterford?",
+      answer: "The best orientation for solar panels in County Waterford is south-facing, which maximises annual electricity generation. However, this doesn't mean your roof must face exactly due south. Panels facing south-east or south-west still produce approximately 85 to 95% of the output of a perfectly south-facing system — a relatively small reduction that still delivers excellent savings. In fact, east-west split installations (panels on both sides of a roof) are increasingly popular in Waterford City, Dungarvan, Tramore, Lismore, and Kilmacthomas because they generate electricity more evenly throughout the day, which better matches the consumption patterns of households where people are out at work during the middle of the day. Properties along Waterford's coastline sometimes face unusual orientations due to their location — we've successfully installed solar on roofs facing nearly every direction. During your free survey, we use satellite imagery and shading analysis tools to determine the optimal panel layout for your specific roof in Waterford. We never recommend an installation unless we're confident it will deliver strong returns on your investment."
+    }
   ],
   avgSystemCost: "€4,500 – €6,500",
   avgPaybackYears: "5–7 years",
@@ -1445,8 +2337,8 @@ const westmeath: CountyData = {
   province: "Leinster",
   country: "IE",
   phone: "+353-44-933-3100",
-  email: "info@solarwestmeath.ie",
-  domain: "solarwestmeath.ie",
+  email: "info@renewablewestmeath.ie",
+  domain: "renewablewestmeath.ie",
   mainTown: "Mullingar",
   areaTowns: ["Mullingar", "Athlone", "Kinnegad", "Moate", "Castlepollard", "Kilbeggan"],
   lat: "53.5244",
@@ -1459,18 +2351,54 @@ const westmeath: CountyData = {
     "TACs (Tax Exemption for Solar PV under €1,000 annual income)",
   ],
   heroSubtitle:
-    "SEAI registered solar panel installers serving County Westmeath — from Mullingar to Athlone, Kinnegad to Castlepollard.",
+    "Westmeath's lake district meets green energy. Athlone to Mullingar — solar installations that cut bills and add value to your home.",
+  heroTitle: "Solar Panels Westmeath.\nLake District Living, Solar Powered.",
   testimonials: [
     { name: "Michael Smyth", location: "Mullingar", rating: 5, text: "Solar Westmeath provided an excellent service. The installation was efficient and the SEAI grant was sorted without any issues." },
     { name: "Mary O'Brien", location: "Athlone", rating: 5, text: "We're very happy with our solar panels. The team was professional, tidy, and the system is performing very well." },
     { name: "John Connolly", location: "Kinnegad", rating: 5, text: "Great installation at a fair price. Solar Westmeath delivered exactly what they promised and the results speak for themselves." },
   ],
-  faqs: [
-    { question: "How much do solar panels cost in Westmeath?", answer: "A 4kW system in County Westmeath costs between €4,500 and €6,500. The SEAI grant can reduce this by up to €1,800." },
-    { question: "What SEAI grants are available?", answer: "The Domestic Solar PV Grant offers up to €1,800. We handle the application." },
-    { question: "How long does installation take?", answer: "Residential installations in Westmeath typically take one working day." },
-    { question: "Do I need planning permission?", answer: "Domestic solar panels are planning-exempt within standard limits in Ireland." },
-    { question: "Do you install EV chargers?", answer: "Yes. We can install solar panels alongside an EV charge point for free solar-powered vehicle charging." },
+    faqs: [
+    {
+      question: "How much do solar panels cost in Westmeath?",
+      answer: "The cost of solar panels in County Westmeath depends on system size, panel quality, and roof complexity. A typical 4kW residential solar PV system — suitable for most three- to four-bedroom homes in Mullingar, Athlone, Kinnegad, Moate, and Castlepollard — costs between €4,500 and €6,500 before any grants. This price usually includes all scaffolding, SEAI-registered installation, grid connection application, and a monitoring system. A larger 6kW system, ideal for homes with heat pumps or electric vehicles, ranges from €6,000 to €9,500. With the SEAI Domestic Solar PV Grant reducing your cost by up to €1,800, the net outlay for a standard 4kW system in Westmeath can be as low as €2,700–€4,700. We provide free, no-obligation site surveys for every home in County Westmeath and a detailed written quote so you know exactly what you're paying for. There are no hidden fees — ever."
+    },
+    {
+      question: "What SEAI grants are available in Westmeath?",
+      answer: "Homeowners in County Westmeath can access the SEAI Domestic Solar PV Grant, which offers up to €1,800 towards the cost of a solar panel installation. To qualify, your home must have been built and occupied before 2021, and you must use an SEAI-registered installer — which we are. The grant is paid directly to you after installation, typically within four to six weeks of submitting your claim. For properties built before 2007, there may also be additional SEAI grants available for insulation and heating upgrades through the Better Energy Homes scheme, which can further improve your home's energy performance. We handle the entire SEAI grant application process on your behalf at no extra cost, making it completely hassle-free for homeowners across Mullingar, Athlone, Kinnegad, Moate, and Castlepollard. Many of our Westmeath customers combine their solar grant with other energy upgrades for even greater savings on their electricity bills and carbon footprint."
+    },
+    {
+      question: "How long does a solar installation take in Westmeath?",
+      answer: "A standard residential solar panel installation in County Westmeath is typically completed in a single working day. Our SEAI-certified installers arrive early, erect scaffolding, mount the panel rails to your roof, fit and wire the solar panels, install the inverter, connect everything to your consumer unit (fuse board), and commission the system — all within roughly six to eight hours. Before installation day, we've already completed your ESB grid connection application, which takes two to four weeks for approval. The total timeline from your initial free survey in Mullingar or Athlone to your system generating electricity is typically four to six weeks. Larger installations — such as 6kW+ systems, properties with complex roof shapes, or battery storage additions — may require a second day. We always confirm the exact timeline during your quote and keep you informed every step of the way. Every installation in Westmeath comes with a thorough handover, including a demonstration of your monitoring app and system controls."
+    },
+    {
+      question: "Do I need planning permission for solar panels in Westmeath?",
+      answer: "In the vast majority of cases, no — domestic solar panel installations in County Westmeath are exempt from planning permission under Irish building regulations. The exemption covers rooftop solar panels on private homes, provided the panels do not protrude more than 300mm from the roof surface and do not cover more than 50% of the total roof area. Ground-mounted solar arrays under 25 square metres are also generally exempt. However, there are exceptions: if your home in Mullingar or Athlone is a listed or protected structure, located within an architectural conservation area, or near a national monument, you may need planning permission or at least a declaration of exemption from your local county council. Properties in or near Westmeath may require additional consideration. We check all planning requirements during your free site survey and advise you if any consent is needed before we proceed. For most homeowners across County Westmeath, the answer is a straightforward no — you can go ahead with your solar installation without any planning involvement."
+    },
+    {
+      question: "How much will I save with solar panels in Westmeath?",
+      answer: "Typical savings from solar panels in County Westmeath range from €600 to €1,000 per year on electricity bills, depending on your system size, household consumption, and whether you're home during the day. A 4kW solar PV system installed on a home in Mullingar, Athlone, Kinnegad, Moate, and Castlepollard can generate approximately 3,400 to 3,800 kWh of clean electricity annually. With current electricity prices in Ireland, this translates to significant annual savings — and the savings grow every time electricity prices increase. If you add battery storage, you can increase your savings further by storing excess daytime generation for evening use, potentially saving €800 to €1,300 per year. Over a 25-year panel lifespan, a solar system in Westmeath can save you €15,000 to €25,000 or more. With the SEAI grant reducing your upfront cost by up to €1,800, most homeowners in County Westmeath achieve full payback within five to seven years — leaving roughly 18 to 20 years of virtually free electricity. Your solar installation also reduces your carbon footprint by approximately 1.5 to 2 tonnes of CO₂ annually."
+    },
+    {
+      question: "Does solar work in Westmeath's weather and climate?",
+      answer: "Yes — absolutely. Solar panels generate electricity from daylight, not direct sunshine, which is why they work effectively throughout Ireland's seasons. County Westmeath receives approximately 1,000 to 1,150 kilowatt-hours (kWh) of solar irradiance per square metre annually. Westmeath's lakeland setting provides open skies and minimal shading, while its growing towns around Mullingar and Athlone offer plenty of modern homes perfect for solar. Modern solar panels are highly efficient in diffuse light conditions, meaning even on the cloudiest days in Mullingar or Athlone, your system will still produce meaningful electricity. While Westmeath is the Midlands and experiences typical Irish weather patterns, solar panels are designed and tested to perform reliably in these conditions for 25 to 30 years. In fact, cooler temperatures actually improve panel efficiency — solar panels work slightly better in Irish temperatures than in extreme heat. Our monitoring systems allow you to track daily, monthly, and annual generation so you can see exactly how well your system performs through every season."
+    },
+    {
+      question: "What size solar panel system do I need for my home in Westmeath?",
+      answer: "The ideal solar panel system size for your home in County Westmeath depends on your electricity consumption, roof space, and budget. For most three- to four-bedroom households in Mullingar, Athlone, Kinnegad, Moate, and Castlepollard, a 4kW system (approximately 10 to 12 panels) is the sweet spot — generating around 3,400 to 3,800 kWh annually and covering 40 to 50% of a typical household's electricity needs. If you have a larger home, use an electric vehicle, or have a heat pump, a 6kW system (15 to 18 panels) may be more appropriate, generating 5,000 to 5,800 kWh per year. Smaller two-bedroom homes in areas like Kinnegad or Moate may only need a 3kW system. During your free site survey, we analyse your ESB bills, assess your roof dimensions and orientation, and use satellite shading analysis to recommend the optimally sized system for your specific property. There's no one-size-fits-all — every installation in Westmeath is tailored to your home's unique characteristics and your family's energy usage patterns."
+    },
+    {
+      question: "Are solar panels worth it for older homes in Westmeath?",
+      answer: "Solar panels are absolutely worth it for older homes in County Westmeath — and they may actually benefit you more than newer properties. Older homes in Mullingar, Athlone, and surrounding areas often have solid fuel heating systems, electric immersion heaters, or storage heaters that consume large amounts of electricity. A solar panel system can offset these running costs significantly, especially if you time your immersion heating to coincide with peak solar generation hours. Furthermore, installing solar panels on an older property in Westmeath can improve your BER (Building Energy Rating) by one to two rating bands, which is increasingly important for property value and for accessing future green mortgage rates. Many period homes in Westmeath have large roof areas with south-facing pitches — ideal for solar installations. While we always check structural integrity during our survey, most older Irish homes can easily support the lightweight mounting systems used for modern solar panels. With the SEAI grant of up to €1,800 and typical payback periods of five to seven years, solar panels are one of the smartest investments you can make in an older Westmeath home."
+    },
+    {
+      question: "Do solar panels work on flat roofs in Westmeath?",
+      answer: "Yes, solar panels work very well on flat roofs in County Westmeath. While most homes in Mullingar and Athlone have pitched roofs, we regularly install on flat-roofed properties including extensions, garages, commercial buildings, and farm outbuildings across Westmeath. On a flat roof, panels are mounted on angled frame systems — typically tilted at 15 to 30 degrees — to optimise solar exposure and allow rainwater runoff. The main consideration for flat roof installations in Westmeath is ensuring the roof structure can bear the additional weight, which is typically around 15 to 20 kilograms per square metre. We assess this during every survey. Flat roof systems can actually be more productive than some pitched roof installations because the mounting frames allow us to orient panels at the perfect angle regardless of the roof itself. For homeowners in Kinnegad and Moate with flat-roof extensions or outbuildings, these spaces can provide excellent additional generation capacity beyond what the main house roof offers. All our flat roof installations comply with SEAI standards and come with the same comprehensive warranties as pitched roof systems."
+    },
+    {
+      question: "What is the best orientation for solar panels in Westmeath?",
+      answer: "The best orientation for solar panels in County Westmeath is south-facing, which maximises annual electricity generation. However, this doesn't mean your roof must face exactly due south. Panels facing south-east or south-west still produce approximately 85 to 95% of the output of a perfectly south-facing system — a relatively small reduction that still delivers excellent savings. In fact, east-west split installations (panels on both sides of a roof) are increasingly popular in Mullingar, Athlone, Kinnegad, Moate, and Castlepollard because they generate electricity more evenly throughout the day, which better matches the consumption patterns of households where people are out at work during the middle of the day. Properties in the Midlands with varied roof lines often benefit from our expert assessment to find the most productive configuration. During your free survey, we use satellite imagery and shading analysis tools to determine the optimal panel layout for your specific roof in Westmeath. We never recommend an installation unless we're confident it will deliver strong returns on your investment."
+    }
   ],
   avgSystemCost: "€4,500 – €6,500",
   avgPaybackYears: "5–7 years",
@@ -1485,8 +2413,8 @@ const wexford: CountyData = {
   province: "Leinster",
   country: "IE",
   phone: "+353-53-912-3100",
-  email: "info@solarwexford.ie",
-  domain: "solarwexford.ie",
+  email: "info@renewablewexford.ie",
+  domain: "renewablewexford.ie",
   mainTown: "Wexford",
   areaTowns: ["Wexford Town", "Enniscorthy", "Gorey", "New Ross", "Ferns", "Bunclody"],
   lat: "52.3369",
@@ -1499,18 +2427,54 @@ const wexford: CountyData = {
     "TACs (Tax Exemption for Solar PV under €1,000 annual income)",
   ],
   heroSubtitle:
-    "SEAI registered solar panel installers serving County Wexford — from Wexford Town to Enniscorthy, Gorey to New Ross.",
+    "Wexford's south-eastern location delivers some of Ireland's highest solar yields. Model County homes lead the way in energy independence.",
+  heroTitle: "Solar Panels Wexford.\nModel County Homes Leading the Way.",
   testimonials: [
     { name: "Jimmy Roche", location: "Wexford Town", rating: 5, text: "Solar Wexford did a superb job on our home. The installation was done in a day and we're seeing excellent generation from our coastal location." },
     { name: "Margaret Kinsella", location: "Enniscorthy", rating: 5, text: "We're delighted with our solar installation. Professional team and the SEAI grant was handled smoothly from start to finish." },
     { name: "Paddy Doyle", location: "Gorey", rating: 5, text: "Excellent service from Solar Wexford. Clean installation, good communication, and the system is performing very well." },
   ],
-  faqs: [
-    { question: "How much do solar panels cost in Wexford?", answer: "A 4kW system in County Wexford costs between €4,500 and €6,500 before the SEAI grant." },
-    { question: "What SEAI grants are available?", answer: "The Domestic Solar PV Grant offers up to €1,800 for homes. We manage the application." },
-    { question: "How long does installation take?", answer: "Most Wexford installations are completed in one working day." },
-    { question: "Do I need planning permission?", answer: "Domestic solar panels are planning-exempt within standard limits." },
-    { question: "Do you install battery storage?", answer: "Yes. Battery storage lets you maximise solar self-consumption and reduce evening grid reliance." },
+    faqs: [
+    {
+      question: "How much do solar panels cost in Wexford?",
+      answer: "The cost of solar panels in County Wexford depends on system size, panel quality, and roof complexity. A typical 4kW residential solar PV system — suitable for most three- to four-bedroom homes in Wexford Town, Enniscorthy, Gorey, New Ross, and Ferns — costs between €4,500 and €6,500 before any grants. This price usually includes all scaffolding, SEAI-registered installation, grid connection application, and a monitoring system. A larger 6kW system, ideal for homes with heat pumps or electric vehicles, ranges from €6,000 to €9,500. With the SEAI Domestic Solar PV Grant reducing your cost by up to €1,800, the net outlay for a standard 4kW system in Wexford can be as low as €2,700–€4,700. We provide free, no-obligation site surveys for every home in County Wexford and a detailed written quote so you know exactly what you're paying for. There are no hidden fees — ever."
+    },
+    {
+      question: "What SEAI grants are available in Wexford?",
+      answer: "Homeowners in County Wexford can access the SEAI Domestic Solar PV Grant, which offers up to €1,800 towards the cost of a solar panel installation. To qualify, your home must have been built and occupied before 2021, and you must use an SEAI-registered installer — which we are. The grant is paid directly to you after installation, typically within four to six weeks of submitting your claim. For properties built before 2007, there may also be additional SEAI grants available for insulation and heating upgrades through the Better Energy Homes scheme, which can further improve your home's energy performance. We handle the entire SEAI grant application process on your behalf at no extra cost, making it completely hassle-free for homeowners across Wexford Town, Enniscorthy, Gorey, New Ross, and Ferns. Many of our Wexford customers combine their solar grant with other energy upgrades for even greater savings on their electricity bills and carbon footprint."
+    },
+    {
+      question: "How long does a solar installation take in Wexford?",
+      answer: "A standard residential solar panel installation in County Wexford is typically completed in a single working day. Our SEAI-certified installers arrive early, erect scaffolding, mount the panel rails to your roof, fit and wire the solar panels, install the inverter, connect everything to your consumer unit (fuse board), and commission the system — all within roughly six to eight hours. Before installation day, we've already completed your ESB grid connection application, which takes two to four weeks for approval. The total timeline from your initial free survey in Wexford Town or Enniscorthy to your system generating electricity is typically four to six weeks. Larger installations — such as 6kW+ systems, properties with complex roof shapes, or battery storage additions — may require a second day. We always confirm the exact timeline during your quote and keep you informed every step of the way. Every installation in Wexford comes with a thorough handover, including a demonstration of your monitoring app and system controls."
+    },
+    {
+      question: "Do I need planning permission for solar panels in Wexford?",
+      answer: "In the vast majority of cases, no — domestic solar panel installations in County Wexford are exempt from planning permission under Irish building regulations. The exemption covers rooftop solar panels on private homes, provided the panels do not protrude more than 300mm from the roof surface and do not cover more than 50% of the total roof area. Ground-mounted solar arrays under 25 square metres are also generally exempt. However, there are exceptions: if your home in Wexford Town or Enniscorthy is a listed or protected structure, located within an architectural conservation area, or near a national monument, you may need planning permission or at least a declaration of exemption from your local county council. Properties in or near Wexford's historic towns and coastal villages may require additional consideration. We check all planning requirements during your free site survey and advise you if any consent is needed before we proceed. For most homeowners across County Wexford, the answer is a straightforward no — you can go ahead with your solar installation without any planning involvement."
+    },
+    {
+      question: "How much will I save with solar panels in Wexford?",
+      answer: "Typical savings from solar panels in County Wexford range from €600 to €1,000 per year on electricity bills, depending on your system size, household consumption, and whether you're home during the day. A 4kW solar PV system installed on a home in Wexford Town, Enniscorthy, Gorey, New Ross, and Ferns can generate approximately 3,400 to 3,800 kWh of clean electricity annually. With current electricity prices in Ireland, this translates to significant annual savings — and the savings grow every time electricity prices increase. If you add battery storage, you can increase your savings further by storing excess daytime generation for evening use, potentially saving €800 to €1,300 per year. Over a 25-year panel lifespan, a solar system in Wexford can save you €15,000 to €25,000 or more. With the SEAI grant reducing your upfront cost by up to €1,800, most homeowners in County Wexford achieve full payback within five to seven years — leaving roughly 18 to 20 years of virtually free electricity. Your solar installation also reduces your carbon footprint by approximately 1.5 to 2 tonnes of CO₂ annually."
+    },
+    {
+      question: "Does solar work in Wexford's weather and climate?",
+      answer: "Yes — absolutely. Solar panels generate electricity from daylight, not direct sunshine, which is why they work effectively throughout Ireland's seasons. County Wexford receives approximately 1,000 to 1,150 kilowatt-hours (kWh) of solar irradiance per square metre annually. Wexford's south-east position gives it some of Ireland's highest annual solar irradiance — often exceeding 1,100 kWh per square metre, making it one of the best counties in the country for solar panels. Modern solar panels are highly efficient in diffuse light conditions, meaning even on the cloudiest days in Wexford Town or Enniscorthy, your system will still produce meaningful electricity. As a coastal county, Wexford does experience more wind and rainfall, but quality solar panels are manufactured to withstand harsh weather conditions including salt air exposure, heavy rain, and wind speeds well above what Ireland experiences. We use marine-grade mounting systems for properties near the coast. In fact, cooler temperatures actually improve panel efficiency — solar panels work slightly better in Irish temperatures than in extreme heat. Our monitoring systems allow you to track daily, monthly, and annual generation so you can see exactly how well your system performs through every season."
+    },
+    {
+      question: "What size solar panel system do I need for my home in Wexford?",
+      answer: "The ideal solar panel system size for your home in County Wexford depends on your electricity consumption, roof space, and budget. For most three- to four-bedroom households in Wexford Town, Enniscorthy, Gorey, New Ross, and Ferns, a 4kW system (approximately 10 to 12 panels) is the sweet spot — generating around 3,400 to 3,800 kWh annually and covering 40 to 50% of a typical household's electricity needs. If you have a larger home, use an electric vehicle, or have a heat pump, a 6kW system (15 to 18 panels) may be more appropriate, generating 5,000 to 5,800 kWh per year. Smaller two-bedroom homes in areas like Gorey or New Ross may only need a 3kW system. During your free site survey, we analyse your ESB bills, assess your roof dimensions and orientation, and use satellite shading analysis to recommend the optimally sized system for your specific property. There's no one-size-fits-all — every installation in Wexford is tailored to your home's unique characteristics and your family's energy usage patterns."
+    },
+    {
+      question: "Are solar panels worth it for older homes in Wexford?",
+      answer: "Solar panels are absolutely worth it for older homes in County Wexford — and they may actually benefit you more than newer properties. Older homes in Wexford Town, Enniscorthy, and surrounding areas often have solid fuel heating systems, electric immersion heaters, or storage heaters that consume large amounts of electricity. A solar panel system can offset these running costs significantly, especially if you time your immersion heating to coincide with peak solar generation hours. Furthermore, installing solar panels on an older property in Wexford can improve your BER (Building Energy Rating) by one to two rating bands, which is increasingly important for property value and for accessing future green mortgage rates. Many period homes in Wexford's historic towns and coastal villages have large roof areas with south-facing pitches — ideal for solar installations. While we always check structural integrity during our survey, most older Irish homes can easily support the lightweight mounting systems used for modern solar panels. With the SEAI grant of up to €1,800 and typical payback periods of five to seven years, solar panels are one of the smartest investments you can make in an older Wexford home."
+    },
+    {
+      question: "Do solar panels work on flat roofs in Wexford?",
+      answer: "Yes, solar panels work very well on flat roofs in County Wexford. While most homes in Wexford Town and Enniscorthy have pitched roofs, we regularly install on flat-roofed properties including extensions, garages, commercial buildings, and farm outbuildings across Wexford. On a flat roof, panels are mounted on angled frame systems — typically tilted at 15 to 30 degrees — to optimise solar exposure and allow rainwater runoff. The main consideration for flat roof installations in Wexford is ensuring the roof structure can bear the additional weight, which is typically around 15 to 20 kilograms per square metre. We assess this during every survey. Flat roof systems can actually be more productive than some pitched roof installations because the mounting frames allow us to orient panels at the perfect angle regardless of the roof itself. For homeowners in Gorey and New Ross with flat-roof extensions or outbuildings, these spaces can provide excellent additional generation capacity beyond what the main house roof offers. All our flat roof installations comply with SEAI standards and come with the same comprehensive warranties as pitched roof systems."
+    },
+    {
+      question: "What is the best orientation for solar panels in Wexford?",
+      answer: "The best orientation for solar panels in County Wexford is south-facing, which maximises annual electricity generation. However, this doesn't mean your roof must face exactly due south. Panels facing south-east or south-west still produce approximately 85 to 95% of the output of a perfectly south-facing system — a relatively small reduction that still delivers excellent savings. In fact, east-west split installations (panels on both sides of a roof) are increasingly popular in Wexford Town, Enniscorthy, Gorey, New Ross, and Ferns because they generate electricity more evenly throughout the day, which better matches the consumption patterns of households where people are out at work during the middle of the day. Properties along Wexford's coastline sometimes face unusual orientations due to their location — we've successfully installed solar on roofs facing nearly every direction. During your free survey, we use satellite imagery and shading analysis tools to determine the optimal panel layout for your specific roof in Wexford. We never recommend an installation unless we're confident it will deliver strong returns on your investment."
+    }
   ],
   avgSystemCost: "€4,500 – €6,500",
   avgPaybackYears: "5–7 years",
@@ -1525,8 +2489,8 @@ const wicklow: CountyData = {
   province: "Leinster",
   country: "IE",
   phone: "+353-404-232-3100",
-  email: "info@solarwicklow.ie",
-  domain: "solarwicklow.ie",
+  email: "info@renewablewicklow.ie",
+  domain: "renewablewicklow.ie",
   mainTown: "Wicklow",
   areaTowns: ["Wicklow Town", "Bray", "Greystones", "Arklow", "Enniskerry", "Blessington"],
   lat: "52.9869",
@@ -1539,18 +2503,54 @@ const wicklow: CountyData = {
     "TACs (Tax Exemption for Solar PV under €1,000 annual income)",
   ],
   heroSubtitle:
-    "SEAI registered solar panel installers serving County Wicklow — from Wicklow Town to Bray, Greystones to Arklow.",
+    "The Garden County grows more than plants — it grows energy. Wicklow's rooftops are among the most productive in Ireland.",
+  heroTitle: "Solar Panels Wicklow.\nThe Garden County's Energy Harvest.",
   testimonials: [
     { name: "Brian O'Toole", location: "Bray", rating: 5, text: "Solar Wicklow provided a first-class service. The installation on our home was done efficiently and the SEAI grant was handled seamlessly." },
     { name: "Grainne Nolan", location: "Greystones", rating: 5, text: "We added solar and battery storage and couldn't be happier. Solar Wicklow's team was professional and the results have exceeded our expectations." },
     { name: "Conor Kavanagh", location: "Arklow", rating: 5, text: "Great installation at a competitive price. The system is performing well and the aftercare from Solar Wicklow has been excellent." },
   ],
-  faqs: [
-    { question: "How much do solar panels cost in Wicklow?", answer: "A 4kW system in County Wicklow costs between €4,500 and €6,500. The SEAI grant of up to €1,800 applies." },
-    { question: "What SEAI grants are available?", answer: "The Domestic Solar PV Grant offers up to €1,800. We handle the full application." },
-    { question: "How long does installation take?", answer: "Residential installations in Wicklow typically take one working day." },
-    { question: "Do I need planning permission?", answer: "Domestic solar panels are planning-exempt within standard limits. Some heritage areas may have restrictions." },
-    { question: "Do you offer EV charger installation?", answer: "Yes. We install EV charge points alongside solar so you can charge for free using your own generated electricity." },
+    faqs: [
+    {
+      question: "How much do solar panels cost in Wicklow?",
+      answer: "The cost of solar panels in County Wicklow depends on system size, panel quality, and roof complexity. A typical 4kW residential solar PV system — suitable for most three- to four-bedroom homes in Wicklow Town, Bray, Greystones, Arklow, and Enniskerry — costs between €4,500 and €6,500 before any grants. This price usually includes all scaffolding, SEAI-registered installation, grid connection application, and a monitoring system. A larger 6kW system, ideal for homes with heat pumps or electric vehicles, ranges from €6,000 to €9,500. With the SEAI Domestic Solar PV Grant reducing your cost by up to €1,800, the net outlay for a standard 4kW system in Wicklow can be as low as €2,700–€4,700. We provide free, no-obligation site surveys for every home in County Wicklow and a detailed written quote so you know exactly what you're paying for. There are no hidden fees — ever."
+    },
+    {
+      question: "What SEAI grants are available in Wicklow?",
+      answer: "Homeowners in County Wicklow can access the SEAI Domestic Solar PV Grant, which offers up to €1,800 towards the cost of a solar panel installation. To qualify, your home must have been built and occupied before 2021, and you must use an SEAI-registered installer — which we are. The grant is paid directly to you after installation, typically within four to six weeks of submitting your claim. For properties built before 2007, there may also be additional SEAI grants available for insulation and heating upgrades through the Better Energy Homes scheme, which can further improve your home's energy performance. We handle the entire SEAI grant application process on your behalf at no extra cost, making it completely hassle-free for homeowners across Wicklow Town, Bray, Greystones, Arklow, and Enniskerry. Many of our Wicklow customers combine their solar grant with other energy upgrades for even greater savings on their electricity bills and carbon footprint."
+    },
+    {
+      question: "How long does a solar installation take in Wicklow?",
+      answer: "A standard residential solar panel installation in County Wicklow is typically completed in a single working day. Our SEAI-certified installers arrive early, erect scaffolding, mount the panel rails to your roof, fit and wire the solar panels, install the inverter, connect everything to your consumer unit (fuse board), and commission the system — all within roughly six to eight hours. Before installation day, we've already completed your ESB grid connection application, which takes two to four weeks for approval. The total timeline from your initial free survey in Wicklow Town or Bray to your system generating electricity is typically four to six weeks. Larger installations — such as 6kW+ systems, properties with complex roof shapes, or battery storage additions — may require a second day. We always confirm the exact timeline during your quote and keep you informed every step of the way. Every installation in Wicklow comes with a thorough handover, including a demonstration of your monitoring app and system controls."
+    },
+    {
+      question: "Do I need planning permission for solar panels in Wicklow?",
+      answer: "In the vast majority of cases, no — domestic solar panel installations in County Wicklow are exempt from planning permission under Irish building regulations. The exemption covers rooftop solar panels on private homes, provided the panels do not protrude more than 300mm from the roof surface and do not cover more than 50% of the total roof area. Ground-mounted solar arrays under 25 square metres are also generally exempt. However, there are exceptions: if your home in Wicklow Town or Bray is a listed or protected structure, located within an architectural conservation area, or near a national monument, you may need planning permission or at least a declaration of exemption from your local county council. Properties in or near Wicklow's coastal villages and heritage areas may require additional consideration. We check all planning requirements during your free site survey and advise you if any consent is needed before we proceed. For most homeowners across County Wicklow, the answer is a straightforward no — you can go ahead with your solar installation without any planning involvement."
+    },
+    {
+      question: "How much will I save with solar panels in Wicklow?",
+      answer: "Typical savings from solar panels in County Wicklow range from €600 to €1,000 per year on electricity bills, depending on your system size, household consumption, and whether you're home during the day. A 4kW solar PV system installed on a home in Wicklow Town, Bray, Greystones, Arklow, and Enniskerry can generate approximately 3,400 to 3,800 kWh of clean electricity annually. With current electricity prices in Ireland, this translates to significant annual savings — and the savings grow every time electricity prices increase. If you add battery storage, you can increase your savings further by storing excess daytime generation for evening use, potentially saving €800 to €1,300 per year. Over a 25-year panel lifespan, a solar system in Wicklow can save you €15,000 to €25,000 or more. With the SEAI grant reducing your upfront cost by up to €1,800, most homeowners in County Wicklow achieve full payback within five to seven years — leaving roughly 18 to 20 years of virtually free electricity. Your solar installation also reduces your carbon footprint by approximately 1.5 to 2 tonnes of CO₂ annually."
+    },
+    {
+      question: "Does solar work in Wicklow's weather and climate?",
+      answer: "Yes — absolutely. Solar panels generate electricity from daylight, not direct sunshine, which is why they work effectively throughout Ireland's seasons. County Wicklow receives approximately 1,000 to 1,150 kilowatt-hours (kWh) of solar irradiance per square metre annually. Wicklow's east-coast location provides excellent solar irradiance, and the county benefits from being close to Dublin while enjoying more open rural roofscapes in areas like Blessington and Arklow. Modern solar panels are highly efficient in diffuse light conditions, meaning even on the cloudiest days in Wicklow Town or Bray, your system will still produce meaningful electricity. As a coastal county, Wicklow does experience more wind and rainfall, but quality solar panels are manufactured to withstand harsh weather conditions including salt air exposure, heavy rain, and wind speeds well above what Ireland experiences. We use marine-grade mounting systems for properties near the coast. In fact, cooler temperatures actually improve panel efficiency — solar panels work slightly better in Irish temperatures than in extreme heat. Our monitoring systems allow you to track daily, monthly, and annual generation so you can see exactly how well your system performs through every season."
+    },
+    {
+      question: "What size solar panel system do I need for my home in Wicklow?",
+      answer: "The ideal solar panel system size for your home in County Wicklow depends on your electricity consumption, roof space, and budget. For most three- to four-bedroom households in Wicklow Town, Bray, Greystones, Arklow, and Enniskerry, a 4kW system (approximately 10 to 12 panels) is the sweet spot — generating around 3,400 to 3,800 kWh annually and covering 40 to 50% of a typical household's electricity needs. If you have a larger home, use an electric vehicle, or have a heat pump, a 6kW system (15 to 18 panels) may be more appropriate, generating 5,000 to 5,800 kWh per year. Smaller two-bedroom homes in areas like Greystones or Arklow may only need a 3kW system. During your free site survey, we analyse your ESB bills, assess your roof dimensions and orientation, and use satellite shading analysis to recommend the optimally sized system for your specific property. There's no one-size-fits-all — every installation in Wicklow is tailored to your home's unique characteristics and your family's energy usage patterns."
+    },
+    {
+      question: "Are solar panels worth it for older homes in Wicklow?",
+      answer: "Solar panels are absolutely worth it for older homes in County Wicklow — and they may actually benefit you more than newer properties. Older homes in Wicklow Town, Bray, and surrounding areas often have solid fuel heating systems, electric immersion heaters, or storage heaters that consume large amounts of electricity. A solar panel system can offset these running costs significantly, especially if you time your immersion heating to coincide with peak solar generation hours. Furthermore, installing solar panels on an older property in Wicklow can improve your BER (Building Energy Rating) by one to two rating bands, which is increasingly important for property value and for accessing future green mortgage rates. Many period homes in Wicklow's coastal villages and heritage areas have large roof areas with south-facing pitches — ideal for solar installations. While we always check structural integrity during our survey, most older Irish homes can easily support the lightweight mounting systems used for modern solar panels. With the SEAI grant of up to €1,800 and typical payback periods of five to seven years, solar panels are one of the smartest investments you can make in an older Wicklow home."
+    },
+    {
+      question: "Do solar panels work on flat roofs in Wicklow?",
+      answer: "Yes, solar panels work very well on flat roofs in County Wicklow. While most homes in Wicklow Town and Bray have pitched roofs, we regularly install on flat-roofed properties including extensions, garages, commercial buildings, and farm outbuildings across Wicklow. On a flat roof, panels are mounted on angled frame systems — typically tilted at 15 to 30 degrees — to optimise solar exposure and allow rainwater runoff. The main consideration for flat roof installations in Wicklow is ensuring the roof structure can bear the additional weight, which is typically around 15 to 20 kilograms per square metre. We assess this during every survey. Flat roof systems can actually be more productive than some pitched roof installations because the mounting frames allow us to orient panels at the perfect angle regardless of the roof itself. For homeowners in Greystones and Arklow with flat-roof extensions or outbuildings, these spaces can provide excellent additional generation capacity beyond what the main house roof offers. All our flat roof installations comply with SEAI standards and come with the same comprehensive warranties as pitched roof systems."
+    },
+    {
+      question: "What is the best orientation for solar panels in Wicklow?",
+      answer: "The best orientation for solar panels in County Wicklow is south-facing, which maximises annual electricity generation. However, this doesn't mean your roof must face exactly due south. Panels facing south-east or south-west still produce approximately 85 to 95% of the output of a perfectly south-facing system — a relatively small reduction that still delivers excellent savings. In fact, east-west split installations (panels on both sides of a roof) are increasingly popular in Wicklow Town, Bray, Greystones, Arklow, and Enniskerry because they generate electricity more evenly throughout the day, which better matches the consumption patterns of households where people are out at work during the middle of the day. Properties along Wicklow's coastline sometimes face unusual orientations due to their location — we've successfully installed solar on roofs facing nearly every direction. During your free survey, we use satellite imagery and shading analysis tools to determine the optimal panel layout for your specific roof in Wicklow. We never recommend an installation unless we're confident it will deliver strong returns on your investment."
+    }
   ],
   avgSystemCost: "€4,500 – €6,500",
   avgPaybackYears: "5–7 years",
@@ -1603,7 +2603,7 @@ export const services: ServiceData[] = [
       "Tier-1 commercial-grade panels and inverters",
       "Custom mounting solutions for flat and pitched roofs",
       "Ongoing performance monitoring and maintenance",
-      "Assistance with SEG/Feed-in tariff applications",
+      "Assistance with energy supplier applications and grid registration",
     ],
   },
   {
@@ -1619,7 +2619,7 @@ export const services: ServiceData[] = [
       "Systems designed for high daytime energy consumption",
       "Durable, weather-resistant mounting systems",
       "Three-phase compatibility for larger farm installations",
-      "SEG export payments for surplus energy",
+      "Maximised self-consumption to reduce grid dependence",
       "Designed to integrate with existing farm infrastructure",
     ],
   },
@@ -1703,6 +2703,7 @@ export const counties: Record<string, CountyData> = {
   longford,
   louth,
   meath,
+  mayo,
   monaghan,
   offaly,
   roscommon,

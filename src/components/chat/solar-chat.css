@@ -1,17 +1,23 @@
-/* ===== SolarChat Widget Styles ===== */
+/* ===== SolarChat Widget Styles — WhatsApp-Inspired ===== */
 
 :root {
-  --chat-accent: #c8ff00;
-  --chat-accent-hover: #d9ff4d;
-  --chat-bg: #0a0a0a;
-  --chat-card: #1a1a1a;
-  --chat-card-hover: #222222;
-  --chat-border: rgba(200, 255, 0, 0.1);
-  --chat-text: #f0f0f0;
-  --chat-text-muted: #888888;
-  --chat-text-dim: #555555;
-  --chat-radius: 12px;
-  --chat-transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --wa-header: #075E54;
+  --wa-header-light: #128C7E;
+  --wa-accent: #25D366;
+  --wa-accent-dark: #1DA851;
+  --wa-bg: #ECE5DD;
+  --wa-chat-bg: #E4DDD6;
+  --wa-user-bubble: #DCF8C6;
+  --wa-bot-bubble: #FFFFFF;
+  --wa-text: #111111;
+  --wa-text-secondary: #667781;
+  --wa-text-light: #8696A0;
+  --wa-input-bg: #F0F0F0;
+  --wa-border: #E9EDEF;
+  --wa-time: #8696A0;
+  --wa-tick: #34B7F1;
+  --wa-overlay: rgba(0, 0, 0, 0.4);
+  --wa-transition: 0.2s ease;
 }
 
 /* ===== Floating Trigger Button ===== */
@@ -22,21 +28,21 @@
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  background: var(--chat-accent);
+  background: var(--wa-accent);
   border: none;
   cursor: pointer;
   z-index: 9998;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  box-shadow: 0 4px 20px rgba(200, 255, 0, 0.3);
-  animation: solar-chat-pulse 2s ease-in-out infinite;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4);
+  animation: solar-chat-pulse 2.5s ease-in-out infinite;
 }
 
 .solar-chat-trigger:hover {
-  transform: scale(1.1);
-  box-shadow: 0 6px 30px rgba(200, 255, 0, 0.45);
+  transform: scale(1.08);
+  box-shadow: 0 6px 20px rgba(37, 211, 102, 0.5);
 }
 
 .solar-chat-trigger:active {
@@ -44,34 +50,32 @@
 }
 
 .solar-chat-trigger:focus-visible {
-  outline: 3px solid var(--chat-accent);
+  outline: 3px solid var(--wa-accent);
   outline-offset: 3px;
 }
 
 .solar-chat-trigger svg {
-  color: #050505;
+  color: #FFFFFF;
   width: 28px;
   height: 28px;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 @keyframes solar-chat-pulse {
-  0%, 100% { box-shadow: 0 4px 20px rgba(200, 255, 0, 0.3); }
-  50% { box-shadow: 0 4px 30px rgba(200, 255, 0, 0.55), 0 0 60px rgba(200, 255, 0, 0.15); }
+  0%, 100% { box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4); }
+  50% { box-shadow: 0 4px 24px rgba(37, 211, 102, 0.6), 0 0 40px rgba(37, 211, 102, 0.12); }
 }
 
+/* Trigger when chat is open — grey with X */
 .solar-chat-trigger.chat-open {
   animation: none;
-  background: var(--chat-card);
-  border: 2px solid var(--chat-border);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-}
-
-.solar-chat-trigger.chat-open svg {
-  color: var(--chat-text);
+  background: #54656F;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .solar-chat-trigger.chat-open:hover {
-  background: var(--chat-card-hover);
+  background: #6b7d87;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
 }
 
 /* Unread Badge */
@@ -81,7 +85,7 @@
   right: -4px;
   min-width: 20px;
   height: 20px;
-  background: #ef4444;
+  background: #EF4444;
   color: white;
   font-size: 11px;
   font-weight: 700;
@@ -91,7 +95,7 @@
   justify-content: center;
   padding: 0 5px;
   pointer-events: none;
-  animation: solar-chat-badge-in 0.3s ease;
+  animation: solar-chat-badge-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 @keyframes solar-chat-badge-in {
@@ -106,18 +110,18 @@
   right: 24px;
   width: 400px;
   height: 600px;
-  background: var(--chat-bg);
-  border: 1px solid var(--chat-border);
-  border-radius: var(--chat-radius);
+  background: var(--wa-bg);
+  border-radius: 16px;
   z-index: 9998;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), 0 0 1px rgba(200, 255, 0, 0.15);
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.18), 0 0 0 1px rgba(0, 0, 0, 0.06);
   opacity: 0;
-  transform: translateY(20px) scale(0.95);
+  transform: translateY(16px) scale(0.5);
   pointer-events: none;
-  transition: opacity 0.25s ease, transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: opacity 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
+              transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .solar-chat-window.chat-visible {
@@ -128,8 +132,9 @@
 
 .solar-chat-window.chat-closing {
   opacity: 0;
-  transform: translateY(20px) scale(0.95);
+  transform: translateY(16px) scale(0.8);
   transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+  pointer-events: none;
 }
 
 /* ===== Chat Header ===== */
@@ -137,12 +142,10 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 20px;
-  background: rgba(10, 10, 10, 0.85);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid var(--chat-border);
+  padding: 10px 16px;
+  background: var(--wa-header);
   flex-shrink: 0;
+  border-radius: 16px 16px 0 0;
 }
 
 .solar-chat-header-left {
@@ -152,23 +155,26 @@
 }
 
 .solar-chat-header-logo {
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--chat-accent), #a3d900);
+  background: var(--wa-header-light);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 18px;
   flex-shrink: 0;
 }
 
+.solar-chat-header-logo svg {
+  color: #FFFFFF;
+}
+
 .solar-chat-header-info h3 {
-  font-family: var(--font-display, 'Barlow Condensed', sans-serif);
   font-size: 1rem;
-  font-weight: 700;
-  color: var(--chat-text);
+  font-weight: 600;
+  color: #FFFFFF;
   line-height: 1.2;
+  margin: 0;
 }
 
 .solar-chat-header-status {
@@ -182,7 +188,7 @@
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: #22c55e;
+  background: var(--wa-accent);
   animation: solar-chat-status-blink 3s ease-in-out infinite;
 }
 
@@ -193,46 +199,65 @@
 
 .solar-chat-status-text {
   font-size: 0.75rem;
-  color: #22c55e;
-  font-weight: 500;
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 400;
 }
 
+.solar-chat-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.solar-chat-sound-btn,
 .solar-chat-close-btn {
   background: none;
   border: none;
-  color: var(--chat-text-muted);
+  color: rgba(255, 255, 255, 0.85);
   cursor: pointer;
   padding: 6px;
-  border-radius: 6px;
-  transition: all var(--chat-transition);
+  border-radius: 50%;
+  transition: all var(--wa-transition);
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
+.solar-chat-sound-btn:hover,
 .solar-chat-close-btn:hover {
-  color: var(--chat-text);
-  background: rgba(255, 255, 255, 0.05);
+  color: #FFFFFF;
+  background: rgba(255, 255, 255, 0.1);
 }
 
+.solar-chat-sound-btn:focus-visible,
 .solar-chat-close-btn:focus-visible {
-  outline: 2px solid var(--chat-accent);
+  outline: 2px solid var(--wa-accent);
   outline-offset: 2px;
 }
 
-/* ===== Messages Area ===== */
+.solar-chat-sound-btn svg,
+.solar-chat-close-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* ===== Messages Area (Wallpaper Background) ===== */
 .solar-chat-messages {
   flex: 1;
   overflow-y: auto;
-  padding: 16px;
+  padding: 12px 16px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 4px;
   scroll-behavior: smooth;
+  position: relative;
+  /* WhatsApp doodle-style wallpaper using CSS */
+  background-color: var(--wa-chat-bg);
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d1c8bf' fill-opacity='0.15'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
 }
 
 .solar-chat-messages::-webkit-scrollbar {
-  width: 5px;
+  width: 6px;
 }
 
 .solar-chat-messages::-webkit-scrollbar-track {
@@ -240,131 +265,186 @@
 }
 
 .solar-chat-messages::-webkit-scrollbar-thumb {
-  background: rgba(200, 255, 0, 0.15);
+  background: rgba(0, 0, 0, 0.15);
   border-radius: 3px;
 }
 
 .solar-chat-messages::-webkit-scrollbar-thumb:hover {
-  background: rgba(200, 255, 0, 0.3);
+  background: rgba(0, 0, 0, 0.25);
+}
+
+/* ===== Date Separator Pill ===== */
+.solar-chat-date-separator {
+  display: flex;
+  justify-content: center;
+  padding: 8px 0;
+}
+
+.solar-chat-date-pill {
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--wa-text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  padding: 5px 12px;
+  border-radius: 8px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+  line-height: 1;
 }
 
 /* ===== Message Bubbles ===== */
 .solar-chat-msg {
   display: flex;
-  gap: 10px;
-  max-width: 85%;
-  animation: solar-chat-msg-in 0.25s ease-out;
+  flex-direction: column;
+  max-width: 75%;
+  animation: solar-chat-msg-in 0.2s ease-out;
+  position: relative;
 }
 
 .solar-chat-msg.user {
   align-self: flex-end;
-  flex-direction: row-reverse;
+  align-items: flex-end;
 }
 
 .solar-chat-msg.bot {
   align-self: flex-start;
+  align-items: flex-start;
 }
 
 @keyframes solar-chat-msg-in {
-  from { opacity: 0; transform: translateY(10px); }
+  from { opacity: 0; transform: translateY(6px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-.solar-chat-msg-avatar {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  font-size: 14px;
-  margin-top: 2px;
-}
-
-.solar-chat-msg.bot .solar-chat-msg-avatar {
-  background: rgba(200, 255, 0, 0.12);
-  color: var(--chat-accent);
-}
-
-.solar-chat-msg.user .solar-chat-msg-avatar {
-  background: rgba(200, 255, 0, 0.2);
-  color: var(--chat-accent);
-}
+/* No avatar — WhatsApp style */
 
 .solar-chat-msg-content {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 2px;
 }
 
 .solar-chat-msg-bubble {
-  padding: 10px 14px;
-  border-radius: 14px;
-  font-size: 0.9rem;
-  line-height: 1.6;
+  padding: 8px 12px;
+  font-size: 14.2px;
+  line-height: 1.4;
   word-break: break-word;
+  color: var(--wa-text);
+  position: relative;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.06);
 }
 
+/* Bot bubble: white, left-aligned, tail on top-left */
 .solar-chat-msg.bot .solar-chat-msg-bubble {
-  background: var(--chat-card);
-  color: var(--chat-text);
-  border-bottom-left-radius: 4px;
+  background: var(--wa-bot-bubble);
+  border-radius: 0 8px 8px 8px;
 }
 
+.solar-chat-msg.bot .solar-chat-msg-bubble::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -8px;
+  width: 0;
+  height: 0;
+  border-top-left-radius: 8px;
+  border-style: solid;
+  border-width: 0 0 8px 8px;
+  border-color: transparent transparent transparent transparent;
+  /* CSS triangle tail */
+  border-bottom: 8px solid var(--wa-bot-bubble);
+  border-left: 8px solid transparent;
+  filter: drop-shadow(-1px -1px 0px rgba(0, 0, 0, 0.03));
+}
+
+/* User bubble: light green, right-aligned, tail on top-right */
 .solar-chat-msg.user .solar-chat-msg-bubble {
-  background: var(--chat-accent);
-  color: #050505;
-  border-bottom-right-radius: 4px;
+  background: var(--wa-user-bubble);
+  border-radius: 8px 0 8px 8px;
+}
+
+.solar-chat-msg.user .solar-chat-msg-bubble::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: -8px;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 8px 8px 0;
+  border-color: transparent var(--wa-user-bubble) transparent transparent;
+  filter: drop-shadow(1px -1px 0px rgba(0, 0, 0, 0.03));
+}
+
+/* Timestamps & Ticks */
+.solar-chat-msg-meta {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 4px;
+  margin-top: 1px;
 }
 
 .solar-chat-msg-time {
-  font-size: 0.7rem;
-  color: var(--chat-text-dim);
-  padding: 0 4px;
+  font-size: 11px;
+  color: var(--wa-time);
+  line-height: 1;
 }
 
-.solar-chat-msg.user .solar-chat-msg-time {
-  text-align: right;
+.solar-chat-msg-ticks {
+  font-size: 13px;
+  color: var(--wa-time);
+  line-height: 1;
+  letter-spacing: -2px;
+  margin-top: -1px;
+}
+
+.solar-chat-msg.user .solar-chat-msg-meta {
+  justify-content: flex-end;
+}
+
+.solar-chat-msg.bot .solar-chat-msg-meta {
+  justify-content: flex-end;
 }
 
 /* ===== Typing Indicator ===== */
 .solar-chat-typing {
   display: flex;
-  gap: 10px;
-  max-width: 85%;
+  flex-direction: column;
+  max-width: 75%;
   align-self: flex-start;
-  animation: solar-chat-msg-in 0.25s ease-out;
+  animation: solar-chat-msg-in 0.2s ease-out;
+  position: relative;
 }
 
-.solar-chat-typing-avatar {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  background: rgba(200, 255, 0, 0.12);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  font-size: 14px;
-  color: var(--chat-accent);
-}
-
-.solar-chat-typing-dots {
+.solar-chat-typing-bubble {
   display: flex;
   align-items: center;
   gap: 5px;
   padding: 12px 16px;
-  background: var(--chat-card);
-  border-radius: 14px;
-  border-bottom-left-radius: 4px;
+  background: var(--wa-bot-bubble);
+  border-radius: 0 8px 8px 8px;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.06);
+  position: relative;
+}
+
+.solar-chat-typing-bubble::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -8px;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 0 8px 8px;
+  border-color: transparent transparent var(--wa-bot-bubble) transparent;
+  filter: drop-shadow(-1px -1px 0px rgba(0, 0, 0, 0.03));
 }
 
 .solar-chat-typing-dot {
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: var(--chat-text-muted);
+  background: var(--wa-text-light);
   animation: solar-chat-dot-bounce 1.4s ease-in-out infinite;
 }
 
@@ -381,24 +461,41 @@
   30% { transform: translateY(-6px); opacity: 1; }
 }
 
-/* ===== Quick Action Buttons ===== */
+/* ===== Quick Action Pills ===== */
 .solar-chat-quick-actions {
   display: flex;
-  flex-wrap: wrap;
   gap: 8px;
-  padding: 0 16px 8px;
+  padding: 4px 16px 8px;
+  overflow-x: auto;
+  flex-shrink: 0;
+  background: var(--wa-bg);
+}
+
+/* Hide scrollbar for quick actions */
+.solar-chat-quick-actions::-webkit-scrollbar {
+  display: none;
+}
+
+.solar-chat-quick-actions {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 .solar-chat-quick-btn {
-  padding: 8px 14px;
+  padding: 8px 16px;
   border-radius: 20px;
-  border: 1px solid var(--chat-border);
-  background: transparent;
-  color: var(--chat-text);
-  font-size: 0.82rem;
+  border: 1px solid var(--wa-border);
+  background: #FFFFFF;
+  color: var(--wa-text);
+  font-size: 13px;
   cursor: pointer;
-  transition: all var(--chat-transition);
+  transition: all var(--wa-transition);
   white-space: nowrap;
+  flex-shrink: 0;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+  display: flex;
+  align-items: center;
+  gap: 6px;
   animation: solar-chat-quick-fade 0.3s ease-out both;
 }
 
@@ -414,103 +511,245 @@
 }
 
 .solar-chat-quick-btn:hover {
-  border-color: var(--chat-accent);
-  color: var(--chat-accent);
-  background: rgba(200, 255, 0, 0.05);
+  background: var(--wa-chat-bg);
+  border-color: var(--wa-text-light);
+}
+
+.solar-chat-quick-btn:active {
+  background: var(--wa-border);
 }
 
 .solar-chat-quick-btn:focus-visible {
-  outline: 2px solid var(--chat-accent);
+  outline: 2px solid var(--wa-header);
   outline-offset: 2px;
 }
 
 /* ===== Input Area ===== */
 .solar-chat-input-area {
   display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 16px;
-  border-top: 1px solid var(--chat-border);
-  background: rgba(10, 10, 10, 0.5);
+  align-items: flex-end;
+  gap: 8px;
+  padding: 8px 12px;
+  background: var(--wa-input-bg);
   flex-shrink: 0;
+  border-radius: 0 0 16px 16px;
 }
 
 .solar-chat-input {
   flex: 1;
-  background: var(--chat-card);
-  border: 1px solid transparent;
-  border-radius: 10px;
-  padding: 10px 14px;
-  color: var(--chat-text);
-  font-size: 0.9rem;
+  background: #FFFFFF;
+  border: none;
+  border-radius: 8px;
+  padding: 9px 16px;
+  color: var(--wa-text);
+  font-size: 14px;
   font-family: inherit;
   outline: none;
-  transition: border-color var(--chat-transition);
-  min-height: 44px;
+  min-height: 42px;
   max-height: 100px;
   resize: none;
   overflow-y: auto;
-  line-height: 1.5;
+  line-height: 1.4;
 }
 
 .solar-chat-input::placeholder {
-  color: var(--chat-text-dim);
+  color: var(--wa-text-light);
 }
 
 .solar-chat-input:focus {
-  border-color: var(--chat-accent);
+  box-shadow: 0 0 0 1px var(--wa-border);
+}
+
+.solar-chat-input::-webkit-scrollbar {
+  width: 4px;
+}
+
+.solar-chat-input::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.12);
+  border-radius: 2px;
 }
 
 .solar-chat-send-btn {
-  width: 44px;
-  height: 44px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
-  background: var(--chat-accent);
+  background: var(--wa-header);
   border: none;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all var(--chat-transition);
+  transition: all var(--wa-transition);
   flex-shrink: 0;
-  color: #050505;
+  color: #FFFFFF;
 }
 
 .solar-chat-send-btn:hover {
-  background: var(--chat-accent-hover);
-  transform: scale(1.05);
+  background: var(--wa-header-light);
 }
 
 .solar-chat-send-btn:active {
-  transform: scale(0.95);
+  transform: scale(0.92);
 }
 
 .solar-chat-send-btn:disabled {
-  opacity: 0.4;
+  background: #C4C4C4;
   cursor: not-allowed;
   transform: none;
 }
 
 .solar-chat-send-btn:focus-visible {
-  outline: 2px solid var(--chat-accent);
+  outline: 2px solid var(--wa-header);
   outline-offset: 2px;
+}
+
+.solar-chat-send-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* ===== Scroll-to-Bottom FAB ===== */
+.solar-chat-scroll-fab {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--wa-accent);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  animation: solar-chat-fab-in 0.2s ease-out;
+}
+
+.solar-chat-scroll-fab:hover {
+  background: var(--wa-accent-dark);
+  transform: scale(1.08);
+}
+
+.solar-chat-scroll-fab:active {
+  transform: scale(0.92);
+}
+
+.solar-chat-scroll-fab svg {
+  color: #FFFFFF;
+  width: 18px;
+  height: 18px;
+}
+
+@keyframes solar-chat-fab-in {
+  from { opacity: 0; transform: scale(0.5); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* ===== Notification Toast ===== */
+.solar-chat-toast {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  width: 320px;
+  background: #FFFFFF;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.14), 0 0 0 1px rgba(0, 0, 0, 0.04);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+              opacity 0.3s ease;
+  animation: solar-chat-toast-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  overflow: hidden;
+}
+
+.solar-chat-toast.toast-exit {
+  animation: solar-chat-toast-out 0.3s ease-in forwards;
+}
+
+@keyframes solar-chat-toast-in {
+  from { opacity: 0; transform: translateX(100px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes solar-chat-toast-out {
+  from { opacity: 1; transform: translateX(0); }
+  to { opacity: 0; transform: translateX(100px); }
+}
+
+.solar-chat-toast:hover {
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.18), 0 0 0 1px rgba(0, 0, 0, 0.04);
+}
+
+.solar-chat-toast-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--wa-header);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.solar-chat-toast-avatar svg {
+  color: #FFFFFF;
+  width: 20px;
+  height: 20px;
+}
+
+.solar-chat-toast-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.solar-chat-toast-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--wa-text);
+  line-height: 1.2;
+  margin-bottom: 2px;
+}
+
+.solar-chat-toast-preview {
+  font-size: 12px;
+  color: var(--wa-text-secondary);
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.solar-chat-toast-time {
+  font-size: 11px;
+  color: var(--wa-text-light);
+  flex-shrink: 0;
+  align-self: flex-start;
+  margin-top: 2px;
 }
 
 /* ===== Inline Content Cards ===== */
 .solar-chat-card {
-  background: var(--chat-card);
-  border: 1px solid var(--chat-border);
+  background: #FFFFFF;
+  border: 1px solid var(--wa-border);
   border-radius: 10px;
   padding: 14px;
-  margin-top: 8px;
+  margin-top: 4px;
   animation: solar-chat-msg-in 0.25s ease-out;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  max-width: 280px;
 }
 
 .solar-chat-card-title {
-  font-family: var(--font-display, 'Barlow Condensed', sans-serif);
-  font-size: 0.95rem;
+  font-size: 14px;
   font-weight: 700;
-  color: var(--chat-accent);
+  color: var(--wa-header);
   margin-bottom: 8px;
 }
 
@@ -519,16 +758,16 @@
   justify-content: space-between;
   align-items: center;
   padding: 6px 0;
-  font-size: 0.85rem;
-  color: var(--chat-text-muted);
+  font-size: 13px;
+  color: var(--wa-text-secondary);
 }
 
 .solar-chat-card-row + .solar-chat-card-row {
-  border-top: 1px solid rgba(255, 255, 255, 0.04);
+  border-top: 1px solid var(--wa-border);
 }
 
 .solar-chat-card-value {
-  color: var(--chat-text);
+  color: var(--wa-text);
   font-weight: 600;
 }
 
@@ -538,22 +777,22 @@
   gap: 6px;
   margin-top: 10px;
   padding: 8px 16px;
-  background: var(--chat-accent);
-  color: #050505;
+  background: var(--wa-header);
+  color: #FFFFFF;
   border: none;
   border-radius: 8px;
-  font-size: 0.85rem;
-  font-weight: 700;
+  font-size: 13px;
+  font-weight: 600;
   cursor: pointer;
-  transition: all var(--chat-transition);
+  transition: all var(--wa-transition);
 }
 
 .solar-chat-card-cta:hover {
-  background: var(--chat-accent-hover);
+  background: var(--wa-header-light);
   transform: translateY(-1px);
 }
 
-/* Pricing Cards Grid */
+/* Pricing Cards */
 .solar-chat-pricing-grid {
   display: flex;
   flex-direction: column;
@@ -565,20 +804,20 @@
   justify-content: space-between;
   align-items: center;
   padding: 10px 12px;
-  background: rgba(255, 255, 255, 0.02);
+  background: #FAFAFA;
   border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--wa-border);
 }
 
 .solar-chat-pricing-name {
   font-weight: 600;
-  font-size: 0.85rem;
-  color: var(--chat-text);
+  font-size: 13px;
+  color: var(--wa-text);
 }
 
 .solar-chat-pricing-desc {
-  font-size: 0.75rem;
-  color: var(--chat-text-muted);
+  font-size: 11px;
+  color: var(--wa-text-light);
   margin-top: 2px;
 }
 
@@ -587,15 +826,14 @@
 }
 
 .solar-chat-pricing-amount {
-  font-family: var(--font-display, 'Barlow Condensed', sans-serif);
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 700;
-  color: var(--chat-accent);
+  color: var(--wa-header-light);
 }
 
 .solar-chat-pricing-after {
-  font-size: 0.7rem;
-  color: var(--chat-text-muted);
+  font-size: 11px;
+  color: var(--wa-text-light);
 }
 
 /* Grant Checklist */
@@ -609,23 +847,29 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 0.85rem;
-  color: var(--chat-text);
+  font-size: 13px;
+  color: var(--wa-text);
 }
 
 .solar-chat-grant-check {
-  color: var(--chat-accent);
+  color: var(--wa-accent-dark);
   font-size: 14px;
+  font-weight: 700;
   flex-shrink: 0;
 }
 
-/* ===== Responsive: Mobile Full Screen ===== */
+/* ===== Mobile Responsive ===== */
 @media (max-width: 480px) {
   .solar-chat-trigger {
     bottom: 16px;
     right: 16px;
     width: 56px;
     height: 56px;
+  }
+
+  .solar-chat-trigger svg {
+    width: 24px;
+    height: 24px;
   }
 
   .solar-chat-window {
@@ -636,17 +880,36 @@
     height: 100vh;
     height: 100dvh;
     border-radius: 0;
-    border: none;
+  }
+
+  .solar-chat-window.chat-visible {
+    border-radius: 0;
+  }
+
+  .solar-chat-header {
+    border-radius: 0;
+  }
+
+  .solar-chat-input-area {
+    border-radius: 0;
   }
 
   .solar-chat-msg {
-    max-width: 90%;
+    max-width: 88%;
   }
-}
 
-@media (max-width: 480px) {
-  .solar-chat-window.chat-visible {
+  .solar-chat-typing {
+    max-width: 88%;
+  }
+
+  /* Toast: full width at top */
+  .solar-chat-toast {
+    top: 0;
+    right: 0;
+    left: 0;
+    width: 100%;
     border-radius: 0;
+    padding: 12px 16px;
   }
 }
 
