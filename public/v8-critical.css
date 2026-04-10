@@ -73,3 +73,12 @@ nav.shrunk{padding:9px 52px;box-shadow:0 2px 16px rgba(0,0,0,.07)}
 .tsi strong{display:block;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;color:var(--white);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tsi span{display:block;font-size:11px;color:rgba(255,255,255,.5);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
+/* ICON CONTAINERS — prevent SVG blowout when deferred CSS is slow */
+.wi{width:48px;height:48px;background:var(--lime);border:2.5px solid var(--black);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden}
+.wi svg{width:22px;height:22px;flex-shrink:0}
+.procnum{width:48px;height:48px;border-radius:50%;background:var(--black);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:22px;font-weight:800;color:var(--lime)}
+.whycard,.procstep{background:var(--white);border:var(--bd);border-radius:var(--r);box-shadow:var(--sh)}
+.whygrid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.procgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.sec,.wsec,.calcsec{padding:56px 52px}
+
