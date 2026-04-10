@@ -17,8 +17,8 @@ export default function HomePage() {
     <>
       <style dangerouslySetInnerHTML={{ __html: criticalCss }} />
       <style dangerouslySetInnerHTML={{ __html: heroKeyframes }} />
-      <link rel="preload" href="/v8-deferred.css?v=14" as="style" />
-      <link rel="stylesheet" href="/v8-deferred.css?v=14" media="print" id="v8-deferred-link" suppressHydrationWarning />
+      <link rel="preload" href="/v8-deferred.css?v=15" as="style" />
+      <link rel="stylesheet" href="/v8-deferred.css?v=15" media="print" id="v8-deferred-link" suppressHydrationWarning />
       <script
         dangerouslySetInnerHTML={{
           __html: "var d=document.getElementById('v8-deferred-link');if(d){d.addEventListener('load',function(){d.media='all'});if(d.sheet)d.media='all'};",
