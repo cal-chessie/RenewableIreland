@@ -20,7 +20,7 @@ nav.shrunk{padding:9px 52px;box-shadow:0 2px 16px rgba(0,0,0,.07)}
 .nlogo{display:flex;align-items:center;gap:12px;text-decoration:none}
 .nlogo-mark{width:60px;height:60px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .nlogo-mark img{width:60px;height:60px;object-fit:contain;display:block}
-.nbrand{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:28px;color:var(--black);line-height:1.0;text-transform:uppercase;letter-spacing:.01em}
+.nbrand{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:36px;color:var(--black);line-height:1.05;text-transform:uppercase;letter-spacing:.01em}
 .nbrand span{display:block;font-family:'Barlow',sans-serif;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(0,0,0,.5)}
 .nlinks{display:flex;align-items:center;gap:26px;list-style:none}
 .nlinks a{text-decoration:none;font-size:14px;font-weight:700;color:var(--black);font-family:'Barlow Condensed',sans-serif;text-transform:uppercase;letter-spacing:.04em;transition:color .15s}
