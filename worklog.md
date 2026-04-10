@@ -367,3 +367,21 @@ Stage Summary:
 - ROOT CAUSE FOUND: `loading.tsx` created Suspense boundary → React streaming SSR wrapped content in `<div hidden id="S:0">`
 - FIX: Deleted loading.tsx, added inline S:0 safety CSS in layout body
 - RESULT: Page renders correctly with all sections visible, no streaming wrapper, zero errors
+
+---
+Task ID: 1
+Agent: Main Agent
+Task: Fix logo text colors on homepage and county pages
+
+Work Log:
+- Homepage: Changed nbrand from split color (Renewable=white, Ireland=dark) to unified white "Renewable Ireland" - removed the <br> between words
+- County Nav: Changed from "Renewable Ireland" (both white) to "Renewable {countyName}" with countyName in dark (var(--black)) on the colored accent nav background
+- County Footer: Changed from "Renewable Ireland" back to "Renewable {county.name}" with county name in accent color (visible on dark footer background)
+- Updated .navLogoAccent CSS from color:var(--white) to color:var(--black)
+- Verified all changes compile and render correctly on localhost
+
+Stage Summary:
+- Homepage logo now shows "Renewable Ireland" all in white on lime green nav
+- County pages show "Renewable" (white) + county name (dark/black) in nav
+- County pages show "Renewable" (white) + county name (accent color) in footer
+- Files changed: src/lib/v8-body-content.ts, src/components/county/CountyNav.tsx, src/components/county/Footer.tsx, src/app/counties/[county]/page.module.css

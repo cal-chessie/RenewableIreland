@@ -116,8 +116,8 @@ export default function CountyNav({ countyName, countySlug, phone }: CountyNavPr
     <nav className={styles.nav} aria-label="Main navigation">
       <div className={styles.navInner}>
         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-          <a href={`https://renewableireland.ie/`} aria-label="Renewable Ireland" className={styles.navLogo}>
-            Renewable <span className={styles.navLogoAccent}>Ireland</span>
+          <a href={`https://renewableireland.ie/`} aria-label={`Renewable ${countyName}`} className={styles.navLogo}>
+            Renewable <span className={styles.navLogoAccent}>{countyName}</span>
           </a>
         </div>
 

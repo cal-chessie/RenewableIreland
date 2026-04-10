@@ -14,7 +14,7 @@ export default function Footer({ county }: FooterProps) {
         <div className={styles.footerGrid}>
           <div className={styles.footerBrand}>
             <div className={styles.footerLogo}>
-              Renewable <span>Ireland</span>
+              Renewable <span>{county.name}</span>
             </div>
             <p>
               {county.accreditation} accredited solar panel installers

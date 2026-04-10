@@ -3,7 +3,7 @@ export const v8BodyHtml = `
 <nav id="mainnav">
   <a class="nlogo" href="#">
     <div class="nlogo-mark"><img loading="eager" src="/images/logo.webp" alt="Renewable Ireland" style="display:block;height:56px;width:auto"></div>
-    <div class="nbrand"><span style="color:var(--white)">Renewable</span><br>Ireland<span>SEAI Registered Partner</span></div>
+    <div class="nbrand"><span style="color:var(--white)">Renewable Ireland</span><span>SEAI Registered Partner</span></div>
   </a>
   <ul class="nlinks">
     <li><a href="#get-started">Get Started</a></li>
