@@ -515,11 +515,11 @@ footer{background:var(--black);border-top:var(--bd);padding:48px 64px 26px}
   .hero-actions .btn-p,.hero-actions .btn-o{width:100%;text-align:center;justify-content:center}
 
   /* HERO */
-  .hero{grid-template-columns:1fr;height:auto;max-height:100vh;overflow:hidden}
-  .hero-left{padding:24px 20px 20px;border-right:none;border-bottom:var(--bd)}
-  .hero-right{min-height:0;padding:12px 16px 12px;background:var(--white)}
-  .hero-logo-wrap{max-height:200px;justify-content:center}
-  .hero-logo-wrap img{max-height:200px;width:auto;margin:0 auto}
+  .hero{grid-template-columns:1fr;height:auto;max-height:none}
+  .hero-left{padding:24px 20px 28px;border-right:none;border-bottom:var(--bd)}
+  .hero-right{min-height:0;padding:20px 16px 16px;background:var(--white)}
+  .hero-logo-wrap{max-height:none;justify-content:center}
+  .hero-logo-wrap img{max-height:none;width:min(340px,80vw);margin:0 auto}
   .hero-stats{grid-template-columns:repeat(2,1fr)}
 
   /* TRUST STRIP */
