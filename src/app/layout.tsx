@@ -217,6 +217,8 @@ export default function RootLayout({
         style={{ margin: 0, background: '#F7F7F2', color: '#111', colorScheme: 'light' }}
       >
         {children}
+        <div id="ricur" />
+        <div id="ritrail" />
         <Suspense fallback={null}>
           <WhatsAppWidgetLoader />
         </Suspense>
