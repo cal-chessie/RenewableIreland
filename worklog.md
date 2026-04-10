@@ -349,3 +349,21 @@ Stage Summary:
 - WhatsApp widget loads via dynamic import (no server-side boundary)
 - CSS fix in globals.css is the reliable safety net
 - Clean layout.tsx with no hack patches
+---
+Task ID: 1
+Agent: Main Agent
+Task: Fix homepage 404 / content not loading
+
+Work Log:
+- Investigated user's "STILL 404" report
+- Found server returns HTTP 200 with full content — not a true 404
+- Discovered all static files (v8-scripts.js, v8-deferred.css, images/logo.webp) were temporarily returning 404 during HMR restart — transient dev server issue
+- Key discovery: `loading.tsx` was the ROOT CAUSE of `<div hidden id="S:0">` wrapping page content. The loading.tsx Suspense fallback created a streaming boundary (template B:0) around {children}, causing React to wrap all page content in S:0 with `hidden` attribute
+- Deleted `src/app/loading.tsx` — this ELIMINATED both `<template id="B:0">` AND `<div hidden id="S:0">` entirely
+- Added inline `<style>` in layout.tsx body (before {children}) as extra safety: `div[id^='S:']{display:block!important;visibility:visible!important;opacity:1!important;position:static!important;height:auto!important;width:auto!important;overflow:visible!important;pointer-events:auto!important}`
+- Verified with headless browser: zero JS errors, all sections present, body height 9734px, no S:0, no B:0
+
+Stage Summary:
+- ROOT CAUSE FOUND: `loading.tsx` created Suspense boundary → React streaming SSR wrapped content in `<div hidden id="S:0">`
+- FIX: Deleted loading.tsx, added inline S:0 safety CSS in layout body
+- RESULT: Page renders correctly with all sections visible, no streaming wrapper, zero errors

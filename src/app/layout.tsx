@@ -225,6 +225,10 @@ export default function RootLayout({
         className={barlowCondensed.variable}
         style={{ margin: 0, background: '#F7F7F2', color: '#111', colorScheme: 'light' }}
       >
+        {/* CRITICAL: Inline style MUST appear before {children} so it's in the DOM
+            before React streaming SSR creates <div hidden id="S:0">.
+            External CSS chunks load too late — this is the only reliable fix. */}
+        <style dangerouslySetInnerHTML={{ __html: "div[id^='S:']{display:block!important;visibility:visible!important;opacity:1!important;position:static!important;height:auto!important;width:auto!important;overflow:visible!important;pointer-events:auto!important}" }} />
         {children}
         <Suspense fallback={null}>
           <WhatsAppWidgetLoader />
