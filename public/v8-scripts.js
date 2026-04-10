@@ -1075,6 +1075,8 @@ window.addEventListener('scroll',function(){document.getElementById('mainnav').c
   var mx=0,my=0,tx=0,ty=0;
   document.addEventListener('mousemove',function(e){mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px';});
   (function anim(){tx+=(mx-tx)*.1;ty+=(my-ty)*.1;tr.style.left=tx+'px';tr.style.top=ty+'px';requestAnimationFrame(anim);})();
+    function big(){cur.style.width='40px';cur.style.height='40px';cur.style.opacity='.5';}
+    function sm(){cur.style.width='16px';cur.style.height='16px';cur.style.opacity='1';}
     document.querySelectorAll('a,button,.cty,.wtab,.whycard,.testcard,.procstep').forEach(function(el){el.addEventListener('mouseenter',big);el.addEventListener('mouseleave',sm);});
   var hr=document.querySelector('.hero-right');
   if(hr){hr.addEventListener('mouseenter',function(){cur.style.background='#fff';cur.style.borderColor='#6ab347';});hr.addEventListener('mouseleave',function(){cur.style.background='#6ab347';cur.style.borderColor='#111';});}
