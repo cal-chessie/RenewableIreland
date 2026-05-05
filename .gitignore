@@ -1,6 +1,8 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# Environment
+.env*
+!.env.example
 
-# dependencies
+# Dependencies
 node_modules
 /.pnp
 .pnp.*
@@ -10,45 +12,71 @@ node_modules
 !.yarn/releases
 !.yarn/versions
 
-# testing
-/coverage
-
-# next.js
+# Next.js
 /.next/
 /out/
 
-# production
+# Production
 /build
+/dist
 
-# misc
+# Testing
+/coverage
+
+# Misc
 .DS_Store
 *.pem
+Thumbs.db
 
-# debug
+# Debug logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
-
-# env files (can opt-in for committing if needed)
-.env*
-
-# vercel
-.vercel
-
-
-# typescript
-*.tsbuildinfo
-next-env.d.ts
-local-*
-.claude
-.z-ai-config
 *.log
 dev.log
 dev.out.log
-test
-prompt
-
 server.log
-# Skills directory
-/skills/
+
+# Vercel
+.vercel
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# Local development
+local-*
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# AI / internal tools
+.claude
+.z-ai-config
+skills/
+.zscripts/
+
+# Upload directory (source assets, not for repo)
+upload/
+
+# Backup files
+*.bak
+*.bak-*
+*.backup
+*.fullbak
+*.unstyled-backup
+*.nextjs-backup
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Keepalive scripts
+keepalive.sh
+simple-server.js
+python-server.py
