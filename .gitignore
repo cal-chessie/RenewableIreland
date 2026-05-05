@@ -23,10 +23,18 @@ node_modules
 # Testing
 /coverage
 
+# Database
+db/*.db
+
 # Misc
 .DS_Store
 *.pem
 Thumbs.db
+screenshot.png
+.accesslog
+.stats
+.config.json
+Caddyfile
 
 # Debug logs
 npm-debug.log*
@@ -34,9 +42,6 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 *.log
-dev.log
-dev.out.log
-server.log
 
 # Vercel
 .vercel
@@ -59,9 +64,37 @@ local-*
 .z-ai-config
 skills/
 .zscripts/
+agent-ctx/
 
-# Upload directory (source assets, not for repo)
+# Download directory (generated assets)
+download/
+
+# Upload directory (source assets)
 upload/
+
+# Examples
+examples/
+
+# Working scripts (not part of app)
+keepalive.sh
+keep-alive.sh
+keepalive2.sh
+keepalive-loop.sh
+fast-keepalive.sh
+simple-server.js
+python-server.py
+py-serve.py
+tiny-serve.py
+serve.js
+server.js
+start.sh
+start-server.sh
+run.sh
+check-homepage.js
+scripts/
+
+# Mini services
+mini-services/
 
 # Backup files
 *.bak
@@ -76,7 +109,5 @@ __pycache__/
 *.pyc
 .venv/
 
-# Keepalive scripts
-keepalive.sh
-simple-server.js
-python-server.py
+# Worklog
+worklog.md
