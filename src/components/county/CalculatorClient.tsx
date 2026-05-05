@@ -19,7 +19,7 @@ export default function CalculatorClient({ isNI, countyName }: CalculatorClientP
   const [exportEarning, setExportEarning] = useState(0);
   const [selfConsumptionSaving, setSelfConsumptionSaving] = useState(0);
 
-  const cur = isNI ? "£" : "€";
+  const cur = isNI ? "\u00a3" : "\u20ac";
 
   const handleCalculate = () => {
     const size = parseFloat(systemSize);

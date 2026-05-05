@@ -14,12 +14,12 @@ export default function TrustSection({
   avgPaybackYears,
 }: TrustSectionProps) {
   const badges = [
-    { icon: "✅", text: `${accreditation} Certified` },
-    { icon: "⚡", text: "NICEIC Approved" },
-    { icon: "🛡️", text: "Fully Insured" },
-    { icon: "🏆", text: "5★ Google Rating" },
-    { icon: "💰", text: "Fixed Price" },
-    { icon: "🔋", text: "Battery Ready" },
+    { icon: "\u2705", text: `${accreditation} Certified` },
+    { icon: "\u26A1", text: "NICEIC Approved" },
+    { icon: "\uD83D\uDEE1", text: "Fully Insured" },
+    { icon: "\uD83C\uDF1F", text: "5\u2605 Google Rating" },
+    { icon: "\uD83D\uDCB0", text: "Fixed Price" },
+    { icon: "\uD83D\uDD0B", text: "Battery Ready" },
   ];
 
   return (
@@ -32,7 +32,7 @@ export default function TrustSection({
         <div className={styles.sectionHeader}>
           <div className={styles.sectionLabel}>Why Choose Us</div>
           <h2 id="trust-heading">
-            The Renewable {countyName} Difference
+            The Solar {countyName} Difference
           </h2>
           <p>
             Everything you need for a seamless solar installation, managed from

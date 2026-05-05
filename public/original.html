@@ -1766,6 +1766,58 @@ footer{background:var(--black);border-top:var(--bd);padding:48px 64px 26px}
 </section>
 
 
+<!-- AREAS WE COVER -->
+<section class="sec sec-white" id="areas" style="border-top:var(--bd);border-bottom:var(--bd)">
+  <div class="stag rev">Nationwide Coverage</div>
+  <h2 class="stitle rev">Solar panels in <em>every</em> county.</h2>
+  <p class="ssub rev" style="margin-bottom:48px">We install solar panels across all 32 counties in Ireland. Select your county for local pricing, grant info, and a free roof estimate.</p>
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;max-width:1100px;margin:0 auto">
+    <a href="/counties/antrim" class="area-card-link"><span>Antrim</span><span class="arr">→</span></a>
+    <a href="/counties/armagh" class="area-card-link"><span>Armagh</span><span class="arr">→</span></a>
+    <a href="/counties/carlow" class="area-card-link"><span>Carlow</span><span class="arr">→</span></a>
+    <a href="/counties/cavan" class="area-card-link"><span>Cavan</span><span class="arr">→</span></a>
+    <a href="/counties/clare" class="area-card-link"><span>Clare</span><span class="arr">→</span></a>
+    <a href="/counties/cork" class="area-card-link"><span>Cork</span><span class="arr">→</span></a>
+    <a href="/counties/derry" class="area-card-link"><span>Derry</span><span class="arr">→</span></a>
+    <a href="/counties/donegal" class="area-card-link"><span>Donegal</span><span class="arr">→</span></a>
+    <a href="/counties/down" class="area-card-link"><span>Down</span><span class="arr">→</span></a>
+    <a href="/counties/dublin" class="area-card-link area-popular"><span>Dublin</span><span class="badge">Popular</span></a>
+    <a href="/counties/fermanagh" class="area-card-link"><span>Fermanagh</span><span class="arr">→</span></a>
+    <a href="/counties/galway" class="area-card-link"><span>Galway</span><span class="arr">→</span></a>
+    <a href="/counties/kerry" class="area-card-link"><span>Kerry</span><span class="arr">→</span></a>
+    <a href="/counties/kildare" class="area-card-link"><span>Kildare</span><span class="arr">→</span></a>
+    <a href="/counties/kilkenny" class="area-card-link"><span>Kilkenny</span><span class="arr">→</span></a>
+    <a href="/counties/laois" class="area-card-link"><span>Laois</span><span class="arr">→</span></a>
+    <a href="/counties/leitrim" class="area-card-link"><span>Leitrim</span><span class="arr">→</span></a>
+    <a href="/counties/limerick" class="area-card-link"><span>Limerick</span><span class="arr">→</span></a>
+    <a href="/counties/longford" class="area-card-link"><span>Longford</span><span class="arr">→</span></a>
+    <a href="/counties/louth" class="area-card-link"><span>Louth</span><span class="arr">→</span></a>
+    <a href="/counties/meath" class="area-card-link"><span>Meath</span><span class="arr">→</span></a>
+    <a href="/counties/monaghan" class="area-card-link"><span>Monaghan</span><span class="arr">→</span></a>
+    <a href="/counties/offaly" class="area-card-link"><span>Offaly</span><span class="arr">→</span></a>
+    <a href="/counties/roscommon" class="area-card-link"><span>Roscommon</span><span class="arr">→</span></a>
+    <a href="/counties/sligo" class="area-card-link"><span>Sligo</span><span class="arr">→</span></a>
+    <a href="/counties/tipperary" class="area-card-link"><span>Tipperary</span><span class="arr">→</span></a>
+    <a href="/counties/tyrone" class="area-card-link area-ni"><span>Tyrone</span><span class="badge badge-ni">NI</span></a>
+    <a href="/counties/waterford" class="area-card-link"><span>Waterford</span><span class="arr">→</span></a>
+    <a href="/counties/westmeath" class="area-card-link"><span>Westmeath</span><span class="arr">→</span></a>
+    <a href="/counties/wexford" class="area-card-link"><span>Wexford</span><span class="arr">→</span></a>
+    <a href="/counties/wicklow" class="area-card-link"><span>Wicklow</span><span class="arr">→</span></a>
+  </div>
+  <style>
+    .area-card-link{display:flex;align-items:center;gap:10px;padding:16px 18px;border:var(--bd);border-radius:var(--r);text-decoration:none;background:var(--white);box-shadow:var(--sh);transition:all .15s}
+    .area-card-link:hover{transform:translate(-2px,-2px);box-shadow:var(--shlg)}
+    .area-card-link span:first-child{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;color:var(--black);text-transform:uppercase}
+    .area-card-link .arr{margin-left:auto;font-size:11px;color:var(--hint)}
+    .area-popular{background:var(--lime-lt) !important}
+    .area-ni{background:var(--earth-lt) !important}
+    .badge{margin-left:auto;font-size:10px;background:var(--lime);padding:2px 8px;border-radius:var(--pill);font-weight:700;color:var(--black);text-transform:uppercase}
+    .badge-ni{background:var(--earth) !important;color:var(--white) !important}
+    @media(max-width:768px){#areas{padding:48px 24px !important}#areas > div:last-child{grid-template-columns:repeat(2,1fr) !important;gap:8px !important}}
+    @media(max-width:480px){#areas > div:last-child{grid-template-columns:1fr !important}}
+  </style>
+</section>
+
 <!-- FAQ -->
 <section class="sec sec-white" id="faq" style="border-top:var(--bd);border-bottom:var(--bd)">
   <div class="stag rev">Questions Answered</div>
@@ -1844,7 +1896,7 @@ footer{background:var(--black);border-top:var(--bd);padding:48px 64px 26px}
   <div style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:20px;color:var(--white);text-transform:uppercase;line-height:1.1">Renewable<br>Ireland</div>
 </div><p class="fb-p">SEAI-registered solar specialists across Ireland. From first enquiry to live panels — tracked every step in your portal.</p></div>
     <div class="fc"><h4>Solar</h4><ul><li><a href="#get-started">Get started</a></li><li><a href="#calculator">Calculator</a></li><li><a href="#grants">SEAI grants</a></li><li><a href="#how-it-works">How it works</a></li></ul></div>
-    <div class="fc"><h4>Company</h4><ul><li><a href="#">About us</a></li><li><a href="#">Our installers</a></li><li><a href="#">Areas we cover</a></li><li><a href="#" onclick="openPortal();return false">Track my project</a></li></ul></div>
+    <div class="fc"><h4>Company</h4><ul><li><a href="#">About us</a></li><li><a href="#">Our installers</a></li><li><a href="#areas">Areas we cover</a></li><li><a href="#" onclick="openPortal();return false">Track my project</a></li></ul></div>
     <div class="fc"><h4>Contact</h4><ul><li><a href="/cdn-cgi/l/email-protection#4f262129200f3d2a212a382e2d232a263d2a232e212b61262a"><span class="__cf_email__" data-cfemail="422b2c242d0230272c273523202e272b30272e232c266c2b27">[email&#160;protected]</span></a></li><li><a href="tel:+353873958424">087 395 8424</a></li><li><a href="https://wa.me/353873958424">WhatsApp</a></li><li><a href="#">Facebook</a></li></ul></div>
   </div>
   <div class="fb-bottom"><span>© Renewable Ireland 2025 · SEAI Registered Partner</span><span>Privacy · Terms</span></div>

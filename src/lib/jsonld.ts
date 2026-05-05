@@ -77,12 +77,7 @@ export function generateServiceSchema(input: ServiceSchemaInput): object {
     name,
     description,
     provider: { "@id": ORG_ID },
-    areaServed: {
-      "@type": areaServedName === "Ireland" || areaServedName === "Northern Ireland"
-        ? "Country"
-        : "AdministrativeArea",
-      name: areaServedName,
-    },
+    areaServed: { "@type": "Country", name: areaServedName },
     serviceType,
     category,
   };
@@ -678,7 +673,7 @@ export function generateCountyProducts(county: CountyData): object[] {
       priceCurrency: cur,
       aggregateRating: COMPANY_RATING,
       image: `${domain}/images/og-image.jpg`,
-      seller: `Renewable ${county.name}`,
+      seller: `Solar ${county.name}`,
     })
   );
 }
@@ -698,7 +693,7 @@ export function generateCountyServiceSchemas(county: CountyData): object[] {
     },
     {
       name: `Commercial Solar Panels in ${county.name}`,
-      description: `Commercial solar panel installation for businesses in ${county.name}. Reduce overheads with a tailored commercial solar system from Renewable ${county.name}.`,
+      description: `Commercial solar panel installation for businesses in ${county.name}. Reduce overheads with a tailored commercial solar system from Solar ${county.name}.`,
       serviceType: "Commercial Solar Panel Installation",
     },
     {
@@ -743,7 +738,7 @@ export function generateCountyHowToSchema(county: CountyData): object {
 
   return generateHowToSchema({
     name: `How to Get Solar Panels Installed in ${county.name}`,
-    description: `A step-by-step guide to getting solar panels installed on your ${county.name} home with Renewable ${county.name}, from initial enquiry to commissioning.`,
+    description: `A step-by-step guide to getting solar panels installed on your ${county.name} home with Solar ${county.name}, from initial enquiry to commissioning.`,
     totalTime: "P2W",
     estimatedCost: {
       currency: isNI ? "GBP" : "EUR",
@@ -770,7 +765,7 @@ export function generateCountyHowToSchema(county: CountyData): object {
       {
         position: 4,
         name: `${isNI ? "SEG" : "Grant"} Application`,
-        text: `Renewable ${county.name} handles the full ${isNI ? "Smart Export Guarantee" : "grant"} application on your behalf. We submit all documentation and manage the process from start to finish.`,
+        text: `Solar ${county.name} handles the full ${isNI ? "Smart Export Guarantee" : "grant"} application on your behalf. We submit all documentation and manage the process from start to finish.`,
       },
       {
         position: 5,
@@ -807,7 +802,7 @@ export function generateServiceHowToSchema(
 
   return generateHowToSchema({
     name: `How to Get ${serviceTitle} in ${county.name}`,
-    description: `Step-by-step guide to getting ${serviceTitle} installed on your ${county.name} property with Renewable ${county.name}.`,
+    description: `Step-by-step guide to getting ${serviceTitle} installed on your ${county.name} property with Solar ${county.name}.`,
     totalTime: "P3W",
     estimatedCost: {
       currency: isNI ? "GBP" : "EUR",

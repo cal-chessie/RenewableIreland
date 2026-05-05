@@ -20,8 +20,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const county = getCounty(slug);
   if (!county) return {};
 
-  const title = `Terms & Conditions | Renewable ${county.name}`;
-  const description = `Read the terms and conditions for Renewable ${county.name}. Important information about our solar panel installation services, warranties, payment terms, and your rights.`;
+  const title = `Terms & Conditions | Solar ${county.name}`;
+  const description = `Read the terms and conditions for Solar ${county.name}. Important information about our solar panel installation services, warranties, payment terms, and your rights.`;
   const url = `https://${county.domain}/terms`;
 
   return {
@@ -33,7 +33,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title,
       description,
       url,
-      siteName: `Renewable ${county.name}`,
+      siteName: `Solar ${county.name}`,
     },
   };
 }
@@ -67,7 +67,7 @@ export default async function TermsPage({ params }: Props) {
             Terms &amp; Conditions
           </h1>
           <p className={sharedStyles.heroSubtitle} style={{ color: "var(--text-mid)", maxWidth: 700 }}>
-            The terms and conditions governing the solar panel installation services provided by Renewable {county.name}.
+            The terms and conditions governing the solar panel installation services provided by Solar {county.name}.
           </p>
         </div>
       </header>
@@ -80,10 +80,10 @@ export default async function TermsPage({ params }: Props) {
             </h2>
             <p className={styles.lastUpdated}>Last updated: 1 January 2025</p>
             <p>
-              These terms and conditions (&quot;Terms&quot;) govern the provision of solar panel installation and related services by Renewable {county.name} (&quot;the Company&quot;, &quot;we&quot;, &quot;us&quot;, or &quot;our&quot;) to you (&quot;the Customer&quot;, &quot;you&quot;, or &quot;your&quot;). Please read these Terms carefully before engaging our services.
+              These terms and conditions (&quot;Terms&quot;) govern the provision of solar panel installation and related services by Solar {county.name} (&quot;the Company&quot;, &quot;we&quot;, &quot;us&quot;, or &quot;our&quot;) to you (&quot;the Customer&quot;, &quot;you&quot;, or &quot;your&quot;). Please read these Terms carefully before engaging our services.
             </p>
             <ul>
-              <li><strong>Company name:</strong> Renewable {county.name}</li>
+              <li><strong>Company name:</strong> Solar {county.name}</li>
               <li><strong>CRO / Companies House registration:</strong> [Registration Number — available on request]</li>
               <li><strong>Registered address:</strong> {county.mainTown}, County {county.name}, {county.country === "GB" ? "Northern Ireland, United Kingdom" : "Ireland"}</li>
               <li><strong>Contact email:</strong> <a href={`mailto:${county.email}`}>{county.email}</a></li>
@@ -109,7 +109,7 @@ export default async function TermsPage({ params }: Props) {
             <h2 className={sharedStyles.headingH2}>
               3. Scope of Services
             </h2>
-            <p>Renewable {county.name} provides the following solar energy services to residential, commercial, and agricultural customers:</p>
+            <p>Solar {county.name} provides the following solar energy services to residential, commercial, and agricultural customers:</p>
             <ul>
               <li><strong>Residential solar panel installation</strong> — design, supply, and installation of solar photovoltaic (PV) systems for domestic properties, including roof-mounted and ground-mounted systems.</li>
               <li><strong>Commercial solar panel installation</strong> — design, supply, and installation of solar PV systems for offices, warehouses, retail units, and commercial premises.</li>
@@ -144,7 +144,7 @@ export default async function TermsPage({ params }: Props) {
             <p>To exercise your right to cancel, you must notify us in writing (by email or post) at the following address:</p>
             <ul>
               <li><strong>Email:</strong> <a href={`mailto:${county.email}`}>{county.email}</a></li>
-              <li><strong>Post:</strong> Renewable {county.name}, {county.mainTown}, County {county.name}, {county.country === "GB" ? "Northern Ireland, United Kingdom" : "Ireland"}</li>
+              <li><strong>Post:</strong> Solar {county.name}, {county.mainTown}, County {county.name}, {county.country === "GB" ? "Northern Ireland, United Kingdom" : "Ireland"}</li>
             </ul>
             <p>
               The cancellation period ends 14 days after the day on which the Contract is formed. If you cancel after installation work has commenced but before completion, you are liable to pay for the value of any work already carried out and for any Equipment that has been specifically ordered and cannot be returned.
@@ -203,11 +203,11 @@ export default async function TermsPage({ params }: Props) {
             <h2 className={sharedStyles.headingH2}>
               10. Warranty Terms
             </h2>
-            <p>Renewable {county.name} provides the following warranties in respect of all Installations:</p>
+            <p>Solar {county.name} provides the following warranties in respect of all Installations:</p>
             <ol>
               <li><strong>Solar panel performance warranty (25 years):</strong> All solar panels installed by the Company carry a manufacturer&apos;s linear performance warranty guaranteeing a minimum of 80% of original rated output at year 25. This warranty is provided by the panel manufacturer and is subject to their terms and conditions.</li>
               <li><strong>Solar panel product warranty (12 to 25 years):</strong> Panels are warranted against manufacturing defects for a minimum of 12 years from the date of installation. The specific warranty period depends on the panel manufacturer and model.</li>
-              <li><strong>Workmanship warranty (10 years):</strong> Renewable {county.name} warrants all installation work — including mounting, wiring, flashing, weatherproofing, and connections — for a period of 10 years from the date of commissioning. This covers defects caused by faulty workmanship or materials supplied by us.</li>
+              <li><strong>Workmanship warranty (10 years):</strong> Solar {county.name} warrants all installation work — including mounting, wiring, flashing, weatherproofing, and connections — for a period of 10 years from the date of commissioning. This covers defects caused by faulty workmanship or materials supplied by us.</li>
               <li><strong>Inverter warranty (10 years):</strong> All inverters installed by the Company carry a minimum 10-year manufacturer&apos;s warranty. Some premium inverter models may offer extended warranties of 12 to 15 years.</li>
               <li><strong>Battery warranty (10 years):</strong> Battery storage systems carry a 10-year manufacturer&apos;s warranty covering capacity retention and manufacturing defects.</li>
               <li><strong>EV charger warranty (3 years):</strong> Electric vehicle charge points carry a minimum 3-year manufacturer&apos;s warranty.</li>
@@ -286,7 +286,7 @@ export default async function TermsPage({ params }: Props) {
             <ol>
               <li>All designs, drawings, specifications, and technical information provided by the Company remain the Company&apos;s intellectual property and may not be reproduced, shared, or used by the Customer for any purpose other than the Installation without the Company&apos;s prior written consent.</li>
               <li>The Company may use photographs of completed installations for marketing and portfolio purposes unless the Customer specifically requests otherwise in writing at the time of installation.</li>
-              <li>The Renewable {county.name} name, logo, and branding are proprietary trademarks and may not be used by the Customer without prior written consent.</li>
+              <li>The Solar {county.name} name, logo, and branding are proprietary trademarks and may not be used by the Customer without prior written consent.</li>
             </ol>
 
             <h2 className={sharedStyles.headingH2}>
@@ -294,7 +294,7 @@ export default async function TermsPage({ params }: Props) {
             </h2>
             <p>
               The Company processes personal data in accordance with our Privacy Policy, available at{" "}
-              <a href={`/counties/${county.slug}/privacy-policy`}>renewable{county.name}.ie/privacy-policy</a>. By entering into a Contract with us, you acknowledge that we will process your personal data for the purposes of performing the Contract, complying with legal obligations, and exercising our legitimate business interests.
+              <a href={`/counties/${county.slug}/privacy-policy`}>solar{county.name}.ie/privacy-policy</a>. By entering into a Contract with us, you acknowledge that we will process your personal data for the purposes of performing the Contract, complying with legal obligations, and exercising our legitimate business interests.
             </p>
 
             <h2 className={sharedStyles.headingH2}>
@@ -323,12 +323,12 @@ export default async function TermsPage({ params }: Props) {
               21. Contact Information
             </h2>
             <p>
-              For any questions about these Terms and Conditions, or to discuss a Contract with Renewable {county.name}, please contact us:
+              For any questions about these Terms and Conditions, or to discuss a Contract with Solar {county.name}, please contact us:
             </p>
             <ul>
               <li><strong>By email:</strong> <a href={`mailto:${county.email}`}>{county.email}</a></li>
               <li><strong>By phone:</strong> <a href={`tel:${county.phone}`}>{county.phone}</a></li>
-              <li><strong>By post:</strong> Renewable {county.name}, {county.mainTown}, County {county.name}, {county.country === "GB" ? "Northern Ireland, United Kingdom" : "Ireland"}</li>
+              <li><strong>By post:</strong> Solar {county.name}, {county.mainTown}, County {county.name}, {county.country === "GB" ? "Northern Ireland, United Kingdom" : "Ireland"}</li>
               <li><strong>Website:</strong> <a href={`https://${county.domain}`}>{county.domain}</a></li>
             </ul>
           </div>

@@ -4,19 +4,11 @@ interface HeroProps {
   countyName: string;
   countySlug: string;
   subtitle: string;
-  heroTitle?: string;
   phone: string;
   accreditation: string;
 }
 
-export default function Hero({ countyName, countySlug, subtitle, heroTitle, accreditation }: HeroProps) {
-  // Split heroTitle into main line and highlighted line
-  const titleParts = heroTitle
-    ? heroTitle.split("\n")
-    : [`Solar Panels ${countyName}.`, "Done Right."];
-  const titleMain = titleParts[0];
-  const titleHighlight = titleParts[1] || "";
-
+export default function Hero({ countyName, countySlug, subtitle, accreditation }: HeroProps) {
   return (
     <section
       className={styles.hero}
@@ -24,13 +16,13 @@ export default function Hero({ countyName, countySlug, subtitle, heroTitle, accr
       role="banner"
       aria-labelledby="hero-heading"
     >
-      <div className={styles.heroContent}>
+      <div className="container">
         <div className={styles.heroBadge} aria-label={`${accreditation} accredited installers`}>
           {accreditation} Accredited Installers Serving County {countyName}
         </div>
         <h1 id="hero-heading">
-          {titleMain}<br />
-          <span className={styles.heroHighlight}>{titleHighlight}</span>
+          Solar Panels {countyName}.<br />
+          <span className={styles.heroHighlight}>Done Right.</span>
         </h1>
         <p className={styles.heroSubtitle}>{subtitle}</p>
         <div className={styles.heroButtons}>

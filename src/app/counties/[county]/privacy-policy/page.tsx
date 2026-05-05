@@ -20,8 +20,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const county = getCounty(slug);
   if (!county) return {};
 
-  const title = `Privacy Policy | Renewable ${county.name}`;
-  const description = `Read the privacy policy for Renewable ${county.name}. Learn how we collect, use, and protect your personal data in compliance with GDPR and data protection law.`;
+  const title = `Privacy Policy | Solar ${county.name}`;
+  const description = `Read the privacy policy for Solar ${county.name}. Learn how we collect, use, and protect your personal data in compliance with GDPR and data protection law.`;
   const url = `https://${county.domain}/privacy-policy`;
 
   return {
@@ -33,7 +33,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title,
       description,
       url,
-      siteName: `Renewable ${county.name}`,
+      siteName: `Solar ${county.name}`,
     },
   };
 }
@@ -76,7 +76,7 @@ export default async function PrivacyPolicyPage({ params }: Props) {
             Privacy Policy
           </h1>
           <p className={sharedStyles.heroSubtitle} style={{ color: "var(--text-mid)", maxWidth: 700 }}>
-            How Renewable {county.name} collects, uses, and protects your personal information.
+            How Solar {county.name} collects, uses, and protects your personal information.
           </p>
         </div>
       </header>
@@ -89,14 +89,14 @@ export default async function PrivacyPolicyPage({ params }: Props) {
             </h2>
             <p className={styles.lastUpdated}>Last updated: 1 January 2025</p>
             <p>
-              Renewable {county.name} (&quot;we&quot;, &quot;us&quot;, or &quot;our&quot;) is committed to protecting and respecting your privacy. This Privacy Policy explains how we collect, use, store, and disclose personal information when you use our website at{" "}
+              Solar {county.name} (&quot;we&quot;, &quot;us&quot;, or &quot;our&quot;) is committed to protecting and respecting your privacy. This Privacy Policy explains how we collect, use, store, and disclose personal information when you use our website at{" "}
               <a href={`https://${county.domain}`}>{county.domain}</a>, when you contact us by telephone or email, when we carry out a site survey at your property, and when we provide solar panel installation and related services to you.
             </p>
             <p>
               For the purposes of {regulatorRef}, we are the data controller of your personal information. Our registration details are as follows:
             </p>
             <ul>
-              <li><strong>Company name:</strong> Renewable {county.name}</li>
+              <li><strong>Company name:</strong> Solar {county.name}</li>
               <li><strong>Registered address:</strong> {county.mainTown}, County {county.name}, {county.country === "GB" ? "Northern Ireland, United Kingdom" : "Ireland"}</li>
               <li><strong>Contact email:</strong> <a href={`mailto:${county.email}`}>{county.email}</a></li>
               <li><strong>Contact phone:</strong> <a href={`tel:${county.phone}`}>{county.phone}</a></li>
@@ -431,7 +431,7 @@ export default async function PrivacyPolicyPage({ params }: Props) {
             <ul>
               <li><strong>By email:</strong> <a href={`mailto:${county.email}`}>{county.email}</a></li>
               <li><strong>By phone:</strong> <a href={`tel:${county.phone}`}>{county.phone}</a></li>
-              <li><strong>By post:</strong> Renewable {county.name}, {county.mainTown}, County {county.name}, {county.country === "GB" ? "Northern Ireland, United Kingdom" : "Ireland"}</li>
+              <li><strong>By post:</strong> Solar {county.name}, {county.mainTown}, County {county.name}, {county.country === "GB" ? "Northern Ireland, United Kingdom" : "Ireland"}</li>
               <li><strong>Website:</strong> <a href={`https://${county.domain}`}>{county.domain}</a></li>
             </ul>
             <p>

@@ -19,8 +19,6 @@ import FAQ from "@/components/county/FAQ";
 import FinalCTA from "@/components/county/FinalCTA";
 import Footer from "@/components/county/Footer";
 import CalculatorClient from "@/components/county/CalculatorClient";
-import ScrollReveal from "@/components/county/ScrollReveal";
-import { getPostsByCounty } from "@/data/blog-posts";
 
 type Props = {
   params: Promise<{ county: string }>;
@@ -35,7 +33,7 @@ function generateLocalBusinessSchema(county: ReturnType<typeof getCounty>) {
   return {
     "@context": "https://schema.org",
     "@type": "ElectricalContractor",
-    name: `Renewable ${county.name}`,
+    name: `Solar ${county.name}`,
     description: `${county.accreditation} accredited solar panel installers serving ${county.name}`,
     url: `https://${county.domain}`,
     telephone: county.phone,
@@ -68,7 +66,7 @@ function generateLocalBusinessSchema(county: ReturnType<typeof getCounty>) {
       opens: "08:00",
       closes: "18:00",
     },
-    priceRange: county.country === "GB" ? "££" : "€€",
+    priceRange: county.country === "GB" ? "\u00a3\u00a3" : "\u20ac\u20ac",
     image: `https://${county.domain}/images/og-image.jpg`,
     sameAs: [],
   };
@@ -87,7 +85,7 @@ function generateCountyReviewSchema(county: ReturnType<typeof getCounty>) {
     county.testimonials.reduce((sum, t) => sum + t.rating, 0) /
     county.testimonials.length;
   return generateReviewSchema({
-    itemName: `Renewable ${county.name}`,
+    itemName: `Solar ${county.name}`,
     itemUrl: `https://${county.domain}`,
     reviews: county.testimonials.map((t) => ({
       author: t.name,
@@ -114,7 +112,7 @@ function generateCountyServiceSchemas(county: ReturnType<typeof getCounty>) {
     },
     {
       name: `Commercial Solar Panels in ${county.name}`,
-      description: `Commercial solar panel installation for businesses in ${county.name}. Reduce overheads with tailored commercial solar from Renewable ${county.name}.`,
+      description: `Commercial solar panel installation for businesses in ${county.name}. Reduce overheads with tailored commercial solar from Solar ${county.name}.`,
       serviceType: "Commercial Solar Panel Installation",
     },
     {
@@ -154,7 +152,7 @@ function generateCountyHowToSchema(county: ReturnType<typeof getCounty>) {
   const domain = `https://${county.domain}`;
   return generateHowToSchema({
     name: `How to Get Solar Panels Installed in ${county.name}`,
-    description: `A step-by-step guide to getting solar panels installed on your ${county.name} home with Renewable ${county.name}.`,
+    description: `A step-by-step guide to getting solar panels installed on your ${county.name} home with Solar ${county.name}.`,
     totalTime: "P2W",
     estimatedCost: {
       currency: isNI ? "GBP" : "EUR",
@@ -180,8 +178,8 @@ function generateCountyHowToSchema(county: ReturnType<typeof getCounty>) {
       },
       {
         position: 4,
-        name: `${isNI ? "Grid Connection" : "Grant"} Application`,
-        text: `Renewable ${county.name} handles the full ${isNI ? "grid connection and energy supplier registration" : "grant"} application on your behalf — no paperwork hassle.`,
+        name: `${isNI ? "SEG" : "Grant"} Application`,
+        text: `Solar ${county.name} handles the full ${isNI ? "Smart Export Guarantee" : "grant"} application on your behalf — no paperwork hassle.`,
       },
       {
         position: 5,
@@ -222,7 +220,7 @@ function generateCountyProductSchemas(county: ReturnType<typeof getCounty>) {
       priceCurrency: cur,
       aggregateRating: { ratingValue: "4.9", reviewCount: "2847" },
       image: `${domain}/images/og-image.jpg`,
-      seller: `Renewable ${county.name}`,
+      seller: `Solar ${county.name}`,
     })
   );
 }
@@ -250,14 +248,11 @@ export default async function CountyHomePage({ params }: Props) {
   const breadcrumbSchema = generateCountyBreadcrumbSchema(county);
 
   const isNI = county.country === "GB";
-  const cur = isNI ? "£" : "€";
+  const cur = isNI ? "\u00a3" : "\u20ac";
   const statInstallations = "500+";
-  const statRating = "5★";
-  const statPayback = county.avgPaybackYears || "6–8 Years";
+  const statRating = "5\u2605";
+  const statPayback = county.avgPaybackYears || "6\u20138 Years";
   const statInstall = "1 Day";
-
-  // Get latest blog posts for this county
-  const latestPosts = getPostsByCounty(county.slug).slice(0, 3);
 
   return (
     <div className={styles.countySite}>
@@ -322,9 +317,6 @@ export default async function CountyHomePage({ params }: Props) {
         />
       )}
 
-      {/* Scroll Reveal Observer */}
-      <ScrollReveal />
-
       {/* Navigation */}
       <CountyNav
         countyName={county.name}
@@ -337,7 +329,6 @@ export default async function CountyHomePage({ params }: Props) {
         countyName={county.name}
         countySlug={county.slug}
         subtitle={county.heroSubtitle}
-        heroTitle={county.heroTitle}
         phone={county.phone}
         accreditation={county.accreditation}
       />
@@ -366,7 +357,7 @@ export default async function CountyHomePage({ params }: Props) {
       <Services countyName={county.name} countySlug={county.slug} />
 
       {/* 5-Step Process */}
-      <section className={`${styles.section} ${styles.processSection} reveal`} id="process" aria-labelledby="process-heading">
+      <section className={`${styles.section} ${styles.processSection}`} id="process" aria-labelledby="process-heading">
         <div className="container">
           <div className={styles.sectionHeader}>
             <div className={styles.sectionLabel}>How It Works</div>
@@ -391,8 +382,8 @@ export default async function CountyHomePage({ params }: Props) {
             </div>
             <div className={styles.stepCard}>
               <div className={styles.stepNumber} aria-hidden="true">4</div>
-              <h3>{isNI ? "Grid Connection" : "Grant"} Application</h3>
-              <p>We handle the full {isNI ? "grid connection and energy supplier registration" : "grant"} application on your behalf — no paperwork hassle.</p>
+              <h3>{isNI ? "SEG" : "Grant"} Application</h3>
+              <p>We handle the full {isNI ? "Smart Export Guarantee" : "grant"} application on your behalf — no paperwork hassle.</p>
             </div>
             <div className={styles.stepCard}>
               <div className={styles.stepNumber} aria-hidden="true">5</div>
@@ -404,53 +395,53 @@ export default async function CountyHomePage({ params }: Props) {
       </section>
 
       {/* Grant Section */}
-      <section className={`${styles.section} ${styles.grantSection} reveal`} id="grant" aria-labelledby="grant-heading">
+      <section className={`${styles.section} ${styles.grantSection}`} id="grant" aria-labelledby="grant-heading">
         <div className="container">
           <div className={styles.grantGrid}>
             <div>
               <div className={styles.sectionLabel}>Government Support</div>
-              <h2 id="grant-heading" className={styles.grantSectionTitle}>
+              <h2 id="grant-heading" style={{ fontFamily: "var(--font-display)", fontSize: "clamp(1.6rem, 3.5vw, 2.5rem)", marginBottom: 16, letterSpacing: "-0.3px", color: "var(--white)" }}>
                 {isNI
-                  ? "Solar Savings for Northern Ireland"
+                  ? "Smart Export Guarantee for Northern Ireland"
                   : `Understanding the ${county.accreditation} Grant for Solar Panels`}
               </h2>
-              <p className={styles.grantSectionText}>
+              <p style={{ color: "rgba(255,255,255,.55)", fontSize: "0.95rem", marginBottom: 24, lineHeight: 1.8 }}>
                 {isNI
-                  ? `Solar panels are one of the smartest investments for Northern Ireland homeowners. With electricity prices continuing to rise, a well-designed solar PV system in ${county.name} can reduce your annual electricity bills by up to 70%. Combined with falling installation costs and panel lifetimes of 25+ years, solar delivers exceptional long-term value.`
+                  ? `The Smart Export Guarantee (SEG) allows homeowners in Northern Ireland to earn money from excess solar energy exported to the grid. Licensed electricity suppliers must offer a tariff for exported energy, typically 5-15p per kWh. Combined with reduced electricity bills, solar panels in ${county.name} can deliver significant long-term savings.`
                   : `The ${county.accreditation} offers generous grants for solar photovoltaic panel installations. This covers everything you need to know about eligibility, the application process, and how we make it completely hassle-free.`}
               </p>
               <div className={styles.grantDetails}>
                 <div className={styles.grantDetail}>
                   <div className={styles.grantCheck} aria-hidden="true">&#10003;</div>
-                  <p><strong>Bill Savings:</strong> {isNI
-                    ? "Reduce your electricity bills by up to 70% with a properly sized solar system. A typical 4kW system saves £800–£1,200 per year, with greater savings for larger systems or properties with high daytime energy use."
+                  <p><strong>Export Tariff:</strong> {isNI
+                    ? "Earn 5-15p per kWh for every unit of electricity you export back to the grid. Some suppliers offer fixed rates, others variable."
                     : `Generous government grants available for solar PV installations. The grant covers systems of various sizes.`}</p>
                 </div>
                 <div className={styles.grantDetail}>
                   <div className={styles.grantCheck} aria-hidden="true">&#10003;</div>
                   <p><strong>Eligibility:</strong> {isNI
-                    ? "Solar panels are suitable for most homes with a south, east, or west facing roof. We carry out a free survey to confirm your property's suitability. Must use an MCS-certified installer."
+                    ? "Available to any homeowner with a solar PV system (up to 5MW) and a meter capable of measuring export. Must use an MCS-certified installer."
                     : "Available to homeowners whose property meets the age and eligibility requirements. You must use a registered installer."}</p>
                 </div>
                 <div className={styles.grantDetail}>
                   <div className={styles.grantCheck} aria-hidden="true">&#10003;</div>
                   <p><strong>Application Process:</strong> {isNI
-                    ? `Renewable ${county.name} handles everything — from the initial survey and system design to scaffolding, installation, and grid connection registration. We manage all the paperwork so you don't have to.`
+                    ? "Solar Tyrone handles everything. We help you register with your electricity supplier for the export tariff and manage all documentation."
                     : `We handle the entire application process on your behalf. We submit all documentation and manage communication — you simply provide your details.`}</p>
                 </div>
                 <div className={styles.grantDetail}>
                   <div className={styles.grantCheck} aria-hidden="true">&#10003;</div>
                   <p><strong>Additional Savings:</strong> {isNI
-                    ? "Combined with self-consumption savings, a typical 6kWp system in Northern Ireland can save £800-£1,400 per year on electricity bills."
+                    ? "Combined with self-consumption savings, a typical 6kWp system in Northern Ireland can save \u00a3800-\u00a31,400 per year on electricity bills."
                     : "Beyond the grant, you'll save on electricity bills and can earn additional income from exporting excess energy to the grid."}</p>
                 </div>
               </div>
             </div>
-            <div className={styles.grantAmountWrap}>
+            <div style={{ textAlign: "center" }}>
               <div className={styles.grantAmount}>
-                {isNI ? "£800+" : "€1,800"}<span> {isNI ? "Annual Savings" : "Government Grant"}</span>
+                {isNI ? "\u00a3800+" : "\u00a31,800"}<span> {isNI ? "Annual Savings" : "Government Grant"}</span>
               </div>
-              <p className={styles.grantAmountSubtext}>
+              <p style={{ color: "rgba(255,255,255,.55)", fontSize: "1rem", marginBottom: 32 }}>
                 {isNI
                   ? "Typical annual savings for a 6kWp solar system in Northern Ireland. Plus export earnings on top."
                   : "Deducted directly from your installation cost. No waiting, no paperwork, no hassle."}
@@ -467,7 +458,7 @@ export default async function CountyHomePage({ params }: Props) {
       <BillUpload countyName={county.name} countySlug={county.slug} />
 
       {/* Calculator */}
-      <section className={`${styles.section} ${styles.calculatorSection} reveal`} id="calculator" aria-labelledby="calculator-heading">
+      <section className={`${styles.section} ${styles.calculatorSection}`} id="calculator" aria-labelledby="calculator-heading">
         <div className="container">
           <div className={styles.sectionHeader}>
             <div className={styles.sectionLabel}>Estimate Your Savings</div>
@@ -479,7 +470,7 @@ export default async function CountyHomePage({ params }: Props) {
       </section>
 
       {/* Cost Section */}
-      <section className={`${styles.section} ${styles.costSection} reveal`} id="cost" aria-labelledby="cost-heading">
+      <section className={`${styles.section} ${styles.costSection}`} id="cost" aria-labelledby="cost-heading">
         <div className="container">
           <div className={styles.sectionHeader}>
             <div className={styles.sectionLabel}>Transparent Pricing</div>
@@ -492,13 +483,13 @@ export default async function CountyHomePage({ params }: Props) {
             <div>
               <p>
                 Solar panel costs have fallen dramatically over the past decade, making residential solar energy more accessible than ever.
-                At Renewable {county.name}, we believe in complete pricing transparency.
+                At Solar {county.name}, we believe in complete pricing transparency.
               </p>
               <h3>Our Pricing</h3>
               <p>
                 {isNI
-                  ? "Our Essential 4kWp package starts at £6,000, perfect for smaller homes. The Popular 6kWp package at £7,500 is our most popular option, ideal for the average Northern Ireland 3-bedroom home. Our Premium 8kWp system with battery-ready design is £9,000, suited for larger homes with higher energy demands. All prices include full installation, mounting, inverter, monitoring system, commissioning, and MCS certification."
-                  : `Our systems start from €4,500 after grant. A typical 6kWp system costs €5,500, ideal for a 3-bedroom home. Our premium 8kWp system with battery-ready design is €6,500. All prices include full installation, mounting, inverter, monitoring, and grant handling.`}
+                  ? "Our Essential 4kWp package starts at \u00a36,000, perfect for smaller homes. The Popular 6kWp package at \u00a37,500 is our most popular option, ideal for the average Northern Ireland 3-bedroom home. Our Premium 8kWp system with battery-ready design is \u00a39,000, suited for larger homes with higher energy demands. All prices include full installation, mounting, inverter, monitoring system, commissioning, and MCS certification."
+                  : `Our systems start from \u20ac4,500 after grant. A typical 6kWp system costs \u20ac5,500, ideal for a 3-bedroom home. Our premium 8kWp system with battery-ready design is \u20ac6,500. All prices include full installation, mounting, inverter, monitoring, and grant handling.`}
               </p>
               <h3>Factors Affecting Your Price</h3>
               <p>
@@ -509,34 +500,34 @@ export default async function CountyHomePage({ params }: Props) {
               <h3>Return on Investment</h3>
               <p>
                 {isNI
-                  ? "With annual savings of £800 to £1,400 and system lifetimes of 25 to 30 years, solar panels represent an exceptional investment. At a 6kWp system cost of £7,500 and annual savings of £1,100, the payback period is approximately 6-8 years. Over 25 years, total savings amount to approximately £27,500."
-                  : "With annual savings of €800 to €1,400 and system lifetimes of 25+ years, solar panels are an exceptional investment. Most homeowners achieve full payback within 5-7 years, with net savings of €22,000+ over 25 years."}
+                  ? "With annual savings of \u00a3800 to \u00a31,400 and system lifetimes of 25 to 30 years, solar panels represent an exceptional investment. At a 6kWp system cost of \u00a37,500 and annual savings of \u00a31,100, the payback period is approximately 6-8 years. Over 25 years, total savings amount to approximately \u00a327,500."
+                  : "With annual savings of \u20ac800 to \u20ac1,400 and system lifetimes of 25+ years, solar panels are an exceptional investment. Most homeowners achieve full payback within 5-7 years, with net savings of \u20ac22,000+ over 25 years."}
               </p>
             </div>
             <aside className={styles.contentSidebar} aria-label="Pricing overview">
               <div className={styles.sidebarItem}>
-                <strong>{isNI ? "£6,000" : "€4,500"}</strong>
+                <strong>{isNI ? "\u00a36,000" : "\u20ac4,500"}</strong>
                 <span>{isNI ? "4kWp Essential Package" : "4kWp Essential Package"}</span>
               </div>
               <div className={styles.sidebarItem}>
-                <strong>{isNI ? "£7,500" : "€5,500"}</strong>
+                <strong>{isNI ? "\u00a37,500" : "\u20ac5,500"}</strong>
                 <span>{isNI ? "6kWp Popular Package" : "6kWp Popular Package"}</span>
               </div>
               <div className={styles.sidebarItem}>
-                <strong>{isNI ? "£9,000" : "€6,500"}</strong>
+                <strong>{isNI ? "\u00a39,000" : "\u20ac6,500"}</strong>
                 <span>{isNI ? "8kWp Premium Package" : "8kWp Premium Package"}</span>
               </div>
               <div className={styles.sidebarItem}>
-                <strong>{isNI ? "6–8 Years" : "5–7 Years"}</strong>
+                <strong>{isNI ? "6\u20138 Years" : "5\u20137 Years"}</strong>
                 <span>Typical payback period</span>
               </div>
               <div className={styles.sidebarItem}>
-                <strong>{isNI ? "£22,000+" : "€22,000+"}</strong>
+                <strong>{isNI ? "\u00a322,000+" : "\u20ac22,000+"}</strong>
                 <span>Net return over 25 years</span>
               </div>
               <div className={styles.sidebarItem}>
-                <strong>£0</strong>
-                <span>Hidden fees — guaranteed</span>
+                <strong>\u00a30</strong>
+                <span>Hidden fees \u2014 guaranteed</span>
               </div>
             </aside>
           </div>
@@ -556,52 +547,6 @@ export default async function CountyHomePage({ params }: Props) {
         testimonials={county.testimonials}
         countyName={county.name}
       />
-
-      {/* Latest Blog Posts */}
-      {latestPosts.length > 0 && (
-        <section className={styles.section} id="blog" aria-labelledby="blog-heading">
-          <div className="container">
-            <div className={styles.sectionHeader}>
-              <div className={styles.sectionLabel}>Solar Energy News & Guides</div>
-              <h2 id="blog-heading">Latest Articles for {county.name}</h2>
-              <p>Expert advice, installation guides, and solar energy news for homeowners in County {county.name}.</p>
-            </div>
-            <div className={styles.blogTeaserGrid}>
-              {latestPosts.map((post) => (
-                <article key={post.slug} className={styles.blogTeaserCard}>
-                  <div className={styles.blogTeaserCardBody}>
-                    <span className={styles.blogTeaserCategory}>
-                      {post.category === "county-savings" ? "County Savings" :
-                       post.category === "grants" ? "Grants" :
-                       post.category === "seasonal" ? "Seasonal" :
-                       post.category === "customer-stories" ? "Customer Stories" : "Technical"}
-                    </span>
-                    <h3 className={styles.blogTeaserTitle}>
-                      <a href={`/counties/${county.slug}/blog/${post.slug}`}>
-                        {post.title}
-                      </a>
-                    </h3>
-                    <p className={styles.blogTeaserExcerpt}>
-                      {post.excerpt.length > 120 ? post.excerpt.slice(0, 120) + "..." : post.excerpt}
-                    </p>
-                    <div className={styles.blogTeaserMeta}>
-                      <span>{post.readTime}</span>
-                      <span>·</span>
-                      <span>{new Date(post.datePublished).toLocaleDateString("en-IE", { day: "numeric", month: "short", year: "numeric" })}</span>
-                    </div>
-                  </div>
-                </article>
-              ))}
-            </div>
-            <div className={styles.blogTeaserLink}>
-              <a href={`/counties/${county.slug}/blog`} className={`${styles.btn} ${styles.btnSecondary}`} style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem" }}>
-                View All Articles
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-              </a>
-            </div>
-          </div>
-        </section>
-      )}
 
       {/* FAQ */}
       <FAQ faqs={county.faqs} countyName={county.name} />

@@ -107,7 +107,6 @@ export default function CountyNav({ countyName, countySlug, phone }: CountyNavPr
     { href: "#grant", label: "Grants" },
     { href: "#calculator", label: "Savings" },
     { href: "#faq", label: "FAQ" },
-    { href: `/counties/${countySlug}/blog`, label: "Blog" },
   ];
 
   const phoneHref = phone ? `tel:${phone.replace(/[^+\d]/g, "")}` : "#contact";
@@ -115,11 +114,9 @@ export default function CountyNav({ countyName, countySlug, phone }: CountyNavPr
   return (
     <nav className={styles.nav} aria-label="Main navigation">
       <div className={styles.navInner}>
-        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-          <a href={`https://renewableireland.ie/`} aria-label={`Renewable ${countyName}`} className={styles.navLogo}>
-            Renewable <span className={styles.navLogoAccent}>{countyName}</span>
-          </a>
-        </div>
+        <a href={`/counties/${countySlug}`} className={styles.navLogo}>
+          Solar <span className={styles.navLogoAccent}>{countyName}</span>
+        </a>
 
         <div className={styles.navLinks}>
           {navLinks.map((link) => (
@@ -163,29 +160,6 @@ export default function CountyNav({ countyName, countySlug, phone }: CountyNavPr
         aria-modal="true"
         aria-label="Navigation menu"
       >
-        <a
-          href="https://renewableireland.ie/"
-          onClick={closeMenu}
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: "8px",
-            color: "var(--hint)",
-            fontSize: ".85rem",
-            fontWeight: 600,
-            textDecoration: "none",
-            padding: "12px 0",
-            borderBottom: "2px solid var(--gray-lt)",
-            fontFamily: "var(--font-body)",
-            textTransform: "none",
-            letterSpacing: ".01em",
-            transition: "color .15s",
-            minHeight: "48px",
-          }}
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-          Back to Renewable Ireland
-        </a>
         {navLinks.map((link) => (
           <a key={link.href} href={link.href} onClick={closeMenu} ref={link.href === navLinks[0].href ? firstLinkRef : undefined}>
             {link.label}

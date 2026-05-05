@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const county = getCounty(slug);
   if (!county) return {};
 
-  const title = `Renewable ${county.name} | Solar Panel Installers in ${county.name}, ${county.region}`;
+  const title = `Solar ${county.name} | Solar Panel Installers in ${county.name}, ${county.region}`;
   const description = `${county.accreditation} accredited solar panel installers in ${county.name}. Residential, commercial and agricultural solar systems. Get your free quote today.`;
   const url = `https://${county.domain}/`;
   const ogLocale = county.country === "GB" ? "en_GB" : "en_IE";
@@ -30,7 +30,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title,
       description,
       url,
-      siteName: `Renewable ${county.name}`,
+      siteName: `Solar ${county.name}`,
       locale: ogLocale,
       images: [
         {
@@ -43,7 +43,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     },
     twitter: {
       card: "summary_large_image",
-      title: `Renewable ${county.name} | Solar Panel Installers`,
+      title: `Solar ${county.name} | Solar Panel Installers`,
       description: `${county.accreditation} accredited solar panel installers in ${county.name}. Free quote.`,
       images: [`https://${county.domain}/images/og-image.jpg`],
     },
@@ -62,7 +62,7 @@ export default async function CountyLayout({ children, params }: Props) {
 
   return (
     <>
-      <div id="county-root" style={{ minHeight: '100vh', ...accentVars as React.CSSProperties }}>
+      <div id="county-root" style={{ background: '#F7F7F2', minHeight: '100vh', ...accentVars as React.CSSProperties }}>
         {children}
       </div>
     </>

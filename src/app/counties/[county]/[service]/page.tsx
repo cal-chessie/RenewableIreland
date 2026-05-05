@@ -37,7 +37,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const service = getService(serviceSlug);
   if (!county || !service) return {};
 
-  const title = `${service.title} in ${county.name} | Renewable ${county.name}`;
+  const title = `${service.title} in ${county.name} | Solar ${county.name}`;
   const description = `Professional ${service.title.toLowerCase()} in ${county.name}. ${county.accreditation} certified installers. Get your free quote for ${service.title.toLowerCase()} in ${county.name} today.`;
   const url = `https://${county.domain}/${serviceSlug}`;
 
@@ -50,7 +50,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title,
       description,
       url,
-      siteName: `Renewable ${county.name}`,
+      siteName: `Solar ${county.name}`,
     },
   };
 }
@@ -83,7 +83,7 @@ export default async function ServicePage({ params }: Props) {
   // HowTo schema for this specific service
   const howToSchema = generateHowToSchema({
     name: `How to Get ${service.title} in ${county.name}`,
-    description: `Step-by-step guide to getting ${service.title} installed on your ${county.name} property with Renewable ${county.name}.`,
+    description: `Step-by-step guide to getting ${service.title} installed on your ${county.name} property with Solar ${county.name}.`,
     totalTime: "P3W",
     estimatedCost: {
       currency: cur,
@@ -132,7 +132,7 @@ export default async function ServicePage({ params }: Props) {
       county.testimonials.reduce((sum, t) => sum + t.rating, 0) /
       county.testimonials.length;
     reviewSchema = generateReviewSchema({
-      itemName: `Renewable ${county.name}`,
+      itemName: `Solar ${county.name}`,
       itemUrl: serviceUrl,
       reviews: county.testimonials.slice(0, 5).map((t) => ({
         author: t.name,
@@ -191,14 +191,28 @@ export default async function ServicePage({ params }: Props) {
         aria-labelledby="service-page-heading"
       >
         <div className="container">
-          <h1 id="service-page-heading" className={styles.serviceHeroTitle}>
+          <h1 id="service-page-heading" style={{
+            fontFamily: "var(--font-display)",
+            fontSize: "clamp(2rem, 5vw, 3.5rem)",
+            fontWeight: 800,
+            letterSpacing: "-1px",
+            color: "var(--white)",
+            marginBottom: 16,
+            lineHeight: 1.15,
+          }}>
             {service.title} in{" "}
-            <span className={styles.serviceHeroAccent}>{county.name}</span>
+            <span style={{ color: "var(--accent)" }}>{county.name}</span>
           </h1>
-          <p className={styles.serviceHeroText}>
+          <p style={{
+            color: "rgba(255,255,255,.55)",
+            maxWidth: 700,
+            fontSize: "1.15rem",
+            lineHeight: 1.8,
+            marginBottom: 32,
+          }}>
             {service.shortDescription}
           </p>
-          <div className={styles.serviceHeroButtons}>
+          <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
             <a href={`tel:${county.phone.replace(/[^+\d]/g, "")}`} className={`${styles.btn} ${styles.btnPrimary}`}>
               Get a Free Quote
             </a>

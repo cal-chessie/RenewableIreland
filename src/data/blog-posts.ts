@@ -2,7 +2,7 @@
 // BLOG POST DATA — Centralized blog content for all county sites
 // =============================================================================
 
-import { counties, getCounty, type CountyData } from "./counties";
+import { counties, type CountyData } from "./counties";
 
 export interface BlogPost {
   slug: string;
@@ -11,7 +11,6 @@ export interface BlogPost {
   metaDescription: string;
   category: "county-savings" | "grants" | "seasonal" | "customer-stories" | "technical";
   county?: string;
-  targetCountries?: Array<"IE" | "GB">;
   datePublished: string;
   dateModified: string;
   author: string;
@@ -51,7 +50,7 @@ const regionProfiles: Record<string, RegionProfile> = {
     roofNote: "Properties across {name} range from traditional stone cottages to modern builds. Pitched roofs at 30–40 degrees facing south, south-east, or south-west are ideal. Many homes in areas like {towns2} have generous roof space, making 4kW–6kW systems straightforward to accommodate.",
     tip1: "Consider a slightly larger system — the lower generation per panel in this region means an extra panel or two can significantly boost annual output without much additional cost.",
     tip2: "If you have an east-west split roof, don't rule out solar entirely. A system spread across both orientations captures more daylight throughout the day, which can offset the lower peak output.",
-    tip3: "There is no direct installation grant for solar panels in Northern Ireland like the Republic's SEAI scheme. However, the SEG provides ongoing export income, and the ECO scheme may support qualifying households. Compare SEG tariffs regularly — rates vary significantly between suppliers.",
+    tip3: "Export payments through the SEG can add {currency}80–{currency}200 per year to your savings. Shop around for the best tariff — rates vary significantly between suppliers.",
     tip4: "Properties in rural parts of {name} may benefit from battery storage more than urban homes, as power cuts can occasionally affect rural grid connections.",
     tip5: "Spring and autumn in {name} often see crisp, clear days with excellent solar generation — don't assume summer is the only productive season.",
   },
@@ -64,7 +63,7 @@ const regionProfiles: Record<string, RegionProfile> = {
     roofNote: "Homes in {name} vary from coastal properties in areas near {towns2} to more sheltered inland dwellings. South-facing roofs are ideal, but many properties with west-facing aspects still achieve excellent results. Our surveys around {towns3} have shown that even partially shaded roofs can generate significant savings with proper panel placement.",
     tip1: "Coastal properties in {name} should ensure mounting systems are rated for salt air exposure — all our installations use marine-grade aluminium rails and stainless steel fixings.",
     tip2: "Take advantage of the long summer days in this part of Ireland. A 4kW system here can generate 500+ kWh in July alone.",
-    tip3: "The SEAI grant of up to €1,800 is available for homes built before 2021. If your {name} property was built in 2021 or later, check with your builder — new builds should already include solar under building regulations. We handle the full application process on your behalf for eligible homes.",
+    tip3: "The SEAI grant of up to €1,800 significantly reduces your upfront cost. We handle the entire application process on your behalf.",
     tip4: "If you have a heat pump or electric heating, a larger 6kW system may be worth considering — the higher winter demand makes the extra panels worthwhile.",
     tip5: "Properties in exposed areas near {towns2} may benefit from annual panel inspections to ensure mountings remain secure after storm seasons.",
   },
@@ -77,7 +76,7 @@ const regionProfiles: Record<string, RegionProfile> = {
     roofNote: "The housing stock across {name} includes a good mix of detached, semi-detached, and bungalow-style properties. Many homes in {towns2} have large south-facing roof pitches that are ideally suited for solar panel arrays. Even standard semi-detached homes can comfortably accommodate a 4kW system on a single roof slope.",
     tip1: "Midlands properties often have less shading from hills than coastal or mountainous areas — take advantage of this by choosing a system that covers your full usable roof area.",
     tip2: "Farms and rural properties in {name} can combine a domestic solar system with a ground-mounted array for agricultural buildings, significantly increasing overall savings.",
-    tip3: "The SEAI grant of up to €1,800 covers homes built before 2021. If your {name} home was built after 2021, it should already meet building regs for solar — but check with your builder. For eligible properties, we handle the full application and typically get approval within 2–3 weeks.",
+    tip3: "The SEAI grant application is straightforward for domestic properties in {name}. We typically have grant approval within 2–3 weeks of submission.",
     tip4: "Consider adding battery storage if you're out during the day — a battery captures your daytime generation for evening use when most families are home.",
     tip5: "Many homes in {towns2} have older roofs that may need minor repairs before installation. We'll flag any issues during the free site survey.",
   },
@@ -103,7 +102,7 @@ const regionProfiles: Record<string, RegionProfile> = {
     roofNote: "Properties across {name} vary from traditional farmhouses to modern estates. The mix of housing stock around {towns2} provides plenty of suitable roofs for solar. South and west-facing pitches between 30 and 40 degrees are ideal, and many homes in the area naturally fall within this range.",
     tip1: "With {name}'s higher solar irradiance, even a modest 3kW system can generate over 3,000 kWh annually — enough to cover the majority of a typical household's electricity needs.",
     tip2: "Coastal areas of {name} exposed to prevailing winds benefit from naturally clean panels — rain keeps them free of dust and debris that can reduce output.",
-    tip3: "The SEAI grant of up to €1,800 is available for homes built before 2021. New builds in {name} are required to meet renewable energy standards — if yours doesn't have solar, check with your builder. For older homes, we handle the full grant application.",
+    tip3: "New builds in {name} are increasingly including solar as standard. If you're building, talk to us about solar-ready wiring and roof preparations during construction.",
     tip4: "The SEAI grant of up to €1,800 combined with {name}'s higher generation means payback periods here are among the shortest in Ireland — typically 5–6 years.",
     tip5: "If you're considering an electric vehicle, combining solar panels with an EV charger in {name} gives you virtually free motoring — a typical home PV system generates enough surplus to cover 15,000+ km of EV driving per year.",
   },
@@ -117,7 +116,7 @@ const regionProfiles: Record<string, RegionProfile> = {
     tip1: "West coast homes in {name} should specify wind-rated mounting systems — all our installations use components rated for Irish coastal wind exposure.",
     tip2: "The Gulf Stream keeps {name} milder than equivalent latitudes elsewhere in Europe, which means your panels operate at peak efficiency for more of the year — solar panels actually perform better in cooler temperatures.",
     tip3: "Properties with good sea views in {towns2} often have excellent roof orientations, as the planning layouts tend to maximise natural light.",
-    tip4: "The SEAI grant of up to €1,800 applies to homes built before 2021. Newer builds in {name} should already include solar per building regulations. For eligible properties, we handle the full application and you could have panels installed within weeks.",
+    tip4: "If you have a heat pump, combining it with solar panels is particularly effective in {name} — free daytime solar power runs your heating system at zero marginal cost.",
     tip5: "Tourism-related businesses in {name} — guesthouses, B&Bs, holiday homes — see particularly strong returns from solar, as peak generation aligns with peak occupancy.",
   },
 };
@@ -155,7 +154,7 @@ function generateCountySavingsPost(county: CountyData): BlogPost {
   const townList = `${towns[0]}, ${towns[1]}, ${towns[2]}`;
   const grantInfo = isNI
     ? `In Northern Ireland, while there is no direct installation grant like the Republic's SEAI scheme, householders in County ${county.name} can benefit from the Smart Export Guarantee (SEG), which pays you for surplus electricity exported to the grid. Typical SEG rates range from 1p to 7.5p per kWh, generating an additional ${county.currency}80 to ${county.currency}200 annually. The Energy Company Obligation (ECO) scheme may also provide support for qualifying households, particularly those in older or less energy-efficient properties.`
-    : `The SEAI Domestic Solar PV Grant is the cornerstone of government support for solar energy in Ireland. Homeowners in County ${county.name} whose property was built before 2021 can receive up to ${county.currency}1,800 towards the cost of installing solar panels. Homes built in 2021 or later should already meet building regulation requirements for renewable energy — check with your builder if your new build doesn't have solar. There is also a separate SEAI grant of ${county.currency}300 towards the purchase and installation of an EV home charger unit. Both grants are paid directly to your registered installer, reducing your upfront cost. Renewable ${county.name} handles the entire application process — from eligibility checks to grant approval — at no additional charge to you.`;
+    : `The SEAI Domestic Solar PV Grant is the cornerstone of government support for solar energy in Ireland. Homeowners in County ${county.name} can receive up to ${county.currency}1,800 towards the cost of installing solar panels, with an additional ${county.currency}600 available if you include battery storage. The grant is paid directly to your registered installer, reducing your upfront cost. Solar ${county.name} handles the entire application process — from eligibility checks to grant approval — at no additional charge to you.`;
 
   const slug = `solar-panels-${county.slug}-savings-2026`;
 
@@ -193,7 +192,7 @@ function generateCountySavingsPost(county: CountyData): BlogPost {
 
 <h2>Available Grants and Financial Incentives in ${county.name}</h2>
 <p>${grantInfo}</p>
-<p>${isNI ? `We also advise ${county.name} homeowners to compare SEG tariffs across suppliers regularly, as new entrants to the market often offer competitive rates to attract solar customers. Additionally, the ECO scheme targets energy efficiency improvements and may cover a portion of installation costs for eligible households — particularly those on lower incomes or in properties with poor energy ratings.` : `Beyond the core grant, homeowners in ${county.name} benefit from a VAT reduction on solar panel installations (currently 0% for domestic systems). Solar-generated income below ${county.currency}1,000 per year is also tax-exempt under Revenue's TACs scheme. The Clean Export Guarantee (CEG) pays you for surplus electricity exported to the grid — typically around 21c per kWh — providing an additional annual income stream.`}</p>
+<p>${isNI ? `We also advise ${county.name} homeowners to compare SEG tariffs across suppliers regularly, as new entrants to the market often offer competitive rates to attract solar customers. Additionally, the ECO scheme targets energy efficiency improvements and may cover a portion of installation costs for eligible households — particularly those on lower incomes or in properties with poor energy ratings.` : `Beyond the core grant, homeowners in ${county.name} benefit from a VAT reduction on solar panel installations (currently 0% for domestic systems). Solar-generated income below ${county.currency}1,000 per year is also tax-exempt under Revenue's TACs scheme, meaning your export earnings are entirely tax-free.`}</p>
 
 <h2>Local Installation Considerations for ${county.name}</h2>
 <p>${fillTemplate(profile.roofNote, county)}</p>
@@ -209,9 +208,8 @@ function generateCountySavingsPost(county: CountyData): BlogPost {
 </ol>
 
 <h2>Getting Started: Solar Panel Installation in ${county.name}</h2>
-<p>Ready to find out exactly how much you could save with solar panels on your ${county.name} home? The process begins with a free, no-obligation site survey from Renewable ${county.name}. Our ${county.accreditation}-certified surveyor will visit your property in ${county.mainTown} or anywhere across ${county.name}, assess your roof, analyse your energy usage, and provide a detailed recommendation with a fixed-price quotation.</p>
-<p>Renewable ${county.name} is ${county.accreditation}-certified and has completed over 500 solar installations across ${county.name}. Every system we install comes with a 10-year workmanship warranty, 25-year panel performance warranty, and comprehensive post-installation monitoring. We're not a national call centre — we're a local ${county.name} team with genuine expertise in the specific conditions, roof types, and energy requirements of properties in ${county.mainTown} and surrounding areas.</p>
-<p>Contact Renewable ${county.name} today by calling <a href="tel:${county.phone}">${county.phone}</a> or emailing <a href="mailto:${county.email}">${county.email}</a>. We serve the entire county, including ${townList} and all surrounding areas.</p>
+<p>Ready to find out exactly how much you could save with solar panels on your ${county.name} home? The process begins with a free, no-obligation site survey from Solar ${county.name}. Our ${county.accreditation}-certified surveyor will visit your property in ${county.mainTown} or anywhere across ${county.name}, assess your roof, analyse your energy usage, and provide a detailed recommendation with a fixed-price quotation.</p>
+<p>Contact Solar ${county.name} today by calling <a href="tel:${county.phone}">${county.phone}</a> or emailing <a href="mailto:${county.email}">${county.email}</a>. We serve the entire county, including ${townList} and all surrounding areas.</p>
   `.trim();
 
   return {
@@ -223,7 +221,7 @@ function generateCountySavingsPost(county: CountyData): BlogPost {
     county: county.slug,
     datePublished: "2026-01-15T09:00:00+00:00",
     dateModified: "2026-01-15T09:00:00+00:00",
-    author: `Renewable ${county.name} Team`,
+    author: `Solar ${county.name} Team`,
     readTime: "8 min read",
     image: `/images/blog/solar-${county.slug}-savings-2026.jpg`,
     imageAlt: `Solar panels on a home in ${county.name}, Ireland`,
@@ -241,8 +239,8 @@ function generateCountySavingsPost(county: CountyData): BlogPost {
       {
         question: `What grants are available for solar panels in ${county.name}?`,
         answer: isNI
-          ? `Northern Ireland does not have a direct installation grant like the Republic's SEAI scheme. However, homeowners in ${county.name} benefit from the Smart Export Guarantee (SEG), which pays 1p–15p/kWh for surplus electricity exported to the grid. The ECO scheme may also provide support for qualifying households with lower energy efficiency ratings.`
-          : `The SEAI Domestic Solar PV Grant provides up to ${county.currency}1,800 for home installations in ${county.name} — available for properties built before 2021. There is also a separate ${county.currency}300 SEAI grant for EV home charger installation. The Clean Export Guarantee (CEG) pays approximately 21c/kWh for exported surplus electricity. Renewable ${county.name} handles the full grant application process.`,
+          ? `Northern Ireland homeowners benefit from the Smart Export Guarantee (SEG), which pays you for surplus electricity exported to the grid at 1p–7.5p/kWh. The ECO scheme may also provide support for qualifying households.`
+          : `The SEAI Domestic Solar PV Grant provides up to ${county.currency}1,800 for home installations in ${county.name}, plus an additional ${county.currency}600 for battery storage. Solar ${county.name} handles the full application process.`,
       },
     ],
     tags: [
@@ -262,27 +260,28 @@ function generateCountySavingsPost(county: CountyData): BlogPost {
 const grantPosts: BlogPost[] = [
   {
     slug: "complete-guide-seai-solar-grants-2026",
-    title: "SEAI Solar Panel Grants 2026: Up to €1,800 Explained",
-    metaTitle: "SEAI Solar Grants 2026: Up to €1,800 + How to Apply",
-    metaDescription: "SEAI solar panel grants pay up to €1,800 in 2026. Check eligibility, how to apply, processing times, and tips to maximise your grant.",
+    title: "Complete Guide to SEAI Solar Panel Grants in 2026",
+    metaTitle: "SEAI Solar Panel Grants 2026 — Complete Guide",
+    metaDescription: "Everything you need to know about SEAI solar panel grants in 2026. Eligibility, how to apply, timelines, and how to maximise your grant.",
     category: "grants",
-    targetCountries: ["IE"],
     datePublished: "2026-01-08T10:00:00+00:00",
     dateModified: "2026-01-08T10:00:00+00:00",
     author: "Renewable Ireland Team",
     readTime: "10 min read",
     image: "/images/blog/seai-solar-grant-guide-2026.jpg",
     imageAlt: "SEAI solar panel grant application guide for Irish homeowners",
-    excerpt: "The SEAI Domestic Solar PV Grant pays up to €1,800 towards solar panel installation for Irish homeowners. Here's how to qualify, apply, and maximise your grant in 2026.",
+    excerpt: "The SEAI Domestic Solar PV Grant offers up to €1,800 towards solar panel installation. This complete guide covers eligibility, the application process, timelines, and expert tips to maximise your grant.",
     content: `
 <h2>What Is the SEAI Domestic Solar PV Grant?</h2>
-<p>The SEAI Domestic Solar PV Grant pays up to <strong>€1,800</strong> towards the cost of solar panels on your home in the Republic of Ireland. The grant is available to homeowners whose property was built before 2021, is deducted directly from your installer's invoice, and is administered by the Sustainable Energy Authority of Ireland (SEAI). There is no income limit, and most homeowners receive approval within 2–4 weeks.</p>
+<p>The SEAI (Sustainable Energy Authority of Ireland) Domestic Solar PV Grant is a government-backed financial incentive designed to help Irish homeowners invest in solar energy. In 2026, the grant provides up to <strong>€1,800</strong> towards the cost of installing solar photovoltaic (PV) panels on your home, with an additional <strong>€600</strong> available for battery storage. This makes it one of the most generous solar incentives in Europe and a key reason why Ireland has seen such rapid growth in residential solar adoption.</p>
+<p>The grant is open to homeowners across the Republic of Ireland — from Dublin to Donegal, Cork to Cavan — and is paid directly to your registered SEAI installer, reducing your upfront cost immediately. There's no need to pay the full amount and wait for a refund; the grant is deducted from your invoice before you pay.</p>
 
 <h2>SEAI Grant Amounts in 2026</h2>
 <p>The SEAI solar PV grant structure for 2026 is as follows:</p>
 <ul>
-<li><strong>Solar PV panels:</strong> €700 per kWp for the first 2kWp (€1,400), then €200 per kWp for additional capacity up to 4kWp — maximum <strong>€1,800</strong></li>
-<li><strong>EV Home Charger Grant:</strong> A separate grant of <strong>€300</strong> towards the purchase and installation of an EV home charger unit (must have or have ordered an EV)</li>
+<li><strong>Solar PV panels only:</strong> Up to €900 per kWp installed, capped at €1,800 for systems of 2kWp or larger</li>
+<li><strong>Solar PV + Battery storage:</strong> Up to €1,800 for panels + €600 for battery storage = <strong>€2,400 total</strong></li>
+<li><strong>Battery storage only (retrofit):</strong> Up to €600 for adding a battery to an existing solar system</li>
 </ul>
 <p>The grant covers the cost of solar panels, inverter, mounting system, wiring, monitoring equipment, commissioning, and registration. It does not cover scaffolding costs or structural roof repairs, though most installers include these in their overall quotation.</p>
 
@@ -290,12 +289,11 @@ const grantPosts: BlogPost[] = [
 <p>Eligibility criteria for the SEAI Domestic Solar PV Grant in 2026 include:</p>
 <ul>
 <li>The property must be located in the Republic of Ireland</li>
-<li>The property was built and occupied before 2021 (homes built from 2021 onwards must meet renewable energy standards under building regulations and are not eligible for this grant)</li>
+<li>The property was built and occupied before 2021 (newer builds are excluded)</li>
 <li>The applicant must be the owner of the property (not a tenant)</li>
 <li>The property must have a BER rating or be willing to get one (post-installation BER is required)</li>
 <li>The installation must be carried out by an SEAI-registered installer</li>
 <li>The system must be new (not second-hand or relocated)</li>
-<li>The grant is capped at €1,800 per property — you cannot claim it more than once for the same property</li>
 </ul>
 <p>Importantly, there is no means testing — the grant is available to all homeowners regardless of income. You also do not need to have your home pre-insulated or meet any specific energy efficiency thresholds before applying.</p>
 
@@ -325,8 +323,8 @@ const grantPosts: BlogPost[] = [
 <h2>Maximising Your SEAI Grant</h2>
 <p>To get the most from the SEAI solar PV grant, consider these strategies:</p>
 <ul>
-<li><strong>Size your system appropriately:</strong> The grant provides €700 per kWp for the first 2kWp (€1,400), then €200 per additional kWp up to a maximum of €1,800 at 4kWp. A 4kWp system reaches the full €1,800 grant and generates significantly more electricity than a smaller system — making larger systems more cost-effective.</li>
-<li><strong>Add battery storage:</strong> While there is no longer a standalone SEAI grant for battery storage, adding a battery can still significantly improve your self-consumption and overall savings. If your budget allows, including a battery maximises the value of your solar generation.</li>
+<li><strong>Size your system appropriately:</strong> The grant provides €900 per kWp up to 2kWp (€1,800). A 4kWp system receives the same €1,800 as a 2kWp system, but generates twice the electricity — making larger systems more cost-effective.</li>
+<li><strong>Add battery storage:</strong> The €600 battery grant significantly reduces the payback period for battery addition. If your budget allows, including a battery maximises both the grant and your self-consumption.</li>
 <li><strong>Combine with other SEAI grants:</strong> You can combine the solar PV grant with other SEAI schemes such as the Better Energy Homes grant for insulation or heat pumps.</li>
 <li><strong>Apply before the budget runs out:</strong> The SEAI grant budget is allocated annually. While rarely exhausted, applying early in the year ensures availability.</li>
 </ul>
@@ -335,41 +333,38 @@ const grantPosts: BlogPost[] = [
 <p>The SEAI grant is one of the most common topics our customers ask about. Key points to remember: the grant is paid directly to your installer (not to you as a reimbursement), there is no income limit, and you must use an SEAI-registered company. If your application is rejected, the most common reason is an MPRN mismatch — double-check the number from your electricity bill.</p>
     `.trim(),
     faqs: [
-      { question: "How much is the SEAI solar panel grant in 2026?", answer: "The SEAI Domestic Solar PV Grant provides up to €1,800 for solar panels. There is also a separate SEAI EV Home Charger Grant of €300. The solar PV grant is paid directly to your SEAI-registered installer." },
+      { question: "How much is the SEAI solar panel grant in 2026?", answer: "The SEAI Domestic Solar PV Grant provides up to €1,800 for solar panels and an additional €600 for battery storage, for a total of €2,400. The grant is paid directly to your SEAI-registered installer." },
       { question: "Can I apply for the SEAI grant myself?", answer: "While technically possible, most homeowners have their SEAI-registered installer submit the application on their behalf. This ensures all required documentation is correctly completed and speeds up the approval process." },
       { question: "Is there an income limit for the SEAI solar grant?", answer: "No. The SEAI Domestic Solar PV Grant is available to all homeowners in the Republic of Ireland regardless of income. There is no means testing." },
     ],
-    tags: ["SEAI grant", "solar panel grant Ireland", "SEAI grant 2026", "SEAI solar PV grant", "solar grants ROI"],
+    tags: ["SEAI grant", "solar panel grant Ireland", "SEAI grant 2026", "solar grants ROI", "solar panel funding"],
   },
   {
     slug: "seai-grant-changes-2026",
-    title: "SEAI Grant Changes 2026: What Homeowners Need to Know",
-    metaTitle: "SEAI Solar Grant Changes 2026: Eligibility, Budget & New Rules",
-    metaDescription: "SEAI solar grant updates for 2026: faster approvals, discontinued battery grant, EV charger grant details. How changes affect Irish homeowners.",
+    title: "SEAI Grant Changes 2026: What's New and How It Affects You",
+    metaTitle: "SEAI Grant Changes 2026 — What's New?",
+    metaDescription: "Key changes to SEAI solar panel grants in 2026. New rates, eligibility updates, and how these changes affect homeowners considering solar panels.",
     category: "grants",
-    targetCountries: ["IE"],
     datePublished: "2026-01-05T10:00:00+00:00",
     dateModified: "2026-01-05T10:00:00+00:00",
     author: "Renewable Ireland Team",
     readTime: "6 min read",
     image: "/images/blog/seai-grant-changes-2026.jpg",
     imageAlt: "Summary of SEAI grant changes for solar panels in 2026",
-    excerpt: "The SEAI has updated its solar panel grant programme for 2026. Here are the key changes that affect Irish homeowners considering solar panels.",
+    excerpt: "The SEAI has updated its solar panel grant programme for 2026. Here's what's changed, what's stayed the same, and what it means for homeowners considering solar.",
     content: `
-<h2>SEAI Grant Updates for 2026</h2>
-<p>The Sustainable Energy Authority of Ireland has continued to support residential solar adoption through its grant programmes in 2026. While the core Domestic Solar PV Grant structure remains the same — up to €1,800 — several important updates affect processing times, eligibility, and available incentives.</p>
+<h2>Overview of SEAI Grant Changes for 2026</h2>
+<p>The Sustainable Energy Authority of Ireland has continued to support residential solar adoption through its grant programmes, and 2026 brings several important updates that homeowners should be aware of. While the core structure of the Domestic Solar PV Grant remains broadly the same as in previous years, there are refinements to eligibility, processing, and the broader policy landscape that could affect your decision to go solar.</p>
+<p>Here's a comprehensive breakdown of what's new and what it means for you.</p>
 
 <h2>Grant Rates: What's Changed?</h2>
-<p>The headline grant amount for 2026 remains consistent with the previous year: up to €1,800 for solar PV panels. However, the SEAI has introduced a streamlined application process that reduces the documentation requirements for straightforward installations. This means faster approvals — many homeowners are now seeing grant approval within 2 weeks rather than the previous 3–4 week average.</p>
+<p>The headline grant amounts for 2026 remain consistent with the previous year: up to €1,800 for solar PV panels and up to €600 for battery storage. However, the SEAI has introduced a streamlined application process that reduces the documentation requirements for straightforward installations. This means faster approvals — many homeowners are now seeing grant approval within 2 weeks rather than the previous 3–4 week average.</p>
 
 <h2>New Build Eligibility Update</h2>
-<p>A significant change in 2026 concerns new build properties. Homes built after 2021 are excluded from the SEAI Domestic Solar PV Grant. This is because Part L of the Building Regulations (updated in 2022) requires new homes to incorporate renewable energy measures, which in practice means most new builds should already have solar panels or other renewable systems installed. If you've purchased a new build that doesn't have solar, this is a compliance issue with your builder — contact them and, if necessary, the Building Control Authority for your local authority. The SEAI grant remains available for all homes built before 2021, and there are no plans to change this eligibility criterion in 2026.</p>
+<p>A significant change in 2026 concerns new build properties. Previously, homes built after 2021 were excluded from the SEAI Domestic Solar PV Grant. The SEAI has now clarified that homes built before 2021 remain eligible, while newer properties are expected to meet building regulations that already incorporate solar or other renewable energy measures. If you've recently purchased a new build that doesn't have solar, check with your builder about compliance — you may have grounds for remediation.</p>
 
-<h2>Battery Storage Grant Update</h2>
-<p>Homeowners should note that the standalone SEAI battery storage grant has been discontinued. There is currently no SEAI grant for adding battery storage to a new or existing solar system. While this increases the upfront cost of battery installation, falling battery prices and increasing electricity rates mean that battery storage can still be a worthwhile investment for many households — particularly those who are out during the day and want to maximise their self-consumption of solar energy.</p>
-
-<h2>EV Home Charger Grant</h2>
-<p>The SEAI continues to offer a €300 grant towards the purchase and installation of an EV home charger unit. This is a separate grant from the solar PV scheme and is available to homeowners who own or have ordered an electric vehicle. If you're considering both solar panels and an EV charger, combining the €1,800 solar PV grant with the €300 EV charger grant can reduce your total costs by over €2,000. For households planning to charge an EV from solar, this combination is particularly compelling — you can effectively charge your car for free using your own generated electricity.</p>
+<h2>Battery Storage Grant Expansion</h2>
+<p>The €600 battery storage grant has been extended to cover a wider range of battery capacities. Previously, the grant was limited to batteries with a minimum capacity of 2kWh. In 2026, batteries as small as 1.5kWh may qualify, opening up the grant to a broader range of products and budgets. This is particularly good news for homeowners with smaller solar systems who want to capture some of their daytime generation for evening use without investing in a large battery.</p>
 
 <h2>Processing Improvements</h2>
 <p>The SEAI has invested in its online portal, and homeowners and installers are reporting a smoother application experience in 2026. Key improvements include automatic MPRN validation (reducing errors), real-time application tracking, and electronic document submission. These changes mean your installer can manage the entire process more efficiently, getting you from application to approval faster than ever.</p>
@@ -384,20 +379,20 @@ const grantPosts: BlogPost[] = [
 <p>If you're planning a broader home energy upgrade, combining grants can significantly reduce your overall costs. Speak to your installer about a holistic approach to your home's energy efficiency.</p>
 
 <h2>What This Means for Homeowners</h2>
-<p>The bottom line for 2026 is that the SEAI solar panel grant remains one of the most attractive incentives for residential solar in Europe. The €1,800 panel grant continues to make solar energy accessible and affordable for Irish homeowners, and the €300 EV charger grant offers additional savings for EV owners. The processing improvements mean you can get from application to installation faster, giving you more opportunity to benefit from the summer generation season.</p>
+<p>The bottom line for 2026 is that the SEAI solar panel grant remains one of the most attractive incentives for residential solar in Europe. The €1,800 panel grant plus €600 battery grant continue to make solar energy accessible and affordable for Irish homeowners. The processing improvements mean you can get from application to installation faster, and the expanded battery eligibility gives you more options.</p>
 <p>If you've been considering solar panels, 2026 is an excellent time to act. With the grant reducing your upfront costs and electricity prices remaining elevated, the financial case for solar has never been stronger.</p>
     `.trim(),
     faqs: [
-      { question: "Has the SEAI solar grant amount changed for 2026?", answer: "The solar PV grant remains at up to €1,800. The main changes are faster processing, the discontinuation of the battery storage grant, and the continued availability of the €300 EV home charger grant." },
+      { question: "Has the SEAI solar grant amount changed for 2026?", answer: "The core amounts remain the same: up to €1,800 for solar panels and up to €600 for battery storage. The main changes are faster processing and expanded battery eligibility." },
       { question: "Can I combine the SEAI solar grant with other grants?", answer: "Yes. The SEAI solar PV grant can be combined with the Better Energy Homes grant, Heat Pump Grant, and EV Charger Grant." },
       { question: "How long does SEAI grant approval take in 2026?", answer: "Most applications are now approved within 2 weeks, down from 3–4 weeks previously, thanks to the SEAI's improved online portal." },
     ],
-    tags: ["SEAI grant 2026", "solar grant changes", "SEAI update", "solar grants ROI", "solar panel funding 2026"],
+    tags: ["SEAI grant 2026", "solar grant changes", "SEAI update", "solar grants Ireland", "solar panel funding 2026"],
   },
   {
     slug: "seg-vs-seai-grant-difference",
     title: "Smart Export Guarantee vs SEAI Grant: What's the Difference?",
-    metaTitle: "SEG vs SEAI Grant: Ireland Solar Incentives Compared (2026)",
+    metaTitle: "SEG vs SEAI Grant — Key Differences Explained",
     metaDescription: "Understand the difference between the Smart Export Guarantee (SEG) for Northern Ireland and the SEAI grant for the Republic of Ireland. Which applies to you?",
     category: "grants",
     datePublished: "2026-01-03T10:00:00+00:00",
@@ -414,9 +409,9 @@ const grantPosts: BlogPost[] = [
 <h2>The SEAI Grant (Republic of Ireland)</h2>
 <p>The SEAI Domestic Solar PV Grant is a <strong>capital grant</strong> — it provides an upfront payment towards the cost of installing solar panels. The key features are:</p>
 <ul>
-<li><strong>Amount:</strong> Up to €1,800 for solar panels, plus a separate €300 EV home charger grant</li>
+<li><strong>Amount:</strong> Up to €1,800 for solar panels + €600 for battery storage</li>
 <li><strong>How it works:</strong> The grant is paid directly to your SEAI-registered installer, reducing the amount you pay</li>
-<li><strong>Eligibility:</strong> Homeowners in the Republic of Ireland whose property was built and occupied before 2021 (new builds must meet renewable energy standards under building regulations instead)</li>
+<li><strong>Eligibility:</strong> Open to all homeowners in the Republic of Ireland whose property was built before 2021</li>
 <li><strong>When you receive it:</strong> Before you pay your installer (the grant is deducted from your invoice)</li>
 <li><strong>Administered by:</strong> Sustainable Energy Authority of Ireland (SEAI)</li>
 </ul>
@@ -466,10 +461,9 @@ const grantPosts: BlogPost[] = [
   {
     slug: "solar-grants-northern-ireland-2026",
     title: "Solar Panel Grants for Northern Ireland Homeowners in 2026",
-    metaTitle: "Solar Grants Northern Ireland 2026: SEG Rates, ECO & Savings",
+    metaTitle: "Solar Grants Northern Ireland 2026 — SEG & ECO",
     metaDescription: "Complete guide to solar panel grants and incentives for Northern Ireland homeowners in 2026. SEG, ECO scheme, and how to maximise your savings.",
     category: "grants",
-    targetCountries: ["GB"],
     datePublished: "2026-01-02T10:00:00+00:00",
     dateModified: "2026-01-02T10:00:00+00:00",
     author: "Renewable Ireland Team",
@@ -489,7 +483,7 @@ const grantPosts: BlogPost[] = [
 <li>Your energy supplier pays you for this exported energy at your SEG tariff rate</li>
 <li>Payments typically appear as a credit on your electricity bill or as a quarterly payment</li>
 </ul>
-<p>SEG tariff rates in 2026 vary significantly between suppliers, from as low as 1p per kWh to as high as 15p per kWh for the best fixed-rate tariffs. The average is typically 5–8p per kWh, and it pays to compare regularly as new suppliers enter the market. A typical 4kW system exports approximately 1,000–1,500 kWh per year, generating £80–£200 in SEG income.</p>
+<p>SEG tariff rates in 2026 vary significantly between suppliers, from as low as 1p per kWh to as high as 7.5p per kWh. It pays to shop around — some smaller suppliers offer more competitive rates to attract solar customers. A typical 4kW system exports approximately 1,000–1,500 kWh per year, generating £80–£200 in SEG income.</p>
 
 <h2>How to Maximise Your SEG Income</h2>
 <p>To get the most from the SEG, consider these strategies:</p>
@@ -529,10 +523,9 @@ const grantPosts: BlogPost[] = [
   {
     slug: "maximise-solar-grant-expert-tips",
     title: "How to Maximise Your Solar Grant: Expert Tips from Renewable Ireland",
-    metaTitle: "8 Expert Tips to Maximise Your Solar Grant & Savings in 2026",
+    metaTitle: "Maximise Your Solar Grant — Expert Tips",
     metaDescription: "Expert strategies to maximise your solar panel grant and overall savings. Tips on system sizing, timing, and getting the best return on your solar investment.",
     category: "grants",
-    targetCountries: ["IE"],
     datePublished: "2025-12-28T10:00:00+00:00",
     dateModified: "2026-01-10T10:00:00+00:00",
     author: "Renewable Ireland Team",
@@ -545,10 +538,10 @@ const grantPosts: BlogPost[] = [
 <p>Installing solar panels is a significant investment, and you want to ensure you're maximising every available saving and incentive. With the SEAI grant, Clean Export Guarantee, smart tariffs, and a few strategic decisions, you can significantly improve the return on your solar investment. Here are our expert tips based on thousands of installations across Ireland.</p>
 
 <h2>Tip 1: Size Your System Correctly</h2>
-<p>The SEAI grant provides €700 per kWp for the first 2kWp (€1,400), then €200 per additional kWp for capacity up to 4kWp, reaching the €1,800 maximum. This means a 2kWp system receives €1,400, a 3kWp system receives €1,600, and any system of 4kWp or above receives the full €1,800. For maximum grant efficiency, install the largest system your roof and budget can accommodate — a 4kWp or 6kWp system delivers the best value for the €1,800 grant.</p>
+<p>The SEAI grant provides €900 per kWp up to a cap of €1,800. This means a 2kWp system receives €1,800 and a 6kWp system also receives €1,800 — but the larger system generates three times as much electricity. For maximum grant efficiency, install the largest system your roof and budget can accommodate. A 4kWp or 6kWp system delivers the best value for the €1,800 grant.</p>
 
 <h2>Tip 2: Add Battery Storage</h2>
-<p>While the standalone SEAI battery storage grant has been discontinued, battery storage can still significantly improve your solar return on investment. A battery increases your solar self-consumption from around 30–40% to 70–80%, meaning you use more of your own generated electricity rather than importing from the grid at full price. With falling battery prices and rising electricity rates, the combination of improved self-consumption and energy independence makes battery storage a smart addition for most households.</p>
+<p>The €600 battery storage grant reduces the cost of adding a battery by roughly 25–30%. A battery increases your solar self-consumption from around 30–40% to 70–80%, meaning you use more of your own generated electricity rather than importing from the grid at full price. The combination of the grant and increased self-consumption makes battery storage a smart addition for most households.</p>
 
 <h2>Tip 3: Time Your Installation</h2>
 <p>Solar panels are installed year-round in Ireland, but the optimal time to install is in early spring (February–April). This means your system is commissioned and generating just as the longer, sunnier days begin, maximising your first-year output. Installing in late autumn or winter means you wait longer to see the system's full potential.</p>
@@ -570,7 +563,7 @@ const grantPosts: BlogPost[] = [
     `.trim(),
     faqs: [
       { question: "Should I get the biggest solar system possible?", answer: "Within your roof space and budget, yes. The SEAI grant caps at €1,800 regardless of system size, so a larger system gets more generation for the same grant amount." },
-      { question: "Is a battery worth the extra cost?", answer: "For most households, yes. While the SEAI battery grant has been discontinued, increased self-consumption from 30–40% to 70–80% still makes battery storage a worthwhile addition. You'll typically save an additional €200–€400 per year with a battery." },
+      { question: "Is a battery worth the extra cost?", answer: "For most households, yes. The €600 grant and increased self-consumption make battery storage a worthwhile addition. You'll typically save an additional €200–€400 per year with a battery." },
       { question: "When is the best time to install solar panels?", answer: "Early spring (February–April) is ideal. Your system will be generating at full capacity as the longer days begin, maximising your first-year output." },
     ],
     tags: ["solar grant tips", "maximise solar savings", "SEAI grant strategy", "solar panel ROI", "solar self-consumption"],
@@ -585,8 +578,8 @@ const seasonalPosts: BlogPost[] = [
   {
     slug: "solar-generation-summer-vs-winter-ireland",
     title: "Solar Panel Generation in Ireland: Summer vs Winter Explained",
-    metaTitle: "Solar Panel Output Ireland: Month-by-Month Generation Data (4kW)",
-    metaDescription: "A 4kW solar system generates 3,400–3,900 kWh/year in Ireland. See exact monthly figures from 370 kWh in June to 50 kWh in December. Real data, no fluff.",
+    metaTitle: "Solar Generation Ireland — Summer vs Winter",
+    metaDescription: "How much electricity do solar panels generate in Ireland through summer and winter? A month-by-month breakdown with realistic generation data.",
     category: "seasonal",
     datePublished: "2025-12-20T10:00:00+00:00",
     dateModified: "2026-01-05T10:00:00+00:00",
@@ -597,7 +590,7 @@ const seasonalPosts: BlogPost[] = [
     excerpt: "A realistic month-by-month breakdown of solar panel generation in Ireland. Understand exactly how much your system will produce in summer and winter months.",
     content: `
 <h2>What to Expect from Your Solar Panels Throughout the Year</h2>
-<p>A typical 4kW solar panel system in Ireland generates approximately <strong>3,400–3,900 kWh per year</strong>, with peak summer months (June–July) producing 370–470 kWh and winter months (December–February) producing just 50–100 kWh. While summer generation is 4–5 times higher than winter, the annual total delivers substantial savings with a payback period of 5–8 years. Here's a month-by-month breakdown so you know exactly what to expect.</p>
+<p>One of the most common questions from prospective solar customers in Ireland is: "How much will my panels actually generate?" The honest answer is that it varies significantly throughout the year, with summer months producing 4–5 times more energy than winter months. But understanding this variation is key to making an informed investment decision and setting realistic expectations.</p>
 <p>Here's a detailed month-by-month breakdown for a typical 4kW solar panel system installed in Ireland.</p>
 
 <h2>Monthly Generation Breakdown (4kW System)</h2>
@@ -625,7 +618,7 @@ const seasonalPosts: BlogPost[] = [
 <p>Additionally, many Irish households have higher electricity consumption in winter (heating, lighting, more time indoors). While your panels generate less in winter, the value of each unit generated is arguably higher because it displaces expensive grid electricity during peak demand periods.</p>
 
 <h2>The Annual Financial Picture</h2>
-<p>Over a full year, a 4kW system in Ireland generates approximately 3,400–3,900 kWh. At current electricity prices, the annual bill savings from this generation amount to a significant reduction in your electricity costs. Add in export payments for surplus energy, and your total annual benefit is substantial. With a payback period of 5–8 years (depending on whether you qualify for a government grant), the investment is clearly worthwhile despite the seasonal variation.</p>
+<p>Over a full year, a 4kW system in Ireland generates approximately 3,400–3,900 kWh. At current electricity prices (approximately 35–42c per kWh), the annual bill savings from this generation amount to €500–€800. Add €80–€200 in export payments, and your total annual benefit is €580–€1,000. With a payback period of 5–7 years (with the SEAI grant), the investment is clearly worthwhile despite the seasonal variation.</p>
 
 <h2>Battery Storage: Smoothing the Seasonal Curve</h2>
 <p>While a battery can't store summer generation for winter use (the capacity is too small — typical batteries store 5–13 kWh, while monthly summer surpluses can exceed 300 kWh), it does smooth the daily curve. During summer, a battery stores morning and midday generation for evening use. During winter, even a small amount of daytime generation can be captured for peak evening hours when electricity is most expensive.</p>
@@ -640,7 +633,7 @@ const seasonalPosts: BlogPost[] = [
   {
     slug: "spring-solar-best-time-install",
     title: "Spring Solar: Why March-May Is the Best Time to Install Solar Panels",
-    metaTitle: "Best Time to Install Solar Panels in Ireland: Why Spring Wins (2026)",
+    metaTitle: "Best Time to Install Solar — Spring in Ireland",
     metaDescription: "Why spring (March–May) is the optimal time to install solar panels in Ireland. Maximise your first-year generation and savings with a spring installation.",
     category: "seasonal",
     datePublished: "2025-12-15T10:00:00+00:00",
@@ -655,7 +648,7 @@ const seasonalPosts: BlogPost[] = [
 <p>If you've been thinking about getting solar panels, you might be wondering when is the best time to install. While solar panels work year-round and can be installed in any season, spring — specifically March through May — is widely considered the optimal time for installation in Ireland. Here's why.</p>
 
 <h2>Maximise Your First-Year Generation</h2>
-<p>Installing in spring means your system is commissioned and generating just as daylight hours increase rapidly and solar intensity rises. A system installed in March will generate significantly more electricity in its first year than one installed in November, simply because it captures the full spring and summer generation seasons. The financial difference can be substantial in additional first-year savings.</p>
+<p>Installing in spring means your system is commissioned and generating just as daylight hours increase rapidly and solar intensity rises. A system installed in March will generate significantly more electricity in its first year than one installed in November, simply because it captures the full spring and summer generation seasons. The financial difference can be €300–€500 in additional first-year savings.</p>
 
 <h2>Favourable Installation Conditions</h2>
 <p>Spring weather in Ireland is generally mild, which is ideal for installation work. Roofers and solar installers work more efficiently in moderate temperatures (10–18°C) than in extreme heat or cold. Spring also typically brings a mix of dry days that are essential for safe roof work and electrical installations.</p>
@@ -663,8 +656,8 @@ const seasonalPosts: BlogPost[] = [
 <h2>Faster Scheduling</h2>
 <p>Winter is the quietest period for solar installations in Ireland, meaning installers often have better availability. However, if you book in late winter for a spring installation, you get the best of both worlds: prompt scheduling and favourable weather. By contrast, summer is peak season, and you may wait several weeks for an installation slot.</p>
 
-<h2>Grant Processing</h2>
-<p>If you're applying for a government grant, the application and approval process typically takes 2–4 weeks. Applying in February for a March installation means your system is up and running well before the summer peak. If you wait until May to apply, you might not be generating until July — missing two months of strong generation.</p>
+<h2>SEAI Grant Processing</h2>
+<p>The SEAI grant application and approval process typically takes 2–4 weeks. Applying in February for a March installation means your system is up and running well before the summer peak. If you wait until May to apply, you might not be generating until July — missing two months of strong generation.</p>
 
 <h2>Pre-Summer Energy Preparation</h2>
 <p>Many households see their highest electricity bills in winter due to heating and lighting. Installing in spring means you start saving immediately as the days lengthen, and your system is fully optimised for the summer months when generation is at its peak. By the time next winter arrives, you'll have several months of generation data and will be better positioned to manage your energy consumption.</p>
@@ -674,15 +667,15 @@ const seasonalPosts: BlogPost[] = [
     `.trim(),
     faqs: [
       { question: "Can solar panels be installed in winter?", answer: "Yes. Solar panels can be installed year-round in Ireland. However, spring offers the best combination of weather conditions and first-year generation." },
-      { question: "How much more will I save with a spring installation vs winter?", answer: "A spring installation captures the full summer generation season, delivering significantly more savings in the first year compared to a winter installation." },
-      { question: "How long does a spring installation take?", answer: "The grant application process typically takes 2–4 weeks. Once approved, the installation itself takes one working day for a standard residential system." },
+      { question: "How much more will I save with a spring installation vs winter?", answer: "A spring installation captures the full summer generation season, potentially saving €300–€500 more in the first year compared to a winter installation." },
+      { question: "How long does a spring installation take?", answer: "The SEAI grant process takes 2–4 weeks. Once approved, the installation itself takes one working day for a standard residential system." },
     ],
     tags: ["spring solar installation", "best time solar panels", "solar panel timing", "solar season Ireland", "spring solar Ireland"],
   },
   {
     slug: "winter-solar-generation-ireland",
     title: "How Much Solar Energy Can You Generate in an Irish Winter?",
-    metaTitle: "Winter Solar Generation Ireland: How Much Do Panels Produce in Dec–Feb?",
+    metaTitle: "Winter Solar Generation — Honest Irish Data",
     metaDescription: "Realistic winter solar panel generation data for Ireland. How much electricity do solar panels produce from December to February? Honest numbers.",
     category: "seasonal",
     datePublished: "2025-12-10T10:00:00+00:00",
@@ -698,7 +691,7 @@ const seasonalPosts: BlogPost[] = [
 
 <h2>December: The Lowest Month</h2>
 <p>December is consistently the lowest generation month for solar panels in Ireland. With approximately 7.5 hours of daylight, low solar elevation angles, and frequent cloud cover, a typical 4kW system generates just 50–90 kWh during the entire month. That works out to roughly 1.5–3 kWh per day — enough to power your lights, fridge, and electronics, but not much more.</p>
-<p>However, even this modest generation has value. At current electricity prices, 70 kWh of self-generated electricity saves a meaningful amount in December — money you'd otherwise pay to the grid.</p>
+<p>However, even this modest generation has value. At current electricity prices, 70 kWh of self-generated electricity saves approximately €25–€30 in December — money you'd otherwise pay to the grid.</p>
 
 <h2>January: Slightly Better</h2>
 <p>January sees a gradual improvement as days begin to lengthen. A 4kW system typically generates 60–100 kWh in January. The difference from December is subtle but noticeable, and the trend accelerates through February and into spring.</p>
@@ -707,7 +700,7 @@ const seasonalPosts: BlogPost[] = [
 <p>February marks the beginning of meaningful generation recovery. With noticeably longer days and (on average) slightly clearer weather, a 4kW system can generate 90–140 kWh in February. This is the month when solar homeowners start to see their monitoring apps showing meaningful daily output — often 3–5 kWh per day on decent weather days.</p>
 
 <h2>Why Winter Generation Still Matters</h2>
-<p>Even though winter generation is lower, it still contributes to your annual savings. The three winter months (December–February) from a 4kW system produce approximately 200–330 kWh combined — a worthwhile contribution to your electricity bill. Over the 25-year life of your panels, that adds up to significant winter savings alone.</p>
+<p>Even though winter generation is lower, it still contributes to your annual savings. The three winter months (December–February) from a 4kW system produce approximately 200–330 kWh combined, worth €70–€140 in electricity savings. Over the 25-year life of your panels, that's €1,750–€3,500 in winter savings alone.</p>
 
 <h2>Strategies for Maximising Winter Output</h2>
 <ul>
@@ -717,7 +710,7 @@ const seasonalPosts: BlogPost[] = [
 </ul>
 
 <h2>The Annual Perspective</h2>
-<p>Winter may be quiet, but remember: the annual generation of 3,400–3,900 kWh from a 4kW system is what drives the financial return. The annual savings include those lean winter months. Over 25 years, the compounding effect of rising electricity prices means winter generation becomes increasingly valuable over time.</p>
+<p>Winter may be quiet, but remember: the annual generation of 3,400–3,900 kWh from a 4kW system is what drives the financial return. The €500–€800 in annual savings includes those lean winter months. Over 25 years, the compounding effect of rising electricity prices means winter generation becomes increasingly valuable over time.</p>
     `.trim(),
     faqs: [
       { question: "Do solar panels work in December in Ireland?", answer: "Yes, but output is significantly lower. A 4kW system generates approximately 50–90 kWh in December, compared to 370–470 kWh in June." },
@@ -729,7 +722,7 @@ const seasonalPosts: BlogPost[] = [
   {
     slug: "autumn-solar-performance-september-november",
     title: "Autumn Solar Performance: What to Expect September-November",
-    metaTitle: "Autumn Solar Output Ireland: Sept, Oct & Nov Generation Expectations",
+    metaTitle: "Autumn Solar Performance Ireland — Sept-Nov",
     metaDescription: "What to expect from your solar panels during autumn in Ireland. September, October, and November generation data and tips to maximise output.",
     category: "seasonal",
     datePublished: "2025-12-05T10:00:00+00:00",
@@ -750,7 +743,7 @@ const seasonalPosts: BlogPost[] = [
 <p>By October, the reduction in daylight hours becomes more apparent. A 4kW system generates approximately 150–220 kWh during the month. Daily output drops to an average of 5–7 kWh, though clear October days can still achieve 10+ kWh. This is the month when solar homeowners notice their monitoring apps showing lower daily figures, and it's a good time to review your consumption habits ahead of winter.</p>
 
 <h2>November: Approaching Winter</h2>
-<p>November sees generation approach winter levels. A 4kW system typically produces 70–120 kWh during the month, with daily averages of 2–4 kWh. The weather also tends to be more overcast and stormy in November, which further reduces output. However, even at these lower levels, November generation makes a worthwhile contribution to reducing your electricity bill.</p>
+<p>November sees generation approach winter levels. A 4kW system typically produces 70–120 kWh during the month, with daily averages of 2–4 kWh. The weather also tends to be more overcast and stormy in November, which further reduces output. However, even at these lower levels, November generation saves €25–€50 on your electricity bill.</p>
 
 <h2>Autumn Preparation Tips</h2>
 <p>Autumn is the ideal time to prepare for winter:</p>
@@ -778,10 +771,9 @@ const customerStoryPosts: BlogPost[] = [
   {
     slug: "murphy-family-dublin-solar-savings",
     title: "From €200/Month to €38: How the Murphys Cut Their Bill in Dublin",
-    metaTitle: "Dublin Solar Savings: €200/Month Bill Cut to €38 (Real Data)",
+    metaTitle: "Dublin Solar Savings — Murphy Family Case Study",
     metaDescription: "How the Murphy family in Dublin reduced their electricity bill from €200/month to €38 with solar panels. A real customer story with actual savings data.",
     category: "customer-stories",
-    targetCountries: ["IE"],
     datePublished: "2025-11-25T10:00:00+00:00",
     dateModified: "2025-11-25T10:00:00+00:00",
     author: "Renewable Ireland Team",
@@ -794,11 +786,11 @@ const customerStoryPosts: BlogPost[] = [
 <p>When Declan and Sarah Murphy first enquired about solar panels for their three-bedroom semi-detached home in Dundrum, Dublin, they were, in their own words, "sceptical but curious." Their monthly electricity bill had crept up to €200, and they'd heard neighbours talking about solar savings. Six months after their installation, they're converts — and their electricity bill tells the story.</p>
 
 <h2>The Starting Point</h2>
-<p>The Murphys' home is a typical 1980s build with a south-facing rear roof slope. Their annual electricity consumption was approximately 5,200 kWh — above average, driven by two teenagers, a home office, and regular use of a tumble dryer and dishwasher. Their electricity bill had risen steadily from €140/month in 2023 to €200/month by early 2026.</p>
+<p>The Murphys' home is a typical 1980s build with a south-facing rear roof slope. Their annual electricity consumption was approximately 5,200 kWh — above average, driven by two teenagers, a home office, and regular use of a tumble dryer and dishwasher. Their electricity bill had risen steadily from €140/month in 2022 to €200/month by mid-2025.</p>
 <p>"We'd looked into solar a few times but kept putting it off," says Declan. "We thought Ireland was too cloudy and that the savings wouldn't justify the cost. It was only when our neighbour got panels and showed us his monitoring app that we took it seriously."</p>
 
 <h2>The Installation</h2>
-<p>Renewable Dublin conducted a free site survey in March 2026 and recommended a 6kWp system with 16 Jinko panels and a GivEnergy 5.2kWh battery. The total cost was €9,200, with the €1,800 SEAI solar PV grant reducing the net cost to €7,400.</p>
+<p>Solar Dublin conducted a free site survey in March 2026 and recommended a 6kWp system with 16 Jinko panels and a GivEnergy 5.2kWh battery. The total cost was €9,200, with the €2,400 SEAI grant (€1,800 panels + €600 battery) reducing the net cost to €6,800.</p>
 <p>"The installation was done in a single day," recalls Sarah. "The team arrived at 8am, had scaffolding up by 8:30, and the panels were on the roof by lunchtime. They were finished and commissioning by 4pm. Honestly, it was less disruptive than having a plumber round."</p>
 
 <h2>The Results After Six Months</h2>
@@ -822,7 +814,7 @@ const customerStoryPosts: BlogPost[] = [
     `.trim(),
     faqs: [
       { question: "How much did the Murphys save with solar panels?", answer: "The Murphys reduced their monthly electricity bill from €200 to €38–€98, depending on the month, for an annual saving of approximately €1,400." },
-      { question: "What size solar system did the Murphys install?", answer: "A 6kWp system with 16 Jinko panels and a GivEnergy 5.2kWh battery. Net cost after the €1,800 SEAI grant was €7,400." },
+      { question: "What size solar system did the Murphys install?", answer: "A 6kWp system with 16 Jinko panels and a GivEnergy 5.2kWh battery. Net cost after the €2,400 SEAI grant was €6,800." },
       { question: "How long did the installation take?", answer: "One working day. The team arrived at 8am and were finished with commissioning by 4pm." },
     ],
     tags: ["solar panel case study Dublin", "Murphy family solar", "Dublin solar savings", "solar panel results", "customer story"],
@@ -830,10 +822,9 @@ const customerStoryPosts: BlogPost[] = [
   {
     slug: "tyrone-bb-solar-transformation",
     title: "Powering a Tyrone B&B: How Solar Panels Transformed Our Business",
-    metaTitle: "Tyrone B&B Solar: 60% Electricity Cost Cut — Business Case Study",
+    metaTitle: "Tyrone B&B Solar — Business Case Study",
     metaDescription: "How a County Tyrone B&B slashed its electricity costs with a 6kW solar system. A real commercial solar case study with SEG export income data.",
     category: "customer-stories",
-    targetCountries: ["GB"],
     datePublished: "2025-11-20T10:00:00+00:00",
     dateModified: "2025-11-20T10:00:00+00:00",
     author: "Renewable Ireland Team",
@@ -847,8 +838,8 @@ const customerStoryPosts: BlogPost[] = [
 <p>"Our monthly electricity bill was averaging £380–£420," Gráinne explains. "With 5 en-suite rooms, constant laundry, and a commercial kitchen, we were using approximately 14,000–16,000 kWh per year. The SEG payments we were getting didn't make a dent — we needed to reduce our actual consumption."</p>
 
 <h2>The Solution: A Commercial-Grade Solar Installation</h2>
-<p>Renewable Tyrone designed a 6kW system with 16 LONGi panels installed on the south-facing roof of the main house. Given the B&B's high daytime occupancy (laundry, cleaning, cooking, guest use), a battery wasn't recommended — most solar generation would be consumed directly by the business.</p>
-<p>"The installation took two days rather than one, because of the system size and the need to coordinate around guest check-in times," says Gráinne. "The team from Renewable Tyrone were brilliant — they worked around our schedule and caused zero disruption. Our guests barely noticed."</p>
+<p>Solar Tyrone designed a 6kW system with 16 LONGi panels installed on the south-facing roof of the main house. Given the B&B's high daytime occupancy (laundry, cleaning, cooking, guest use), a battery wasn't recommended — most solar generation would be consumed directly by the business.</p>
+<p>"The installation took two days rather than one, because of the system size and the need to coordinate around guest check-in times," says Gráinne. "The team from Solar Tyrone were brilliant — they worked around our schedule and caused zero disruption. Our guests barely noticed."</p>
 
 <h2>The Results After One Year</h2>
 <p>After a full year of generation data, the results exceeded expectations:</p>
@@ -872,17 +863,16 @@ const customerStoryPosts: BlogPost[] = [
     faqs: [
       { question: "How much can a B&B save with solar panels?", answer: "The Tyrone B&B saved £2,830 per year — a 60% reduction in electricity costs. The payback period was just 3.2 years." },
       { question: "Is a battery needed for a commercial solar installation?", answer: "Not always. If your business has high daytime consumption (like a B&B), most solar generation is consumed directly, making a battery less necessary." },
-      { question: "Can solar panels be installed on a working B&B?", answer: "Yes. Renewable Tyrone coordinated the installation around guest check-in times and caused zero disruption." },
+      { question: "Can solar panels be installed on a working B&B?", answer: "Yes. Solar Tyrone coordinated the installation around guest check-in times and caused zero disruption." },
     ],
     tags: ["solar B&B Tyrone", "commercial solar Northern Ireland", "Dungannon solar", "business solar case study", "hospitality solar"],
   },
   {
     slug: "donnelly-farm-cookstown-solar",
     title: "A Dairy Farm's Solar Journey: Donnelly Farm, Cookstown",
-    metaTitle: "Farm Solar Tyrone: £6,800/Year Savings — Dairy Farm Case Study",
+    metaTitle: "Farm Solar Cookstown — Donnelly Farm Case Study",
     metaDescription: "How Donnelly Farm near Cookstown reduced milking parlour electricity costs with a ground-mounted solar array. An agricultural solar case study with real data.",
     category: "customer-stories",
-    targetCountries: ["GB"],
     datePublished: "2025-11-15T10:00:00+00:00",
     dateModified: "2025-11-15T10:00:00+00:00",
     author: "Renewable Ireland Team",
@@ -893,10 +883,10 @@ const customerStoryPosts: BlogPost[] = [
     content: `
 <h2>The Challenge: High Electricity Costs on a Working Dairy Farm</h2>
 <p>Dairy farming is an energy-intensive business. Milking parlours run for several hours each day, bulk tanks keep milk cool 24/7, water heaters provide hot water for cleaning, and various pumps and agitators operate throughout the day. For James Donnelly, whose 180-cow dairy farm sits on rolling countryside outside Cookstown, electricity was the single largest variable cost after feed.</p>
-<p>"We were spending £800–£900 a month on electricity, and it kept going up," James explains. "The milking parlour alone accounts for about 60% of our total usage — the vacuum pumps, milk cooling, water heating, and lighting all add up. When Renewable Tyrone suggested a ground-mounted array, I was interested but wanted to see the numbers."</p>
+<p>"We were spending £800–£900 a month on electricity, and it kept going up," James explains. "The milking parlour alone accounts for about 60% of our total usage — the vacuum pumps, milk cooling, water heating, and lighting all add up. When Solar Tyrone suggested a ground-mounted array, I was interested but wanted to see the numbers."</p>
 
 <h2>The Installation: A Ground-Mounted Solar Array</h2>
-<p>Unlike domestic installations where panels go on the roof, agricultural installations often use ground-mounted frames. Renewable Tyrone designed a 10kW system using 28 Jinko panels on a ground-mounted steel frame positioned to the south of the milking parlour. The location was chosen to minimise cable runs to the farm's consumer unit and to avoid any shading from nearby buildings or trees.</p>
+<p>Unlike domestic installations where panels go on the roof, agricultural installations often use ground-mounted frames. Solar Tyrone designed a 10kW system using 28 Jinko panels on a ground-mounted steel frame positioned to the south of the milking parlour. The location was chosen to minimise cable runs to the farm's consumer unit and to avoid any shading from nearby buildings or trees.</p>
 <p>"The ground mount was actually easier than I expected," says James. "No scaffolding, no roof access issues. They drove the steel posts into the ground, bolted on the frames, and had the panels wired in two days. The system was commissioned and generating by the end of the second day."</p>
 
 <h2>The Results: Near-Zero Daytime Grid Import</h2>
@@ -908,7 +898,7 @@ const customerStoryPosts: BlogPost[] = [
 <li><strong>Annual bill reduction:</strong> From £10,200 to £3,400 — a saving of £6,800 per year</li>
 <li><strong>Payback period:</strong> 4.8 years (system cost £10,500 after SEG income)</li>
 </ul>
-<p>"The ROI projection Renewable Tyrone gave us at quote stage has been accurate — we're on track for a 5.5-year payback, which is actually better than they promised because electricity prices went up again," says James.</p>
+<p>"The ROI projection Solar Tyrone gave us at quote stage has been accurate — we're on track for a 5.5-year payback, which is actually better than they promised because electricity prices went up again," says James.</p>
 
 <h2>Why Solar Works So Well for Dairy Farms</h2>
 <p>Dairy farms are uniquely suited to solar energy because their electricity demand is concentrated during daylight hours. Milking typically happens in the early morning and late afternoon, with peak consumption during the day for milk cooling, water heating, and cleaning. This aligns perfectly with solar generation patterns, meaning a very high percentage of generated electricity is consumed directly on-site.</p>
@@ -923,10 +913,9 @@ const customerStoryPosts: BlogPost[] = [
   {
     slug: "cork-new-build-solar-future-proofing",
     title: "New Build Solar: Why Our Cork Customers Are Future-Proofing Their Homes",
-    metaTitle: "New Build Solar Cork: Why 2026 Homeowners Are Adding Solar from Day One",
+    metaTitle: "New Build Solar Cork — Future-Proofing Homes",
     metaDescription: "Why new build homeowners in Cork are choosing solar panels. Future-proofing your home's energy with solar PV, battery storage, and EV charger readiness.",
     category: "customer-stories",
-    targetCountries: ["IE"],
     datePublished: "2025-11-10T10:00:00+00:00",
     dateModified: "2025-11-10T10:00:00+00:00",
     author: "Renewable Ireland Team",
@@ -936,7 +925,7 @@ const customerStoryPosts: BlogPost[] = [
     excerpt: "New build homes in Cork are increasingly including solar panels as standard. Here's why forward-thinking homeowners are going solar from day one — and the savings they're achieving.",
     content: `
 <h2>The New Build Solar Trend in Cork</h2>
-<p>Cork's construction boom has brought a wave of new housing developments, and with them a growing trend: homeowners who want solar panels installed as part of their new build or shortly after moving in. At Renewable Cork, we've seen a threefold increase in new build installations over the past two years, and the reasons are compelling.</p>
+<p>Cork's construction boom has brought a wave of new housing developments, and with them a growing trend: homeowners who want solar panels installed as part of their new build or shortly after moving in. At Solar Cork, we've seen a threefold increase in new build installations over the past two years, and the reasons are compelling.</p>
 
 <h2>Why New Builds Are Perfect for Solar</h2>
 <p>New build homes offer several advantages for solar installation:</p>
@@ -948,8 +937,8 @@ const customerStoryPosts: BlogPost[] = [
 </ul>
 
 <h2>Case Study: The O'Sullivan Family, Ballincollig</h2>
-<p>Eamonn and Fiona O'Sullivan moved into their new four-bedroom home in Ballincollig in early 2026 and contacted Renewable Cork within weeks. "We'd budgeted for solar from the start," says Eamonn. "The house came with excellent insulation and an air source heat pump. The builder had included a basic 2kW solar system to meet building regulations, but we wanted something that would actually cover our electricity usage. Renewable Cork upgraded us to a full 6kW system for €5,500 — replacing the builder's basic setup with a system that genuinely powers our home."</p>
-<p>Renewable Cork replaced the builder's basic 2kW system with a full 6kW system using 16 Trina panels on the south-facing roof. With their heat pump running primarily on daytime solar, their first electricity bill after the upgrade was just €65 for a full month — compared to the €280 they'd been quoted by the developer for a comparable home with only the basic building regs system.</p>
+<p>Eamonn and Fiona O'Sullivan moved into their new four-bedroom home in Ballincollig in early 2026 and contacted Solar Cork within weeks. "We'd budgeted for solar from the start," says Eamonn. "The house came with excellent insulation and an air source heat pump, but our builder quoted €14,000 for a solar system. Solar Cork quoted €7,200 for the same spec — with the SEAI grant included."</p>
+<p>The O'Sullivans installed a 6kW system with 16 Trina panels on their south-facing roof. With their heat pump running primarily on daytime solar, their first electricity bill after installation was just €65 for a full month — compared to the €280 they'd been quoted by the developer for a comparable home without solar.</p>
 
 <h2>Future-Proofing: More Than Just Panels</h2>
 <p>Many of our Cork new build customers are thinking beyond solar panels alone. A "future-proof" energy setup includes:</p>
@@ -965,7 +954,7 @@ const customerStoryPosts: BlogPost[] = [
     `.trim(),
     faqs: [
       { question: "Should I get solar panels on my new build?", answer: "Yes. New builds are ideal for solar — modern roofs, pre-wiring options, and heat pump combinations make solar particularly effective and cost-efficient." },
-      { question: "Can my builder include solar in the new build?", answer: "Yes, but compare their price with specialist installers. Builders often charge more. Renewable Cork can install on your new build for significantly less than many builder quotes." },
+      { question: "Can my builder include solar in the new build?", answer: "Yes, but compare their price with specialist installers. Builders often charge more. Solar Cork can install on your new build for significantly less than many builder quotes." },
       { question: "Does solar improve my new home's BER rating?", answer: "Yes, significantly. Solar panels can improve a BER rating by 1–2 bands, which benefits mortgage approval and resale value." },
     ],
     tags: ["new build solar Cork", "solar panels new home", "future-proofing energy", "Ballincollig solar", "Cork solar panels"],
@@ -973,10 +962,9 @@ const customerStoryPosts: BlogPost[] = [
   {
     slug: "kelly-family-battery-off-grid-summer",
     title: "Battery Storage Success: How the Kelly Family Went Off-Grid in Summer",
-    metaTitle: "Battery + Solar: 47 Days Off-Grid in Summer (Real Irish Case Study)",
+    metaTitle: "Battery Storage Success — Off-Grid Summer Ireland",
     metaDescription: "How the Kelly family in Ireland achieved near off-grid electricity during summer months with solar panels and battery storage. A real customer case study.",
     category: "customer-stories",
-    targetCountries: ["IE"],
     datePublished: "2025-11-05T10:00:00+00:00",
     dateModified: "2025-11-05T10:00:00+00:00",
     author: "Renewable Ireland Team",
@@ -989,15 +977,15 @@ const customerStoryPosts: BlogPost[] = [
 <p>When the Kelly family installed solar panels on their home in County Kildare two years ago, they were happy with the savings but frustrated by one thing: exporting large amounts of surplus generation to the grid for a fraction of what they paid for imported electricity. The solution was obvious — add battery storage. What they didn't expect was just how transformative it would be.</p>
 
 <h2>The Original Solar Installation</h2>
-<p>The Kellys' initial installation was a 5kW system with 14 Jinko panels, installed in early 2025. The system generated approximately 4,200 kWh in its first year, but with both parents working during the day, they were only self-consuming about 35% of their generation and exporting the rest. At the Clean Export Guarantee rate of approximately 6c per kWh, their annual export income was just €160 — while the exported energy was worth over €800 at import rates.</p>
+<p>The Kellys' initial installation was a 5kW system with 14 Jinko panels, installed in early 2024. The system generated approximately 4,200 kWh in its first year, but with both parents working during the day, they were only self-consuming about 35% of their generation and exporting the rest. At the Clean Export Guarantee rate of approximately 6c per kWh, their annual export income was just €160 — while the exported energy was worth over €800 at import rates.</p>
 <p>"We were essentially giving away €600+ worth of electricity to the grid every year," says Aisling Kelly. "That's when we started looking seriously at battery storage."</p>
 
 <h2>Adding a Tesla Powerwall</h2>
-<p>In April 2026, the Kellys added a Tesla Powerwall 2 (13.5kWh usable capacity) to their existing solar system. The total installed cost was approximately €7,500.</p>
+<p>In April 2025, the Kellys added a Tesla Powerwall 2 (13.5kWh usable capacity) to their existing solar system. The SEAI battery retrofit grant of €600 applied, reducing the installed cost from approximately €7,500 to €6,900.</p>
 <p>"The installation took half a day," recalls Aisling. "They connected the Powerwall to our existing inverter and set up the Tesla app. Within hours, we could see exactly when the battery was charging, how much it was storing, and when it was discharging."</p>
 
 <h2>The Results: 47 Days Off-Grid</h2>
-<p>The summer of 2026 was exceptional for solar generation in Ireland, and the Kellys' system with battery storage delivered remarkable results:</p>
+<p>The summer of 2025 was exceptional for solar generation in Ireland, and the Kellys' system with battery storage delivered remarkable results:</p>
 <ul>
 <li><strong>Self-consumption increased:</strong> From 35% to 92%</li>
 <li><strong>Grid imports during summer:</strong> Effectively zero for 47 consecutive days (late May to mid-July)</li>
@@ -1013,17 +1001,16 @@ const customerStoryPosts: BlogPost[] = [
     faqs: [
       { question: "How many days can a solar battery last off-grid?", answer: "The Kelly family achieved 47 consecutive days of zero grid imports during summer with a 13.5kWh Tesla Powerwall and 5kW solar system." },
       { question: "Is a Tesla Powerwall worth it in Ireland?", answer: "For the Kellys, the Powerwall increased self-consumption from 35% to 92% and reduced their annual bill to €380. The payback on the battery alone is approximately 6 years." },
-      { question: "Can I add a battery to an existing solar system?", answer: "Yes. Battery retrofit is straightforward and can be done in half a day. While the SEAI battery grant is no longer available, falling battery prices and increased self-consumption can still make it a worthwhile investment." },
+      { question: "Can I add a battery to an existing solar system?", answer: "Yes. Battery retrofit is straightforward and can be done in half a day. The SEAI offers a €600 grant for battery retrofits to existing solar systems." },
     ],
     tags: ["battery storage Ireland", "Tesla Powerwall", "off-grid solar", "solar battery Kildare", "battery case study"],
   },
   {
     slug: "ev-solar-charging-galway",
     title: "EV + Solar: The Complete Electric Vehicle Charging Setup in Galway",
-    metaTitle: "EV + Solar Galway: Charge a VW ID.4 for Free — 22,000 km/Year on Solar",
+    metaTitle: "EV + Solar Charging Setup Galway",
     metaDescription: "How to combine solar panels with an EV charger in Galway. Real data on charging an electric vehicle for free with solar energy. A complete guide.",
     category: "customer-stories",
-    targetCountries: ["IE"],
     datePublished: "2025-10-30T10:00:00+00:00",
     dateModified: "2025-10-30T10:00:00+00:00",
     author: "Renewable Ireland Team",
@@ -1036,11 +1023,11 @@ const customerStoryPosts: BlogPost[] = [
 <p>Electric vehicles and solar panels are a natural pairing. An EV typically travels 15,000–20,000 km per year, consuming approximately 2,500–3,500 kWh of electricity. A well-sized solar system in Ireland generates 3,400–4,000 kWh per year. The overlap is striking — which means that with the right setup, you can charge your EV for free using your own solar energy for much of the year.</p>
 
 <h2>Case Study: Sean Joyce, Galway</h2>
-<p>Sean Joyce lives in Loughrea, County Galway, and commutes 45km each way to his office in Galway City. In early 2026, he made the switch from a diesel VW Golf to a VW ID.4 electric car. At the same time, he installed a 6kW solar system with 16 panels and a 7kWh home EV charger.</p>
+<p>Sean Joyce lives in Loughrea, County Galway, and commutes 45km each way to his office in Galway City. In early 2025, he made the switch from a diesel VW Golf to a VW ID.4 electric car. At the same time, he installed a 6kW solar system with 16 panels and a 7kWh home EV charger.</p>
 <p>"My motivation was simple," says Sean. "I was spending €300 a month on diesel, and my electricity bill was already €160. I wanted to replace the diesel cost with solar-generated electricity — effectively driving for free."</p>
 
 <h2>The Setup</h2>
-<p>Renewable Galway installed Sean's system in March 2026:</p>
+<p>Solar Galway installed Sean's system in March 2025:</p>
 <ul>
 <li><strong>Solar panels:</strong> 16 × LONGi 400W panels (6.4kWp total)</li>
 <li><strong>Inverter:</strong> GivEnergy hybrid inverter (supports battery addition in future)</li>
@@ -1084,10 +1071,9 @@ const technicalPosts: BlogPost[] = [
   {
     slug: "4kwp-vs-6kwp-vs-8kwp-system-size-guide",
     title: "4kWp vs 6kWp vs 8kWp: Which Solar System Size Is Right for You?",
-    metaTitle: "4kWp vs 6kWp vs 8kWp Solar: Costs, Savings & Which Size (2026)",
-    metaDescription: "4kWp (€4,500), 6kWp (€6,500), or 8kWp (€8,500)? Compare costs, generation, savings & payback for each solar system size. Choose the right one for your Irish home.",
+    metaTitle: "4kWp vs 6kWp vs 8kWp — Solar System Size Guide",
+    metaDescription: "Not sure what size solar system you need? Our guide compares 4kWp, 6kWp, and 8kWp systems with costs, generation data, and recommendations for Irish homes.",
     category: "technical",
-    targetCountries: ["IE"],
     datePublished: "2025-10-25T10:00:00+00:00",
     dateModified: "2026-01-12T10:00:00+00:00",
     author: "Renewable Ireland Team",
@@ -1097,7 +1083,7 @@ const technicalPosts: BlogPost[] = [
     excerpt: "Choosing the right solar system size is crucial for maximising your return on investment. Here's a detailed comparison of 4kWp, 6kWp, and 8kWp systems for Irish homes.",
     content: `
 <h2>Why System Size Matters</h2>
-<p>For most Irish homes, a <strong>4kWp system (10–12 panels)</strong> is the ideal choice, costing €4,500–€6,500 before the SEAI grant and generating approximately 3,400–3,900 kWh per year. Larger homes with electric heating, heat pumps, or EVs benefit from a <strong>6kWp system (14–16 panels)</strong>, while properties with very high electricity demand should consider an <strong>8kWp system (18–22 panels)</strong>. The right size depends on your annual electricity consumption, roof space, and budget — here's how to decide.</p>
+<p>Choosing the right solar system size is arguably the most important decision in your solar journey. Too small, and you'll leave potential savings on the table. Too large, and you'll be paying for capacity you don't fully utilise. The sweet spot depends on your roof space, electricity consumption, budget, and whether you plan to add battery storage or an EV charger.</p>
 
 <h2>System Size Comparison</h2>
 <h3>4kWp System (10–12 panels)</h3>
@@ -1152,8 +1138,8 @@ const technicalPosts: BlogPost[] = [
   {
     slug: "tier-1-solar-panels-explained",
     title: "Tier 1 Solar Panels Explained: Why We Only Install Jinko, Trina & LONGi",
-    metaTitle: "Tier 1 Solar Panels: Why We Only Install Jinko, Trina & LONGi in Ireland",
-    metaDescription: "Tier 1 solar panels from Jinko, Trina & LONGi offer 22%+ efficiency and 25-year warranties. Learn why tier 1 matters for your Irish solar investment and what to avoid.",
+    metaTitle: "Tier 1 Solar Panels — Jinko, Trina, LONGi",
+    metaDescription: "What are tier 1 solar panels and why does it matter? We explain our choice of Jinko, Trina Solar, and LONGi panels for Irish installations.",
     category: "technical",
     datePublished: "2025-10-20T10:00:00+00:00",
     dateModified: "2025-10-20T10:00:00+00:00",
@@ -1184,7 +1170,7 @@ const technicalPosts: BlogPost[] = [
 <li><strong>Lower efficiency:</strong> Budget panels are typically 2–4% less efficient, meaning you need more panels for the same output</li>
 <li><strong>Warranty risk:</strong> Non-tier-1 manufacturers have a higher failure rate, and warranty claims are harder to process if the manufacturer ceases operations</li>
 </ul>
-<p>Over 25 years, the difference between a tier 1 and budget panel can amount to thousands in lost generation — far exceeding any initial cost saving.</p>
+<p>Over 25 years, the difference between a tier 1 and budget panel can amount to thousands of euros in lost generation — far exceeding any initial cost saving.</p>
 
 <h2>Performance in Irish Conditions</h2>
 <p>Ireland's climate places specific demands on solar panels: frequent cloud cover, moderate temperatures, and exposure to wind and rain. Tier 1 panels from Jinko, Trina, and LONGi excel in these conditions because of their superior low-light performance, excellent temperature coefficients, and robust build quality that withstands Irish weather extremes.</p>
@@ -1192,17 +1178,16 @@ const technicalPosts: BlogPost[] = [
     faqs: [
       { question: "What is a tier 1 solar panel?", answer: "Tier 1 is a Bloomberg NEF classification for financially stable, vertically integrated solar manufacturers with at least 5 years of operating history. It's a reliable indicator of long-term warranty security." },
       { question: "Why does Renewable Ireland only install Jinko, Trina, and LONGi?", answer: "These three manufacturers offer the best combination of efficiency, reliability, low-light performance, and 25-year warranty security — essential for Ireland's climate and a 25-year investment." },
-      { question: "Are cheaper solar panels worth considering?", answer: "Generally no. Budget panels have shorter warranties, faster degradation, and lower efficiency. Over 25 years, any initial saving is typically outweighed by thousands in lost generation." },
+      { question: "Are cheaper solar panels worth considering?", answer: "Generally no. Budget panels have shorter warranties, faster degradation, and lower efficiency. Over 25 years, any initial saving is typically outweighed by thousands of euros in lost generation." },
     ],
     tags: ["tier 1 solar panels", "Jinko solar", "Trina Solar", "LONGi solar", "best solar panels Ireland"],
   },
   {
     slug: "string-inverter-vs-microinverter",
     title: "String Inverter vs Microinverter: Which Is Best for Your Irish Home?",
-    metaTitle: "String Inverter vs Microinverter Ireland: Which Is Best for Your Home?",
-    metaDescription: "String inverter (€800–€1,500) vs microinverter (€2,000–€4,000): which is best for your Irish home? Compare efficiency, cost, and reliability for solar installations.",
+    metaTitle: "String Inverter vs Microinverter — Ireland Guide",
+    metaDescription: "String inverter or microinverter: which is right for your Irish home? We compare both technologies for efficiency, cost, reliability, and suitability.",
     category: "technical",
-    targetCountries: ["IE"],
     datePublished: "2025-10-15T10:00:00+00:00",
     dateModified: "2025-10-15T10:00:00+00:00",
     author: "Renewable Ireland Team",
@@ -1267,7 +1252,6 @@ const technicalPosts: BlogPost[] = [
     metaTitle: "Battery Storage Ireland 2026 — Worth It?",
     metaDescription: "Is solar battery storage worth it in Ireland in 2026? We analyse the costs, savings, and payback periods of home battery systems including Tesla, GivEnergy, and FoxESS.",
     category: "technical",
-    targetCountries: ["IE"],
     datePublished: "2025-10-10T10:00:00+00:00",
     dateModified: "2026-01-08T10:00:00+00:00",
     author: "Renewable Ireland Team",
@@ -1285,18 +1269,18 @@ const technicalPosts: BlogPost[] = [
 
 <h2>Popular Battery Options in Ireland</h2>
 <h3>GivEnergy (5kWh–13.5kWh)</h3>
-<p>The UK-manufactured GivEnergy range is the most popular choice for Irish installations. Prices range from €3,500–€6,000 installed. GivEnergy offers a 10-year warranty, good round-trip efficiency (90–93%), and competitive pricing.</p>
+<p>The UK-manufactured GivEnergy range is the most popular choice for Irish installations. Prices range from €3,000–€5,500 installed (after the €600 SEAI grant). GivEnergy offers a 10-year warranty, good round-trip efficiency (90–93%), and competitive pricing.</p>
 <h3>Tesla Powerwall 2 (13.5kWh)</h3>
-<p>The premium option, offering 13.5kWh capacity, excellent efficiency (90% round-trip), and a 10-year warranty. Installed costs are €6,500–€8,500. The Tesla app and ecosystem are best-in-class.</p>
+<p>The premium option, offering 13.5kWh capacity, excellent efficiency (90% round-trip), and a 10-year warranty. Installed costs are €6,000–€8,000 (after grant). The Tesla app and ecosystem are best-in-class.</p>
 <h3>FoxESS (5kWh–10kWh)</h3>
-<p>A fast-growing Chinese manufacturer offering competitive pricing and good performance. Installed costs range from €3,200–€5,500. FoxESS batteries have a 10-year warranty and 90% round-trip efficiency.</p>
+<p>A fast-growing Chinese manufacturer offering competitive pricing and good performance. Installed costs range from €2,800–€5,000 (after grant). FoxESS batteries have a 10-year warranty and 90% round-trip efficiency.</p>
 
 <h2>The Financial Analysis</h2>
 <p>Let's look at the numbers for a typical scenario:</p>
 <ul>
-<li><strong>Battery cost (installed):</strong> €4,000 (5kWh system)</li>
+<li><strong>Battery cost (after SEAI grant):</strong> €3,500 (5kWh system)</li>
 <li><strong>Additional annual savings vs. panels only:</strong> €250–€400</li>
-<li><strong>Payback period for battery:</strong> 10–16 years</li>
+<li><strong>Payback period for battery:</strong> 9–14 years</li>
 </ul>
 <p>Honestly, the payback period for battery storage alone is longer than for solar panels. However, battery storage offers benefits beyond pure financial return: backup power during outages, reduced grid dependence, and the satisfaction of maximising your self-generated solar.</p>
 
@@ -1311,11 +1295,11 @@ const technicalPosts: BlogPost[] = [
 </ul>
 
 <h2>Our Recommendation for 2026</h2>
-<p>If your budget allows, we recommend including battery storage with your solar installation. Having the battery installed at the same time as your panels (rather than retrofitting later) is more cost-effective, as the installer can size the inverter appropriately from the start. If budget is tight, start with panels and add a battery within the first 1–2 years — the retrofit process is straightforward.</p>
+<p>If your budget allows, we recommend including battery storage with your solar installation. The SEAI €600 grant helps, and having the battery installed at the same time as your panels (rather than retrofitting later) is more cost-effective. If budget is tight, start with panels and add a battery within the first 1–2 years — the retrofit process is straightforward.</p>
     `.trim(),
     faqs: [
-      { question: "Is solar battery storage worth it in Ireland?", answer: "It depends on your circumstances. The financial payback period is 10–16 years, but batteries offer additional benefits like backup power, reduced grid dependence, and maximised self-consumption." },
-      { question: "How much does a solar battery cost in Ireland?", answer: "Home battery systems range from €3,200 (FoxESS 5kWh) to €8,500 (Tesla Powerwall 13.5kWh) installed. Note that the SEAI battery storage grant is no longer available." },
+      { question: "Is solar battery storage worth it in Ireland?", answer: "It depends on your circumstances. The financial payback period is 9–14 years, but batteries offer additional benefits like backup power, reduced grid dependence, and maximised self-consumption." },
+      { question: "How much does a solar battery cost in Ireland?", answer: "After the €600 SEAI grant, home battery systems range from €2,800 (FoxESS 5kWh) to €7,400 (Tesla Powerwall 13.5kWh) installed." },
       { question: "Can I add a battery later to my solar system?", answer: "Yes. Battery retrofit is straightforward and can be done in half a day. However, it's more cost-effective to install the battery at the same time as your solar panels." },
     ],
     tags: ["battery storage Ireland", "solar battery 2026", "Tesla Powerwall", "GivEnergy", "home battery ROI"],
@@ -1344,7 +1328,7 @@ const technicalPosts: BlogPost[] = [
 <li><strong>Agricultural areas:</strong> Dust from farm activities or nearby roads can settle on panels. If you notice a gradual decline in output that correlates with dry weather, a cleaning may help.</li>
 <li><strong>Low-tilt or flat roofs:</strong> Panels mounted at shallow angles don't benefit from rain washing as much. These may need more frequent cleaning.</li>
 </ul>
-<p><strong>Important:</strong> Never use abrasive materials, high-pressure washers, or harsh chemicals. Use clean water and a soft brush. If your panels are difficult to access, professional cleaning services are available at a modest cost.</p>
+<p><strong>Important:</strong> Never use abrasive materials, high-pressure washers, or harsh chemicals. Use clean water and a soft brush. If your panels are difficult to access, professional cleaning services are available for approximately €100–€200.</p>
 
 <h2>Monitoring System Performance</h2>
 <p>Your solar system includes a monitoring app that shows real-time and historical generation data. Check this periodically to ensure your system is performing as expected. Key things to look for:</p>
@@ -1361,7 +1345,7 @@ const technicalPosts: BlogPost[] = [
 <li>Sudden drop in system output despite clear weather</li>
 <li>Unusual noises (buzzing, clicking) from the inverter</li>
 </ul>
-<p>If you notice any of these, contact your installer. Inverter replacement is a straightforward process and typically costs a few hundred to a thousand or more depending on the model.</p>
+<p>If you notice any of these, contact your installer. Inverter replacement typically costs €800–€1,500 and is straightforward.</p>
 
 <h2>Annual Inspection Checklist</h2>
 <p>We recommend a brief annual check of your solar system:</p>
@@ -1374,11 +1358,11 @@ const technicalPosts: BlogPost[] = [
 </ul>
 
 <h2>Professional Maintenance Services</h2>
-<p>If you'd prefer not to maintain your system yourself, professional solar maintenance services are available. A typical annual service includes panel cleaning, electrical safety checks, inverter inspection, and performance verification, typically costing a few hundred depending on your location. Contact your installer for details.</p>
+<p>If you'd prefer not to maintain your system yourself, professional solar maintenance services are available. A typical annual service includes panel cleaning, electrical safety checks, inverter inspection, and performance verification, typically costing €150–€300. Contact your installer for details.</p>
     `.trim(),
     faqs: [
       { question: "Do solar panels need cleaning in Ireland?", answer: "In most cases, Irish rainfall keeps panels clean enough. Cleaning is only needed if panels are near trees, in agricultural areas, or mounted at low angles." },
-      { question: "How long do solar inverters last?", answer: "Solar inverters typically last 10–15 years, compared to 25+ years for panels. Replacement costs vary depending on the model." },
+      { question: "How long do solar inverters last?", answer: "Solar inverters typically last 10–15 years, compared to 25+ years for panels. Replacement costs €800–€1,500." },
       { question: "How often should I check my solar monitoring app?", answer: "A quick weekly check is ideal. Look for any sudden drops in output or error messages that could indicate a fault." },
     ],
     tags: ["solar panel maintenance", "solar panel cleaning", "inverter maintenance", "solar monitoring", "solar system care"],
@@ -1411,13 +1395,9 @@ export const allBlogPosts: BlogPost[] = generateAllBlogPosts();
 // =============================================================================
 
 export function getPostsByCounty(countySlug: string): BlogPost[] {
-  const county = getCounty(countySlug);
-  if (!county) return [];
-  return allBlogPosts.filter((post) => {
-    if (post.county && post.county !== countySlug) return false;
-    if (post.targetCountries && !post.targetCountries.includes(county.country as "IE" | "GB")) return false;
-    return true;
-  });
+  return allBlogPosts.filter(
+    (post) => !post.county || post.county === countySlug
+  );
 }
 
 export function getPostBySlug(slug: string): BlogPost | undefined {
@@ -1429,15 +1409,11 @@ export function getRelatedPosts(
   countySlug: string,
   limit: number = 3
 ): BlogPost[] {
-  const county = getCounty(countySlug);
-  if (!county) return [];
-  const country = county.country as "IE" | "GB";
   return allBlogPosts
     .filter(
       (p) =>
         p.slug !== post.slug &&
-        (!p.county || p.county === countySlug) &&
-        (!p.targetCountries || p.targetCountries.includes(country)) &&
+        (p.county === countySlug || !p.county) &&
         (p.category === post.category || p.tags.some((t) => post.tags.includes(t)))
     )
     .slice(0, limit);

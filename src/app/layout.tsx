@@ -1,21 +1,21 @@
 import type { Metadata } from "next";
-import { Barlow_Condensed } from "next/font/google";
-import { Suspense } from "react";
-import "./globals.css";
-import WhatsAppWidgetLoader from "@/components/whatsapp/WhatsAppWidgetLoader";
-
+import { Barlow_Condensed, Barlow } from "next/font/google";
 
 const barlowCondensed = Barlow_Condensed({
   variable: "--font-display",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
+  weight: ["600", "700", "800"],
+  display: "swap",
+});
+
+const barlow = Barlow({
+  variable: "--font-body",
+  subsets: ["latin"],
+  weight: ["300", "400", "500"],
   display: "swap",
 });
 
 export const metadata: Metadata = {
-  icons: {
-    icon: "/favicon.svg",
-  },
   title: "Solar Panels Ireland | Renewable Ireland | SEAI Grant €1,800",
   description:
     "Ireland's trusted solar panel installers. 2,847+ installs, 4.9★ rating, 1-day install from €4,500. SEAI €1,800 grant handled. Get your free quote today.",
@@ -178,30 +178,40 @@ const jsonLdWebSite = {
   },
 };
 
+const jsonLdBreadcrumb = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    {
+      "@type": "ListItem",
+      position: 1,
+      name: "Home",
+      item: "https://renewableireland.ie/",
+    },
+    {
+      "@type": "ListItem",
+      position: 2,
+      name: "Solar Panels Ireland",
+      item: "https://renewableireland.ie/",
+    },
+  ],
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en-IE" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
       <head>
-        <meta name="color-scheme" content="light" />
         <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
-        <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
         <link
           rel="preconnect"
           href="https://fonts.googleapis.com"
           crossOrigin=""
         />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         <link rel="preconnect" href="https://solarpilot.ie" crossOrigin="" />
-        {/* Cursor elements injected via JS so React never tries to hydrate them */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: "(function(){var d=document,c=function(id){var e=d.createElement('div');e.id=id;d.body.appendChild(e)};if(d.readyState==='loading'){d.addEventListener('DOMContentLoaded',function(){c('ricur');c('ritrail')})}else{c('ricur');c('ritrail')}})();",
-          }}
-        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -220,19 +230,18 @@ export default function RootLayout({
             __html: JSON.stringify(jsonLdWebSite),
           }}
         />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(jsonLdBreadcrumb),
+          }}
+        />
       </head>
       <body
-        className={barlowCondensed.variable}
-        style={{ margin: 0, background: '#F7F7F2', color: '#111', colorScheme: 'light' }}
+        className={`${barlowCondensed.variable} ${barlow.variable}`}
+        style={{ margin: 0 }}
       >
-        {/* CRITICAL: Inline style MUST appear before {children} so it's in the DOM
-            before React streaming SSR creates <div hidden id="S:0">.
-            External CSS chunks load too late — this is the only reliable fix. */}
-        <style dangerouslySetInnerHTML={{ __html: "div[id^='S:']{display:block!important;visibility:visible!important;opacity:1!important;position:static!important;height:auto!important;width:auto!important;overflow:visible!important;pointer-events:auto!important}" }} />
         {children}
-        <Suspense fallback={null}>
-          <WhatsAppWidgetLoader />
-        </Suspense>
       </body>
     </html>
   );
