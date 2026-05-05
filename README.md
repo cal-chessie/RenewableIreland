@@ -90,14 +90,20 @@ renewableireland/
 ├── prisma/
 │   └── schema.prisma                 # SQLite database schema (User, Post)
 ├── public/
-│   ├── favicon.ico / .svg / .png    # Multi-format favicons
-│   ├── favicon-16x16.png / 32x32.png
-│   ├── robots.txt                   # Search engine crawling rules
+│   ├── favicon.ico                 # Multi-size ICO favicon
+│   ├── favicon.svg                 # SVG favicon (embedded PNG)
+│   ├── favicon.png                 # PNG favicon (32x32)
+│   ├── favicon-16x16.png           # PNG favicon (16x16)
+│   ├── favicon-32x32.png           # PNG favicon (32x32)
+│   ├── v8-homepage.html            # Standalone homepage (served at /)
+│   ├── robots.txt                  # Search engine crawling rules
 │   └── images/
-│       ├── logo.png                 # Company logo (transparent PNG)
-│       ├── apple-touch-icon.png     # iOS homescreen icon (180x180)
-│       ├── favicon-192x192.png      # Android Chrome icon
-│       └── hero-solar.webp          # Hero section background image
+│       ├── logo.png                # Company logo (transparent PNG)
+│       ├── apple-touch-icon.png    # iOS homescreen icon (180x180)
+│       ├── favicon-16x16.png       # Favicon for browsers
+│       ├── favicon-32x32.png       # Favicon for browsers
+│       ├── favicon-192x192.png     # Android Chrome icon
+│       └── hero-solar.webp         # Hero section background image
 ├── next.config.ts                    # Next.js config (standalone output, rewrites)
 ├── tailwind.config.ts                # Tailwind CSS configuration
 ├── components.json                   # shadcn/ui component configuration

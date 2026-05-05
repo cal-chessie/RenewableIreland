@@ -118,7 +118,6 @@ public/logo.svg
 public/v8-body.html
 public/v8-critical.css
 public/v8-deferred.css
-public/v8-homepage.html
 public/v8-scripts.js
 public/v8-styles.css
 
@@ -129,3 +128,17 @@ __pycache__/
 
 # Worklog
 worklog.md
+
+# Old/duplicate favicons and images (working files)
+public/favicon-48x48.png
+public/favicon-64x64.png
+public/images/favicon-180x180.png
+public/images/favicon-48x48.png
+public/images/favicon-mark-square.png
+public/images/favicon-mark.png
+public/images/favicon-source.png
+public/images/favicon.webp
+public/images/logo-dark.png
+public/images/logo-top-200.png
+public/images/logo.jpeg
+public/images/logo.webp
