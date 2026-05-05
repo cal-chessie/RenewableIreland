@@ -98,37 +98,37 @@ const tyrone: CountyData = {
       name: "Ciarán Mulgrew",
       location: "Omagh",
       rating: 5,
-      text: "Solar Tyrone were different from the first phone call. No hard sell, just straight answers about what a 4kW system would do for our semi in Omagh. They turned up when they said they would, cleaned up after themselves, and our first full month's bill dropped from £142 to £38. Genuinely the best home improvement we've made.",
+      text: "Renewable Tyrone were different from the first phone call. No hard sell, just straight answers about what a 4kW system would do for our semi in Omagh. They turned up when they said they would, cleaned up after themselves, and our first full month's bill dropped from £142 to £38. Genuinely the best home improvement we've made.",
     },
     {
       name: "Gráinne Clarke",
       location: "Dungannon",
       rating: 5,
-      text: "We run a small B&B outside Dungannon and electricity was one of our biggest overheads. Solar Tyrone installed a 6kW system on the south-facing roof of the main house and we're now exporting surplus back through SEG. The installation took a single day and caused zero disruption to guests. Highly recommend them to any Tyrone business owner.",
+      text: "We run a small B&B outside Dungannon and electricity was one of our biggest overheads. Renewable Tyrone installed a 6kW system on the south-facing roof of the main house and we're now exporting surplus back through SEG. The installation took a single day and caused zero disruption to guests. Highly recommend them to any Tyrone business owner.",
     },
     {
       name: "James Donnelly",
       location: "Cookstown",
       rating: 5,
-      text: "As a dairy farmer outside Cookstown, milking parlour electricity was costing a fortune. Solar Tyrone designed a ground-mounted array that covers almost all of our daytime usage. The ROI projection they gave us at quote stage has been accurate — we're on track for a 5.5-year payback, which is better than they promised.",
+      text: "As a dairy farmer outside Cookstown, milking parlour electricity was costing a fortune. Renewable Tyrone designed a ground-mounted array that covers almost all of our daytime usage. The ROI projection they gave us at quote stage has been accurate — we're on track for a 5.5-year payback, which is better than they promised.",
     },
     {
       name: "Aoife McCullagh",
       location: "Strabane",
       rating: 5,
-      text: "I was sceptical about whether solar panels would work given our weather in Strabane, but the team at Solar Tyrone explained that daylight — not direct sunshine — is what matters. Even through the winter months we've seen consistent generation. The monitoring app they set up is genuinely useful for tracking output.",
+      text: "I was sceptical about whether solar panels would work given our weather in Strabane, but the team at Renewable Tyrone explained that daylight — not direct sunshine — is what matters. Even through the winter months we've seen consistent generation. The monitoring app they set up is genuinely useful for tracking output.",
     },
     {
       name: "Patrick O'Neill",
       location: "Fivemiletown",
       rating: 5,
-      text: "We had three quotes for our detached house in Fivemiletown. Solar Tyrone weren't the cheapest, but they were the only ones who came out, measured the roof properly, and explained the difference between panel brands. That level of detail gave us confidence, and the installation has been flawless for six months now.",
+      text: "We had three quotes for our detached house in Fivemiletown. Renewable Tyrone weren't the cheapest, but they were the only ones who came out, measured the roof properly, and explained the difference between panel brands. That level of detail gave us confidence, and the installation has been flawless for six months now.",
     },
     {
       name: "Eleanor Breslin",
       location: "Dromore",
       rating: 5,
-      text: "From the initial survey to the final handover, the whole experience with Solar Tyrone was professional and straightforward. They handled everything — scaffolding, grid application, the lot. Our system has generated over 3,800 kWh in its first year, which is right in line with what they predicted. A great local company.",
+      text: "From the initial survey to the final handover, the whole experience with Renewable Tyrone was professional and straightforward. They handled everything — scaffolding, grid application, the lot. Our system has generated over 3,800 kWh in its first year, which is right in line with what they predicted. A great local company.",
     },
   ],
   faqs: [
@@ -160,7 +160,7 @@ const tyrone: CountyData = {
     {
       question: "How long do solar panels last and what warranty do I get?",
       answer:
-        "Quality solar panels are designed to last 25–30 years and typically come with a 25-year linear performance warranty (guaranteeing at least 80% of original output at year 25). Inverters generally last 10–15 years and come with a 5–10 year warranty. Solar Tyrone provides a 10-year workmanship warranty on all installations, covering materials and labour. We also offer an annual maintenance service to keep your system performing at its best.",
+        "Quality solar panels are designed to last 25–30 years and typically come with a 25-year linear performance warranty (guaranteeing at least 80% of original output at year 25). Inverters generally last 10–15 years and come with a 5–10 year warranty. Renewable Tyrone provides a 10-year workmanship warranty on all installations, covering materials and labour. We also offer an annual maintenance service to keep your system performing at its best.",
     },
     {
       question: "Will solar panels affect my home's Energy Performance Certificate?",
@@ -170,7 +170,7 @@ const tyrone: CountyData = {
     {
       question: "Do you install battery storage and EV chargers too?",
       answer:
-        "Yes. Solar Tyrone installs battery storage systems from leading manufacturers like Tesla Powerwall, GivEnergy, and FoxESS. Adding a battery lets you store excess daytime generation for use in the evening and overnight, reducing your grid dependence to near zero in summer months. We also install EV charger points — ideal if you're considering an electric vehicle, as you can charge for free using your own solar-generated electricity.",
+        "Yes. Renewable Tyrone installs battery storage systems from leading manufacturers like Tesla Powerwall, GivEnergy, and FoxESS. Adding a battery lets you store excess daytime generation for use in the evening and overnight, reducing your grid dependence to near zero in summer months. We also install EV charger points — ideal if you're considering an electric vehicle, as you can charge for free using your own solar-generated electricity.",
     },
   ],
   avgSystemCost: "£6,000 – £9,000",
@@ -218,7 +218,7 @@ const antrim: CountyData = {
       name: "David Patterson",
       location: "Carrickfergus",
       rating: 5,
-      text: "Best investment we've made in our home. The installers were courteous, tidy, and clearly experienced. We've recommended Solar Antrim to several neighbours already.",
+      text: "Best investment we've made in our home. The installers were courteous, tidy, and clearly experienced. We've recommended Renewable Antrim to several neighbours already.",
     },
   ],
   faqs: [
@@ -281,19 +281,19 @@ const armagh: CountyData = {
       name: "Seamus Hughes",
       location: "Portadown",
       rating: 5,
-      text: "Solar Armagh installed a 5kW system on our property and the results have exceeded expectations. Professional team, clean installation, and great ongoing support.",
+      text: "Renewable Armagh installed a 5kW system on our property and the results have exceeded expectations. Professional team, clean installation, and great ongoing support.",
     },
     {
       name: "Mairead Kelly",
       location: "Lurgan",
       rating: 5,
-      text: "We had quotes from three companies and Solar Armagh stood out for their detailed survey and honest advice. No pressure, no hidden costs, just a great solar installation.",
+      text: "We had quotes from three companies and Renewable Armagh stood out for their detailed survey and honest advice. No pressure, no hidden costs, just a great solar installation.",
     },
     {
       name: "Frank O'Brien",
       location: "Tandragee",
       rating: 5,
-      text: "Our farm barns were perfect for solar panels. Solar Armagh designed a system that covers nearly all our daytime electricity needs. Excellent service throughout.",
+      text: "Our farm barns were perfect for solar panels. Renewable Armagh designed a system that covers nearly all our daytime electricity needs. Excellent service throughout.",
     },
   ],
   faqs: [
@@ -356,7 +356,7 @@ const down: CountyData = {
       name: "Liam O'Hare",
       location: "Bangor",
       rating: 5,
-      text: "We chose Solar Down based on their MCS accreditation and local reputation. The installation was faultless and we're now generating more than we expected for our Bangor home.",
+      text: "We chose Renewable Down based on their MCS accreditation and local reputation. The installation was faultless and we're now generating more than we expected for our Bangor home.",
     },
     {
       name: "Rachel Woods",
@@ -368,7 +368,7 @@ const down: CountyData = {
       name: "Tommy Byrne",
       location: "Newcastle",
       rating: 5,
-      text: "Brilliant service. The team was punctual, clean, and clearly knew exactly what they were doing. I'd recommend Solar Down to anyone considering solar in County Down.",
+      text: "Brilliant service. The team was punctual, clean, and clearly knew exactly what they were doing. I'd recommend Renewable Down to anyone considering solar in County Down.",
     },
   ],
   faqs: [
@@ -431,7 +431,7 @@ const fermanagh: CountyData = {
       name: "Conor Maguire",
       location: "Enniskillen",
       rating: 5,
-      text: "Solar Fermanagh provided an excellent service from survey to installation. The 4kW system on our home has been performing brilliantly — even through the greyer months around Lough Erne.",
+      text: "Renewable Fermanagh provided an excellent service from survey to installation. The 4kW system on our home has been performing brilliantly — even through the greyer months around Lough Erne.",
     },
     {
       name: "Bridget O'Donnell",
@@ -443,7 +443,7 @@ const fermanagh: CountyData = {
       name: "Ryan Boyle",
       location: "Ballinamallard",
       rating: 5,
-      text: "Top-quality installation on our farm buildings. Solar Fermanagh understood the specific needs of an agricultural setup and the system has reduced our running costs significantly.",
+      text: "Top-quality installation on our farm buildings. Renewable Fermanagh understood the specific needs of an agricultural setup and the system has reduced our running costs significantly.",
     },
   ],
   faqs: [
@@ -506,13 +506,13 @@ const londonderry: CountyData = {
       name: "Declan Doherty",
       location: "Derry",
       rating: 5,
-      text: "Excellent experience with Solar Londonderry. The team was knowledgeable, efficient, and the price was fair. Our system has been generating consistently for over a year now.",
+      text: "Excellent experience with Renewable Londonderry. The team was knowledgeable, efficient, and the price was fair. Our system has been generating consistently for over a year now.",
     },
     {
       name: "Ann Gallagher",
       location: "Coleraine",
       rating: 5,
-      text: "We got three quotes and Solar Londonderry was the most thorough by far. The installation was done in a day and the results speak for themselves — 70% reduction in our electricity bill.",
+      text: "We got three quotes and Renewable Londonderry was the most thorough by far. The installation was done in a day and the results speak for themselves — 70% reduction in our electricity bill.",
     },
     {
       name: "Martin Quinn",
@@ -581,9 +581,9 @@ const carlow: CountyData = {
   heroSubtitle:
     "SEAI registered solar panel installers serving County Carlow — from Carlow town to Tullow, Bagenalstown to Leighlinbridge.",
   testimonials: [
-    { name: "John Murphy", location: "Carlow", rating: 5, text: "Solar Carlow made the SEAI grant process completely straightforward. Great installation and our bills have been cut dramatically since." },
+    { name: "John Murphy", location: "Carlow", rating: 5, text: "Renewable Carlow made the SEAI grant process completely straightforward. Great installation and our bills have been cut dramatically since." },
     { name: "Mary Kavanagh", location: "Tullow", rating: 5, text: "Professional, punctual, and excellent value. The 4kW system on our home in Tullow has exceeded the performance estimates we were given." },
-    { name: "Michael Doyle", location: "Bagenalstown", rating: 5, text: "We added a battery to our solar system and now we're virtually off the grid during summer. Fantastic service from the Solar Carlow team." },
+    { name: "Michael Doyle", location: "Bagenalstown", rating: 5, text: "We added a battery to our solar system and now we're virtually off the grid during summer. Fantastic service from the Renewable Carlow team." },
   ],
   faqs: [
     { question: "How much do solar panels cost in Carlow?", answer: "A typical 4kW system in County Carlow costs between €4,500 and €6,500. The SEAI grant can reduce this by up to €1,800." },
@@ -621,9 +621,9 @@ const cavan: CountyData = {
   heroSubtitle:
     "SEAI registered solar panel installers serving County Cavan — from Cavan town to Cootehill, Bailieborough to Virginia.",
   testimonials: [
-    { name: "Peter Reilly", location: "Cavan", rating: 5, text: "Excellent service from the Solar Cavan team. They handled our SEAI grant and the installation was done in a single day. Very happy with the results." },
+    { name: "Peter Reilly", location: "Cavan", rating: 5, text: "Excellent service from the Renewable Cavan team. They handled our SEAI grant and the installation was done in a single day. Very happy with the results." },
     { name: "Angela Brady", location: "Cootehill", rating: 5, text: "We were impressed by the professionalism and clear communication throughout. Our electricity bills have dropped significantly since the installation." },
-    { name: "Thomas Smith", location: "Bailieborough", rating: 5, text: "Solar Cavan installed panels on both our home and farm buildings. Both systems are performing well above expectations. Highly recommend." },
+    { name: "Thomas Smith", location: "Bailieborough", rating: 5, text: "Renewable Cavan installed panels on both our home and farm buildings. Both systems are performing well above expectations. Highly recommend." },
   ],
   faqs: [
     { question: "How much do solar panels cost in Cavan?", answer: "A 4kW system in County Cavan costs between €4,500 and €6,500 before the SEAI grant. The grant can reduce your cost by up to €1,800." },
@@ -661,8 +661,8 @@ const clare: CountyData = {
   heroSubtitle:
     "SEAI registered solar panel installers serving County Clare — from Ennis to Shannon, Kilrush to Lahinch.",
   testimonials: [
-    { name: "Brendan Hayes", location: "Ennis", rating: 5, text: "Solar Clare did a fantastic job on our home. The SEAI grant was handled seamlessly and the system is performing beautifully. Very professional team." },
-    { name: "Colette O'Brien", location: "Shannon", rating: 5, text: "We researched several companies before choosing Solar Clare. Their attention to detail during the survey gave us confidence, and the installation lived up to it." },
+    { name: "Brendan Hayes", location: "Ennis", rating: 5, text: "Renewable Clare did a fantastic job on our home. The SEAI grant was handled seamlessly and the system is performing beautifully. Very professional team." },
+    { name: "Colette O'Brien", location: "Shannon", rating: 5, text: "We researched several companies before choosing Renewable Clare. Their attention to detail during the survey gave us confidence, and the installation lived up to it." },
     { name: "Sean Flanagan", location: "Kilrush", rating: 5, text: "Great service from start to finish. The installers were efficient, tidy, and thorough. We're seeing significant savings already on our Kilrush home." },
   ],
   faqs: [
@@ -701,8 +701,8 @@ const cork: CountyData = {
   heroSubtitle:
     "SEAI registered solar panel installers serving County Cork — from Cork City to Mallow, Bandon to Clonakilty.",
   testimonials: [
-    { name: "Eamonn O'Sullivan", location: "Cork City", rating: 5, text: "Solar Cork provided an excellent service. The installation on our terraced house was handled with care and professionalism. Our bills are down by over 60%." },
-    { name: "Fiona Murphy", location: "Bandon", rating: 5, text: "We added both solar panels and a battery storage system. Solar Cork managed the SEAI grant application and the whole process was seamless." },
+    { name: "Eamonn O'Sullivan", location: "Cork City", rating: 5, text: "Renewable Cork provided an excellent service. The installation on our terraced house was handled with care and professionalism. Our bills are down by over 60%." },
+    { name: "Fiona Murphy", location: "Bandon", rating: 5, text: "We added both solar panels and a battery storage system. Renewable Cork managed the SEAI grant application and the whole process was seamless." },
     { name: "Derek O'Connor", location: "Clonakilty", rating: 5, text: "Outstanding installation on our west Cork home. The team was knowledgeable, efficient, and the system has exceeded the quoted performance figures." },
   ],
   faqs: [
@@ -741,9 +741,9 @@ const donegal: CountyData = {
   heroSubtitle:
     "SEAI registered solar panel installers serving County Donegal — from Letterkenny to Donegal Town, Buncrana to Bundoran.",
   testimonials: [
-    { name: "Neil Gallagher", location: "Letterkenny", rating: 5, text: "Despite Donegal's weather reputation, our solar panels are generating brilliantly. Solar Donegal were upfront about expected output and have delivered exactly what they promised." },
+    { name: "Neil Gallagher", location: "Letterkenny", rating: 5, text: "Despite Donegal's weather reputation, our solar panels are generating brilliantly. Renewable Donegal were upfront about expected output and have delivered exactly what they promised." },
     { name: "Martha Doherty", location: "Buncrana", rating: 5, text: "Very happy with our installation. The team was professional, tidy, and the aftercare has been excellent. Our electricity bills have never been lower." },
-    { name: "Joe McFadden", location: "Donegal Town", rating: 5, text: "Solar Donegal installed a system on our hotel and the savings have been significant. Great service from a trusted local company." },
+    { name: "Joe McFadden", location: "Donegal Town", rating: 5, text: "Renewable Donegal installed a system on our hotel and the savings have been significant. Great service from a trusted local company." },
   ],
   faqs: [
     { question: "How much do solar panels cost in Donegal?", answer: "A 4kW system in Donegal costs between €4,500 and €6,500. The SEAI grant of up to €1,800 can reduce this significantly." },
@@ -781,8 +781,8 @@ const dublin: CountyData = {
   heroSubtitle:
     "SEAI registered solar panel installers serving County Dublin — from Dublin City to Swords, Dun Laoghaire to Tallaght.",
   testimonials: [
-    { name: "David O'Neil", location: "Dublin City", rating: 5, text: "Solar Dublin installed panels on our semi-detached home and the process was smooth from start to finish. Great communication, clean work, and the results speak for themselves." },
-    { name: "Siobhan Walsh", location: "Swords", rating: 5, text: "We were quoted quickly, installation was done in a day, and the SEAI grant was handled entirely by the Solar Dublin team. Couldn't have asked for a better experience." },
+    { name: "David O'Neil", location: "Dublin City", rating: 5, text: "Renewable Dublin installed panels on our semi-detached home and the process was smooth from start to finish. Great communication, clean work, and the results speak for themselves." },
+    { name: "Siobhan Walsh", location: "Swords", rating: 5, text: "We were quoted quickly, installation was done in a day, and the SEAI grant was handled entirely by the Renewable Dublin team. Couldn't have asked for a better experience." },
     { name: "Paul Dunne", location: "Dundrum", rating: 5, text: "Excellent installation on our 1960s bungalow in Dundrum. The team was knowledgeable about the specific challenges of older roofs and delivered a first-class result." },
   ],
   faqs: [
@@ -821,9 +821,9 @@ const galway: CountyData = {
   heroSubtitle:
     "SEAI registered solar panel installers serving County Galway — from Galway City to Tuam, Athenry to Clifden.",
   testimonials: [
-    { name: "Aiden Connolly", location: "Galway City", rating: 5, text: "Solar Galway provided a seamless experience. From the initial survey to commissioning, everything was handled professionally. We're delighted with the results." },
-    { name: "Niamh O'Flaherty", location: "Athenry", rating: 5, text: "We added solar and battery storage to our home in Athenry. Solar Galway's team was excellent — knowledgeable, efficient, and very tidy." },
-    { name: "Sean Joyce", location: "Loughrea", rating: 5, text: "Top quality installation at a fair price. The monitoring app shows our system is performing exactly as quoted. Highly recommend Solar Galway." },
+    { name: "Aiden Connolly", location: "Galway City", rating: 5, text: "Renewable Galway provided a seamless experience. From the initial survey to commissioning, everything was handled professionally. We're delighted with the results." },
+    { name: "Niamh O'Flaherty", location: "Athenry", rating: 5, text: "We added solar and battery storage to our home in Athenry. Renewable Galway's team was excellent — knowledgeable, efficient, and very tidy." },
+    { name: "Sean Joyce", location: "Loughrea", rating: 5, text: "Top quality installation at a fair price. The monitoring app shows our system is performing exactly as quoted. Highly recommend Renewable Galway." },
   ],
   faqs: [
     { question: "How much do solar panels cost in Galway?", answer: "A 4kW system in County Galway costs between €4,500 and €6,500 before the SEAI grant of up to €1,800." },
@@ -861,9 +861,9 @@ const kerry: CountyData = {
   heroSubtitle:
     "SEAI registered solar panel installers serving County Kerry — from Tralee to Killarney, Listowel to Dingle.",
   testimonials: [
-    { name: "Denis O'Connor", location: "Tralee", rating: 5, text: "Solar Kerry did a superb job on our home. Professional installation, great communication, and the SEAI grant was handled without any fuss." },
-    { name: "Eileen Murphy", location: "Killarney", rating: 5, text: "We were worried about the impact of Kerry's weather but Solar Kerry explained everything clearly. Our panels are performing well above expectations." },
-    { name: "Michael O'Shea", location: "Listowel", rating: 5, text: "Excellent service from the Solar Kerry team. The installation was done quickly and cleanly, and we're seeing great savings on our electricity bills." },
+    { name: "Denis O'Connor", location: "Tralee", rating: 5, text: "Renewable Kerry did a superb job on our home. Professional installation, great communication, and the SEAI grant was handled without any fuss." },
+    { name: "Eileen Murphy", location: "Killarney", rating: 5, text: "We were worried about the impact of Kerry's weather but Renewable Kerry explained everything clearly. Our panels are performing well above expectations." },
+    { name: "Michael O'Shea", location: "Listowel", rating: 5, text: "Excellent service from the Renewable Kerry team. The installation was done quickly and cleanly, and we're seeing great savings on our electricity bills." },
   ],
   faqs: [
     { question: "How much do solar panels cost in Kerry?", answer: "A 4kW system in County Kerry costs between €4,500 and €6,500. The SEAI grant can reduce this by up to €1,800." },
@@ -901,9 +901,9 @@ const kildare: CountyData = {
   heroSubtitle:
     "SEAI registered solar panel installers serving County Kildare — from Naas to Newbridge, Celbridge to Maynooth.",
   testimonials: [
-    { name: "Robert Whelan", location: "Naas", rating: 5, text: "Solar Kildare provided excellent service from start to finish. The SEAI grant was sorted and the installation was completed efficiently in a single day." },
+    { name: "Robert Whelan", location: "Naas", rating: 5, text: "Renewable Kildare provided excellent service from start to finish. The SEAI grant was sorted and the installation was completed efficiently in a single day." },
     { name: "Laura Maher", location: "Newbridge", rating: 5, text: "Very professional operation. The survey was thorough, the quote was clear, and the installation was spotless. Highly recommend." },
-    { name: "Andrew Byrne", location: "Celbridge", rating: 5, text: "We chose Solar Kildare based on local recommendations and they exceeded expectations. Great communication throughout the process." },
+    { name: "Andrew Byrne", location: "Celbridge", rating: 5, text: "We chose Renewable Kildare based on local recommendations and they exceeded expectations. Great communication throughout the process." },
   ],
   faqs: [
     { question: "How much do solar panels cost in Kildare?", answer: "A 4kW system in Kildare costs between €4,500 and €6,500. The SEAI grant of up to €1,800 can reduce your cost significantly." },
@@ -941,7 +941,7 @@ const kilkenny: CountyData = {
   heroSubtitle:
     "SEAI registered solar panel installers serving County Kilkenny — from Kilkenny City to Thomastown, Castlecomer to Callan.",
   testimonials: [
-    { name: "Pat Ryan", location: "Kilkenny City", rating: 5, text: "Solar Kilkenny provided a thorough survey and transparent pricing. The installation was done professionally and the system is performing very well." },
+    { name: "Pat Ryan", location: "Kilkenny City", rating: 5, text: "Renewable Kilkenny provided a thorough survey and transparent pricing. The installation was done professionally and the system is performing very well." },
     { name: "Aisling Brennan", location: "Thomastown", rating: 5, text: "We're very happy with our solar installation. The SEAI grant was straightforward and the team was excellent from start to finish." },
     { name: "John Phelan", location: "Castlecomer", rating: 5, text: "Great local company that delivers on its promises. The installation was clean and efficient, and we're seeing excellent generation figures." },
   ],
@@ -981,9 +981,9 @@ const laois: CountyData = {
   heroSubtitle:
     "SEAI registered solar panel installers serving County Laois — from Portlaoise to Portarlington, Mountmellick to Abbeyleix.",
   testimonials: [
-    { name: "James Delaney", location: "Portlaoise", rating: 5, text: "Solar Laois delivered exactly what they promised. Clean installation, good communication, and our electricity bills are significantly lower." },
-    { name: "Margaret Dunne", location: "Abbeyleix", rating: 5, text: "We're very pleased with our solar panels. The SEAI grant was easy to apply for with Solar Laois's help, and the installation was done in a day." },
-    { name: "Liam Fitzpatrick", location: "Mountmellick", rating: 5, text: "Professional and reliable. Solar Laois installed our system efficiently and it's been generating well above the quoted figures." },
+    { name: "James Delaney", location: "Portlaoise", rating: 5, text: "Renewable Laois delivered exactly what they promised. Clean installation, good communication, and our electricity bills are significantly lower." },
+    { name: "Margaret Dunne", location: "Abbeyleix", rating: 5, text: "We're very pleased with our solar panels. The SEAI grant was easy to apply for with Renewable Laois's help, and the installation was done in a day." },
+    { name: "Liam Fitzpatrick", location: "Mountmellick", rating: 5, text: "Professional and reliable. Renewable Laois installed our system efficiently and it's been generating well above the quoted figures." },
   ],
   faqs: [
     { question: "How much do solar panels cost in Laois?", answer: "A 4kW system in County Laois costs between €4,500 and €6,500 before the SEAI grant." },
@@ -1021,9 +1021,9 @@ const leitrim: CountyData = {
   heroSubtitle:
     "SEAI registered solar panel installers serving County Leitrim — from Carrick-on-Shannon to Manorhamilton, Drumshanbo to Ballinamore.",
   testimonials: [
-    { name: "Michael Gallagher", location: "Carrick-on-Shannon", rating: 5, text: "Solar Leitrim provided a great service. The installation was efficient and we're very happy with the performance of our system." },
-    { name: "Bernie Feeney", location: "Drumshanbo", rating: 5, text: "We chose Solar Leitrim for their local knowledge and competitive pricing. The installation was done in a day and the results are excellent." },
-    { name: "Paddy Reynolds", location: "Manorhamilton", rating: 5, text: "Very professional outfit. The team was courteous, tidy, and clearly experienced. We'd recommend Solar Leitrim without hesitation." },
+    { name: "Michael Gallagher", location: "Carrick-on-Shannon", rating: 5, text: "Renewable Leitrim provided a great service. The installation was efficient and we're very happy with the performance of our system." },
+    { name: "Bernie Feeney", location: "Drumshanbo", rating: 5, text: "We chose Renewable Leitrim for their local knowledge and competitive pricing. The installation was done in a day and the results are excellent." },
+    { name: "Paddy Reynolds", location: "Manorhamilton", rating: 5, text: "Very professional outfit. The team was courteous, tidy, and clearly experienced. We'd recommend Renewable Leitrim without hesitation." },
   ],
   faqs: [
     { question: "How much do solar panels cost in Leitrim?", answer: "A 4kW system in County Leitrim costs between €4,500 and €6,500, with the SEAI grant reducing this by up to €1,800." },
@@ -1061,9 +1061,9 @@ const limerick: CountyData = {
   heroSubtitle:
     "SEAI registered solar panel installers serving County Limerick — from Limerick City to Newcastle West, Rathkeale to Kilmallock.",
   testimonials: [
-    { name: "Timothy O'Brien", location: "Limerick City", rating: 5, text: "Solar Limerick installed a 5kW system on our home and the results have been outstanding. The SEAI grant was handled efficiently and the installation was done in a day." },
-    { name: "Catherine O'Sullivan", location: "Kilmallock", rating: 5, text: "We added battery storage to our solar installation and are now virtually self-sufficient during the summer months. Excellent service from Solar Limerick." },
-    { name: "Gerard Meaney", location: "Newcastle West", rating: 5, text: "Professional, reliable, and competitively priced. Solar Limerick did a great job on our property and we're seeing significant electricity savings." },
+    { name: "Timothy O'Brien", location: "Limerick City", rating: 5, text: "Renewable Limerick installed a 5kW system on our home and the results have been outstanding. The SEAI grant was handled efficiently and the installation was done in a day." },
+    { name: "Catherine O'Sullivan", location: "Kilmallock", rating: 5, text: "We added battery storage to our solar installation and are now virtually self-sufficient during the summer months. Excellent service from Renewable Limerick." },
+    { name: "Gerard Meaney", location: "Newcastle West", rating: 5, text: "Professional, reliable, and competitively priced. Renewable Limerick did a great job on our property and we're seeing significant electricity savings." },
   ],
   faqs: [
     { question: "How much do solar panels cost in Limerick?", answer: "A 4kW system in Limerick costs between €4,500 and €6,500 before the SEAI grant of up to €1,800." },
@@ -1101,9 +1101,9 @@ const longford: CountyData = {
   heroSubtitle:
     "SEAI registered solar panel installers serving County Longford — from Longford Town to Ballymahon, Granard to Edgeworthstown.",
   testimonials: [
-    { name: "Brian Kenny", location: "Longford Town", rating: 5, text: "Solar Longford were excellent. They handled everything from survey to SEAI grant, and the installation was done in a single day." },
+    { name: "Brian Kenny", location: "Longford Town", rating: 5, text: "Renewable Longford were excellent. They handled everything from survey to SEAI grant, and the installation was done in a single day." },
     { name: "Rose Brady", location: "Ballymahon", rating: 5, text: "We're very pleased with our solar panels. The system is generating well and we've seen a real reduction in our electricity bills." },
-    { name: "Francis McCabe", location: "Granard", rating: 5, text: "Great service from a local company. Solar Longford were professional, competitively priced, and the installation was done to a high standard." },
+    { name: "Francis McCabe", location: "Granard", rating: 5, text: "Great service from a local company. Renewable Longford were professional, competitively priced, and the installation was done to a high standard." },
   ],
   faqs: [
     { question: "How much do solar panels cost in Longford?", answer: "A 4kW system in County Longford costs between €4,500 and €6,500. The SEAI grant of up to €1,800 applies." },
@@ -1141,8 +1141,8 @@ const louth: CountyData = {
   heroSubtitle:
     "SEAI registered solar panel installers serving County Louth — from Dundalk to Drogheda, Ardee to Carlingford.",
   testimonials: [
-    { name: "John Callan", location: "Dundalk", rating: 5, text: "Solar Louth delivered a first-class installation. The system is performing exactly as quoted and the SEAI grant was handled efficiently." },
-    { name: "Michelle Mackin", location: "Drogheda", rating: 5, text: "We chose Solar Louth based on their local reputation and they didn't disappoint. Clean, professional installation with excellent aftercare." },
+    { name: "John Callan", location: "Dundalk", rating: 5, text: "Renewable Louth delivered a first-class installation. The system is performing exactly as quoted and the SEAI grant was handled efficiently." },
+    { name: "Michelle Mackin", location: "Drogheda", rating: 5, text: "We chose Renewable Louth based on their local reputation and they didn't disappoint. Clean, professional installation with excellent aftercare." },
     { name: "Eugene Mathews", location: "Ardee", rating: 5, text: "Very happy with our solar panels. The installation was done quickly and we've seen a significant reduction in our electricity bills." },
   ],
   faqs: [
@@ -1181,9 +1181,9 @@ const meath: CountyData = {
   heroSubtitle:
     "SEAI registered solar panel installers serving County Meath — from Navan to Ashbourne, Kells to Trim.",
   testimonials: [
-    { name: "Derek Farrell", location: "Navan", rating: 5, text: "Solar Meath provided an excellent end-to-end service. From survey to installation, everything was professional and well-coordinated." },
+    { name: "Derek Farrell", location: "Navan", rating: 5, text: "Renewable Meath provided an excellent end-to-end service. From survey to installation, everything was professional and well-coordinated." },
     { name: "Orla Smith", location: "Ashbourne", rating: 5, text: "We're very happy with our solar installation. The SEAI grant process was handled smoothly and the system is performing well." },
-    { name: "Gareth Reilly", location: "Dunboyne", rating: 5, text: "Great service from a knowledgeable team. Solar Meath delivered exactly what they promised and we're seeing real savings." },
+    { name: "Gareth Reilly", location: "Dunboyne", rating: 5, text: "Great service from a knowledgeable team. Renewable Meath delivered exactly what they promised and we're seeing real savings." },
   ],
   faqs: [
     { question: "How much do solar panels cost in Meath?", answer: "A 4kW system in County Meath costs between €4,500 and €6,500. The SEAI grant can reduce this by up to €1,800." },
@@ -1221,9 +1221,9 @@ const monaghan: CountyData = {
   heroSubtitle:
     "SEAI registered solar panel installers serving County Monaghan — from Monaghan Town to Castleblayney, Carrickmacross to Clones.",
   testimonials: [
-    { name: "Raymond McEntee", location: "Monaghan Town", rating: 5, text: "Solar Monaghan did an excellent job on our home. The installation was done efficiently and the SEAI grant was handled without any hassle." },
+    { name: "Raymond McEntee", location: "Monaghan Town", rating: 5, text: "Renewable Monaghan did an excellent job on our home. The installation was done efficiently and the SEAI grant was handled without any hassle." },
     { name: "Anne Sherry", location: "Carrickmacross", rating: 5, text: "We're delighted with our solar panels. The system is performing well and we've seen a real reduction in our electricity costs." },
-    { name: "Thomas McNally", location: "Castleblayney", rating: 5, text: "Professional and thorough. Solar Monaghan provided a great service at a competitive price. Highly recommend them." },
+    { name: "Thomas McNally", location: "Castleblayney", rating: 5, text: "Professional and thorough. Renewable Monaghan provided a great service at a competitive price. Highly recommend them." },
   ],
   faqs: [
     { question: "How much do solar panels cost in Monaghan?", answer: "A 4kW system in County Monaghan costs between €4,500 and €6,500. The SEAI grant of up to €1,800 applies." },
@@ -1261,9 +1261,9 @@ const offaly: CountyData = {
   heroSubtitle:
     "SEAI registered solar panel installers serving County Offaly — from Tullamore to Birr, Edenderry to Banagher.",
   testimonials: [
-    { name: "Pat O'Meara", location: "Tullamore", rating: 5, text: "Solar Offaly provided an excellent service. The installation was efficient and the system is performing very well. Great local company." },
+    { name: "Pat O'Meara", location: "Tullamore", rating: 5, text: "Renewable Offaly provided an excellent service. The installation was efficient and the system is performing very well. Great local company." },
     { name: "Deirdre Flanagan", location: "Birr", rating: 5, text: "We're very pleased with our solar installation. The SEAI grant was handled smoothly and the team was professional throughout." },
-    { name: "Thomas Breslin", location: "Edenderry", rating: 5, text: "Top-notch installation. Solar Offaly delivered on every promise and we're seeing significant savings on our bills." },
+    { name: "Thomas Breslin", location: "Edenderry", rating: 5, text: "Top-notch installation. Renewable Offaly delivered on every promise and we're seeing significant savings on our bills." },
   ],
   faqs: [
     { question: "How much do solar panels cost in Offaly?", answer: "A 4kW system in County Offaly costs between €4,500 and €6,500 before the SEAI grant." },
@@ -1301,9 +1301,9 @@ const roscommon: CountyData = {
   heroSubtitle:
     "SEAI registered solar panel installers serving County Roscommon — from Roscommon Town to Boyle, Castlerea to Strokestown.",
   testimonials: [
-    { name: "Thomas Mannion", location: "Roscommon Town", rating: 5, text: "Solar Roscommon did a fantastic job on our home. The installation was done efficiently and the SEAI grant was handled without any issues." },
+    { name: "Thomas Mannion", location: "Roscommon Town", rating: 5, text: "Renewable Roscommon did a fantastic job on our home. The installation was done efficiently and the SEAI grant was handled without any issues." },
     { name: "Brid Mulry", location: "Castlerea", rating: 5, text: "We're very happy with our solar installation. Professional team, clean work, and the system is performing well above expectations." },
-    { name: "James Finan", location: "Boyle", rating: 5, text: "Great service from start to finish. Solar Roscommon delivered on everything they promised. Highly recommend." },
+    { name: "James Finan", location: "Boyle", rating: 5, text: "Great service from start to finish. Renewable Roscommon delivered on everything they promised. Highly recommend." },
   ],
   faqs: [
     { question: "How much do solar panels cost in Roscommon?", answer: "A 4kW system in County Roscommon costs between €4,500 and €6,500. The SEAI grant of up to €1,800 applies." },
@@ -1341,9 +1341,9 @@ const sligo: CountyData = {
   heroSubtitle:
     "SEAI registered solar panel installers serving County Sligo — from Sligo Town to Tubbercurry, Enniscrone to Grange.",
   testimonials: [
-    { name: "Declan Gilmartin", location: "Sligo Town", rating: 5, text: "Solar Sligo provided a great service. The installation was done efficiently and our electricity bills have dropped significantly." },
-    { name: "Ita Gallagher", location: "Tubbercurry", rating: 5, text: "Very happy with our solar panels. The SEAI grant was straightforward and the team at Solar Sligo was professional throughout." },
-    { name: "Michael Brennan", location: "Enniscrone", rating: 5, text: "Excellent installation on our coastal property. Solar Sligo understood the specific considerations for our location and delivered a first-class result." },
+    { name: "Declan Gilmartin", location: "Sligo Town", rating: 5, text: "Renewable Sligo provided a great service. The installation was done efficiently and our electricity bills have dropped significantly." },
+    { name: "Ita Gallagher", location: "Tubbercurry", rating: 5, text: "Very happy with our solar panels. The SEAI grant was straightforward and the team at Renewable Sligo was professional throughout." },
+    { name: "Michael Brennan", location: "Enniscrone", rating: 5, text: "Excellent installation on our coastal property. Renewable Sligo understood the specific considerations for our location and delivered a first-class result." },
   ],
   faqs: [
     { question: "How much do solar panels cost in Sligo?", answer: "A 4kW system in County Sligo costs between €4,500 and €6,500 before the SEAI grant." },
@@ -1381,9 +1381,9 @@ const tipperary: CountyData = {
   heroSubtitle:
     "SEAI registered solar panel installers serving County Tipperary — from Clonmel to Nenagh, Thurles to Cashel.",
   testimonials: [
-    { name: "Eddie Ryan", location: "Clonmel", rating: 5, text: "Solar Tipperary installed a 5kW system on our home and the results have been excellent. The SEAI grant was handled without any hassle." },
+    { name: "Eddie Ryan", location: "Clonmel", rating: 5, text: "Renewable Tipperary installed a 5kW system on our home and the results have been excellent. The SEAI grant was handled without any hassle." },
     { name: "Mary O'Dwyer", location: "Thurles", rating: 5, text: "Very professional service from start to finish. The installation was done in a day and we're very happy with the results." },
-    { name: "John Maher", location: "Nenagh", rating: 5, text: "Solar Tipperary did a fantastic job. Clean installation, good communication, and the system is performing exactly as quoted." },
+    { name: "John Maher", location: "Nenagh", rating: 5, text: "Renewable Tipperary did a fantastic job. Clean installation, good communication, and the system is performing exactly as quoted." },
   ],
   faqs: [
     { question: "How much do solar panels cost in Tipperary?", answer: "A 4kW system in County Tipperary costs between €4,500 and €6,500. The SEAI grant of up to €1,800 applies." },
@@ -1421,9 +1421,9 @@ const waterford: CountyData = {
   heroSubtitle:
     "SEAI registered solar panel installers serving County Waterford — from Waterford City to Dungarvan, Tramore to Lismore.",
   testimonials: [
-    { name: "John Power", location: "Waterford City", rating: 5, text: "Solar Waterford provided an excellent service. The installation was done in a day and the SEAI grant was handled efficiently." },
+    { name: "John Power", location: "Waterford City", rating: 5, text: "Renewable Waterford provided an excellent service. The installation was done in a day and the SEAI grant was handled efficiently." },
     { name: "Sinead Kirwan", location: "Dungarvan", rating: 5, text: "We're very pleased with our solar panels. The system is generating well and the team was professional and knowledgeable." },
-    { name: "Mike Foley", location: "Tramore", rating: 5, text: "Great installation on our coastal home. Solar Waterford were thorough, reliable, and the system has exceeded expectations." },
+    { name: "Mike Foley", location: "Tramore", rating: 5, text: "Great installation on our coastal home. Renewable Waterford were thorough, reliable, and the system has exceeded expectations." },
   ],
   faqs: [
     { question: "How much do solar panels cost in Waterford?", answer: "A 4kW system in County Waterford costs between €4,500 and €6,500 before the SEAI grant." },
@@ -1461,9 +1461,9 @@ const westmeath: CountyData = {
   heroSubtitle:
     "SEAI registered solar panel installers serving County Westmeath — from Mullingar to Athlone, Kinnegad to Castlepollard.",
   testimonials: [
-    { name: "Michael Smyth", location: "Mullingar", rating: 5, text: "Solar Westmeath provided an excellent service. The installation was efficient and the SEAI grant was sorted without any issues." },
+    { name: "Michael Smyth", location: "Mullingar", rating: 5, text: "Renewable Westmeath provided an excellent service. The installation was efficient and the SEAI grant was sorted without any issues." },
     { name: "Mary O'Brien", location: "Athlone", rating: 5, text: "We're very happy with our solar panels. The team was professional, tidy, and the system is performing very well." },
-    { name: "John Connolly", location: "Kinnegad", rating: 5, text: "Great installation at a fair price. Solar Westmeath delivered exactly what they promised and the results speak for themselves." },
+    { name: "John Connolly", location: "Kinnegad", rating: 5, text: "Great installation at a fair price. Renewable Westmeath delivered exactly what they promised and the results speak for themselves." },
   ],
   faqs: [
     { question: "How much do solar panels cost in Westmeath?", answer: "A 4kW system in County Westmeath costs between €4,500 and €6,500. The SEAI grant can reduce this by up to €1,800." },
@@ -1501,9 +1501,9 @@ const wexford: CountyData = {
   heroSubtitle:
     "SEAI registered solar panel installers serving County Wexford — from Wexford Town to Enniscorthy, Gorey to New Ross.",
   testimonials: [
-    { name: "Jimmy Roche", location: "Wexford Town", rating: 5, text: "Solar Wexford did a superb job on our home. The installation was done in a day and we're seeing excellent generation from our coastal location." },
+    { name: "Jimmy Roche", location: "Wexford Town", rating: 5, text: "Renewable Wexford did a superb job on our home. The installation was done in a day and we're seeing excellent generation from our coastal location." },
     { name: "Margaret Kinsella", location: "Enniscorthy", rating: 5, text: "We're delighted with our solar installation. Professional team and the SEAI grant was handled smoothly from start to finish." },
-    { name: "Paddy Doyle", location: "Gorey", rating: 5, text: "Excellent service from Solar Wexford. Clean installation, good communication, and the system is performing very well." },
+    { name: "Paddy Doyle", location: "Gorey", rating: 5, text: "Excellent service from Renewable Wexford. Clean installation, good communication, and the system is performing very well." },
   ],
   faqs: [
     { question: "How much do solar panels cost in Wexford?", answer: "A 4kW system in County Wexford costs between €4,500 and €6,500 before the SEAI grant." },
@@ -1541,9 +1541,9 @@ const wicklow: CountyData = {
   heroSubtitle:
     "SEAI registered solar panel installers serving County Wicklow — from Wicklow Town to Bray, Greystones to Arklow.",
   testimonials: [
-    { name: "Brian O'Toole", location: "Bray", rating: 5, text: "Solar Wicklow provided a first-class service. The installation on our home was done efficiently and the SEAI grant was handled seamlessly." },
-    { name: "Grainne Nolan", location: "Greystones", rating: 5, text: "We added solar and battery storage and couldn't be happier. Solar Wicklow's team was professional and the results have exceeded our expectations." },
-    { name: "Conor Kavanagh", location: "Arklow", rating: 5, text: "Great installation at a competitive price. The system is performing well and the aftercare from Solar Wicklow has been excellent." },
+    { name: "Brian O'Toole", location: "Bray", rating: 5, text: "Renewable Wicklow provided a first-class service. The installation on our home was done efficiently and the SEAI grant was handled seamlessly." },
+    { name: "Grainne Nolan", location: "Greystones", rating: 5, text: "We added solar and battery storage and couldn't be happier. Renewable Wicklow's team was professional and the results have exceeded our expectations." },
+    { name: "Conor Kavanagh", location: "Arklow", rating: 5, text: "Great installation at a competitive price. The system is performing well and the aftercare from Renewable Wicklow has been excellent." },
   ],
   faqs: [
     { question: "How much do solar panels cost in Wicklow?", answer: "A 4kW system in County Wicklow costs between €4,500 and €6,500. The SEAI grant of up to €1,800 applies." },
