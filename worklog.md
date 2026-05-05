@@ -79,3 +79,23 @@ Stage Summary:
 - All favicon files created in public/ and public/images/
 - Favicon references added to HTML: icon (ico), icon (32px png), icon (16px png), apple-touch-icon
 - Site serving correctly on localhost:3000 with keepalive
+---
+Task ID: 1
+Agent: main
+Task: Fix 404 / Z-logo loading issue on preview proxy (persisted across 3+ sessions)
+
+Work Log:
+- Identified that Caddy on port 81 proxies to Next.js dev server on port 3000
+- Found that Node.js processes were being killed by OOM (default V8 heap too large for container)
+- Fixed by adding NODE_OPTIONS='--max-old-space-size=512' to limit V8 heap
+- Changed approach from route.ts to next.config.ts rewrites (serves public/v8-homepage.html at /)
+- Created .zscripts/dev.sh as fallback Python server for container restart resilience
+- Verified Caddy returns HTTP 200 with 568KB v8 HTML
+- Content verified: correct Renewable Ireland homepage with 16 brand mentions
+
+Stage Summary:
+- Root cause: Node.js OOM killer terminating dev server between shell sessions
+- Fix: NODE_OPTIONS='--max-old-space-size=512' + nested subshell detachment
+- Caddy proxy on port 81 now successfully serves the v8 homepage
+- Files changed: next.config.ts (added rewrites), package.json (added memory limit), .zscripts/dev.sh (created)
+- route.ts.disabled-v2: old route handler backed up, replaced by rewrite approach

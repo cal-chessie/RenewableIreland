@@ -10,6 +10,11 @@
 <meta name="robots" content="index, follow">
 <meta name="author" content="Renewable Ireland">
 <link rel="canonical" href="https://renewableireland.ie/">
+<!-- Favicons -->
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://renewableireland.ie/">
@@ -167,12 +172,6 @@ nav.shrunk{padding:9px 52px;box-shadow:0 2px 16px rgba(0,0,0,.07)}
 .hstat-val{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:800;color:var(--black);line-height:1;margin-bottom:2px}
 .hstat-val em{color:var(--lime-dk);font-style:normal}
 .hstat-lbl{font-size:8px;font-weight:700;color:var(--hint);text-transform:uppercase;letter-spacing:.04em;font-family:'Barlow Condensed',sans-serif}
-
-/* COUNTIES SECTION */
-.counties-sec{padding:88px 64px;background:var(--off);border-bottom:var(--bd)}
-.county-link{display:flex;align-items:center;justify-content:center;padding:12px 18px;background:var(--white);border:2.5px solid var(--black);border-radius:var(--r);font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;color:var(--black);text-decoration:none;text-transform:uppercase;letter-spacing:.04em;transition:all .15s;box-shadow:var(--sh);cursor:pointer}
-.county-link:hover{background:var(--lime-lt);transform:translate(-2px,-2px);box-shadow:var(--shlg);border-color:var(--lime-dk);color:var(--lime-dk)}
-@media(max-width:768px){.counties-sec{padding:48px 20px}}
 
 /* BUTTONS */
 .btn-p{display:inline-flex;align-items:center;gap:8px;background:var(--black);color:var(--white);border:2.5px solid var(--black);border-radius:var(--pill);padding:13px 26px;font-size:14px;font-weight:700;font-family:'Barlow Condensed',sans-serif;cursor:pointer;text-decoration:none;transition:all .15s;box-shadow:var(--sh);text-transform:uppercase;letter-spacing:.04em}
@@ -828,7 +827,6 @@ footer{background:var(--black);border-top:var(--bd);padding:48px 64px 26px}
     <li><a href="#get-started">Get Started</a></li>
     <li><a href="#calculator">Calculator</a></li>
     <li><a href="#grants">SEAI Grants</a></li>
-    <li><a href="/counties/dublin/blog">Blog</a></li>
     <li><a href="#faq">FAQ</a></li>
     <li><a href="#" onclick="openPortal();return false">Track Project</a></li>
     <li><a class="ncta" href="#get-started">Free Quote</a></li>
@@ -1843,58 +1841,6 @@ footer{background:var(--black);border-top:var(--bd);padding:48px 64px 26px}
   </div>
 </section>
 
-
-<!-- COUNTIES WE SERVE -->
-<section class="counties-sec" id="counties">
-  <div style="max-width:1300px;margin:0 auto">
-    <div style="text-align:center;margin-bottom:48px">
-      <div class="stag ea">Nationwide Coverage</div>
-      <h2 style="font-family:'Barlow Condensed',sans-serif;font-size:clamp(30px,3.8vw,50px);font-weight:800;text-transform:uppercase;color:var(--black);letter-spacing:-.02em;line-height:1.05;margin-bottom:12px">Counties <em style="font-style:normal;color:var(--earth-dk)">We Serve</em></h2>
-      <p style="font-size:16px;color:var(--gray);max-width:540px;margin:0 auto;line-height:1.75">SEAI-registered solar panel installers serving homes and businesses across all 32 counties of Ireland.</p>
-    </div>
-    <div style="margin-bottom:32px">
-      <h3 style="font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--hint);margin-bottom:14px;padding-left:4px">Northern Ireland</h3>
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px">
-        <a href="/counties/tyrone" class="county-link">Tyrone</a>
-        <a href="/counties/antrim" class="county-link">Antrim</a>
-        <a href="/counties/armagh" class="county-link">Armagh</a>
-        <a href="/counties/down" class="county-link">Down</a>
-        <a href="/counties/fermanagh" class="county-link">Fermanagh</a>
-        <a href="/counties/londonderry" class="county-link">Londonderry</a>
-      </div>
-    </div>
-    <div>
-      <h3 style="font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--hint);margin-bottom:14px;padding-left:4px">Republic of Ireland</h3>
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px">
-        <a href="/counties/carlow" class="county-link">Carlow</a>
-        <a href="/counties/cavan" class="county-link">Cavan</a>
-        <a href="/counties/clare" class="county-link">Clare</a>
-        <a href="/counties/cork" class="county-link">Cork</a>
-        <a href="/counties/donegal" class="county-link">Donegal</a>
-        <a href="/counties/dublin" class="county-link">Dublin</a>
-        <a href="/counties/galway" class="county-link">Galway</a>
-        <a href="/counties/kerry" class="county-link">Kerry</a>
-        <a href="/counties/kildare" class="county-link">Kildare</a>
-        <a href="/counties/kilkenny" class="county-link">Kilkenny</a>
-        <a href="/counties/laois" class="county-link">Laois</a>
-        <a href="/counties/leitrim" class="county-link">Leitrim</a>
-        <a href="/counties/limerick" class="county-link">Limerick</a>
-        <a href="/counties/longford" class="county-link">Longford</a>
-        <a href="/counties/louth" class="county-link">Louth</a>
-        <a href="/counties/meath" class="county-link">Meath</a>
-        <a href="/counties/monaghan" class="county-link">Monaghan</a>
-        <a href="/counties/offaly" class="county-link">Offaly</a>
-        <a href="/counties/roscommon" class="county-link">Roscommon</a>
-        <a href="/counties/sligo" class="county-link">Sligo</a>
-        <a href="/counties/tipperary" class="county-link">Tipperary</a>
-        <a href="/counties/waterford" class="county-link">Waterford</a>
-        <a href="/counties/westmeath" class="county-link">Westmeath</a>
-        <a href="/counties/wexford" class="county-link">Wexford</a>
-        <a href="/counties/wicklow" class="county-link">Wicklow</a>
-      </div>
-    </div>
-  </div>
-</section>
 
 <footer style="border-top:3px solid #C4855A">
   <div class="ft">
