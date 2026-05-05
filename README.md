@@ -135,12 +135,12 @@ The platform generates landing pages for all 32 Irish counties:
 
 | Republic of Ireland | Northern Ireland |
 |---------------------|-------------------|
-| solarcarlow.ie | solartyrone.ie |
-| solarcavan.ie | solarantrim.ie |
-| solarclare.ie | solararmagh.ie |
-| solarcork.ie | solardown.ie |
-| solardonegal.ie | solarfermanagh.ie |
-| solardublin.ie | solarlondonderry.ie |
+| renewablecarlow.ie | renewablertyrone.ie |
+| renewablecavan.ie | renewableantrim.ie |
+| renewableclare.ie | renewablearmagh.ie |
+| renewablecork.ie | renewabledown.ie |
+| renewabledonegal.ie | renewablefermanagh.ie |
+| renewabledublin.ie | renewablelondonderry.ie |
 | ...and 19 more | |
 
 Each county site includes localised testimonials, service pages, blog content, terms, and privacy policies.
