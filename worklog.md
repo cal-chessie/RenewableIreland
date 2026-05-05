@@ -57,3 +57,25 @@ Stage Summary:
 - All JS functions present: tf() for FAQ, uc() for calculator, nav scroll, WhatsApp widget, etc.
 - County pages still operational via Next.js routes (/counties/tyrone, etc.)
 - CSS bugs fixed in the served HTML
+
+---
+Task ID: 1
+Agent: main
+Task: Add logo as favicon and fix 404
+
+Work Log:
+- Fixed 404 by creating src/app/route.ts to serve the v8 standalone HTML from upload/renewable-ireland-v8 (18).html
+- Analyzed logo.webp (646x1001px) to identify the icon mark area (x=180-399, y=0-70)
+- Created square favicon source from the logo mark (240x240px with centered mark)
+- Generated favicon.ico (multi-size: 16x16, 32x32, 48x48)
+- Generated favicon-32x32.png, favicon-16x16.png, favicon-192x192.png
+- Generated apple-touch-icon.png (180x180) for iOS
+- Generated favicon.webp for modern browsers
+- Added favicon link tags to the v8 HTML head section
+- Verified all files serve correctly with 200 status codes
+- Started keepalive server for preview proxy
+
+Stage Summary:
+- All favicon files created in public/ and public/images/
+- Favicon references added to HTML: icon (ico), icon (32px png), icon (16px png), apple-touch-icon
+- Site serving correctly on localhost:3000 with keepalive
