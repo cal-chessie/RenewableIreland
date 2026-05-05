@@ -1,6 +1,8 @@
 <div align="center">
 
-# ☀️ Renewable Ireland
+<img src="public/images/logo.png" alt="Renewable Ireland" width="200" />
+
+# Renewable Ireland
 
 **Ireland's Solar Panel Installation Platform**
 
@@ -245,7 +247,7 @@ This is a private commercial project. For contribution guidelines, please contac
 
 <div align="center">
 
-**Built with ☀️ for a greener Ireland**
+**Built for a greener Ireland**
 
 © 2024–2026 Renewable Ireland. All rights reserved.
 
