@@ -35,6 +35,9 @@ screenshot.png
 .stats
 .config.json
 Caddyfile
+--timeout
+*.disabled
+*.disabled-*
 
 # Debug logs
 npm-debug.log*
@@ -96,13 +99,28 @@ scripts/
 # Mini services
 mini-services/
 
-# Backup files
+# Backup / working files
 *.bak
 *.bak-*
 *.backup
 *.fullbak
 *.unstyled-backup
 *.nextjs-backup
+*-cropped*
+*-transparent*
+*-source*
+*-dark*
+*-top-*
+public/original.html
+public/index.html
+public/logo.jpeg
+public/logo.svg
+public/v8-body.html
+public/v8-critical.css
+public/v8-deferred.css
+public/v8-homepage.html
+public/v8-scripts.js
+public/v8-styles.css
 
 # Python
 __pycache__/

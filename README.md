@@ -46,45 +46,64 @@ The platform features an AI-powered solar assistant (SolarBot), dynamic SEO-opti
 ```
 renewableireland/
 ├── src/
-│   ├── app/                      # Next.js App Router
-│   │   ├── route.ts              # Root route handler (serves v8 homepage)
-│   │   ├── layout.tsx            # Root layout with JSON-LD schemas
-│   │   ├── sitemap.ts            # Dynamic XML sitemap (all counties/services)
-│   │   ├── roi-calculator/       # Interactive ROI calculator
-│   │   ├── referral/             # Referral programme with unique codes
-│   │   ├── counties/
-│   │   │   └── [county]/
-│   │   │       ├── page.tsx      # County landing page (32 counties)
-│   │   │       ├── [service]/    # Service sub-pages (solar panels, batteries, etc.)
-│   │   │       ├── blog/         # SEO blog with dynamic slugs
-│   │   │       ├── terms/        # Auto-generated terms per county
-│   │   │       └── privacy-policy/
+│   ├── app/                          # Next.js App Router
+│   │   ├── layout.tsx                # Root layout with JSON-LD schemas
+│   │   ├── global-error.tsx          # Global error boundary
+│   │   ├── loading.tsx               # Loading state
+│   │   ├── sitemap.ts                # Dynamic XML sitemap (counties/services)
+│   │   ├── roi-calculator/           # Interactive ROI calculator
+│   │   ├── referral/                 # Referral programme with unique codes
+│   │   ├── counties/[county]/
+│   │   │   ├── page.tsx              # County landing page (32 counties)
+│   │   │   ├── [service]/            # Service sub-pages
+│   │   │   ├── blog/[slug]/          # SEO blog with dynamic slugs
+│   │   │   ├── terms/                # Auto-generated terms per county
+│   │   │   └── privacy-policy/
 │   │   └── api/
-│   │       ├── chat/route.ts     # SolarBot AI chat endpoint
-│   │       ├── chat/lead/        # Lead capture from chat
-│   │       ├── chat/book-survey/ # Survey booking
-│   │       ├── lead/qualify/     # Lead qualification API
-│   │       ├── roi-certificate/  # ROI certificate generator
-│   │       ├── referral/route.ts # Referral code management
-│   │       └── exit-intent/      # Exit intent lead magnet
+│   │       ├── chat/route.ts         # SolarBot AI chat endpoint
+│   │       ├── chat/lead/            # Lead capture from chat
+│   │       ├── chat/book-survey/     # Survey booking
+│   │       ├── lead/qualify/         # Lead qualification API
+│   │       ├── roi-certificate/      # ROI certificate generator
+│   │       ├── referral/route.ts     # Referral code management
+│   │       └── exit-intent/          # Exit intent lead magnet + dismiss
 │   ├── components/
-│   │   ├── ui/                   # 48 shadcn/ui components
-│   │   ├── chat/                 # AI chat widget
-│   │   ├── county/               # County-specific components
-│   │   ├── exit-intent/          # Exit intent popup
-│   │   ├── lead/                 # Lead capture forms
-│   │   ├── roi/                  # ROI calculator components
-│   │   ├── whatsapp/             # WhatsApp integration
-│   │   └── v8-script-loader.tsx  # Homepage script loader
-│   └── data/
-│       ├── counties.ts           # 32 county data + services + FAQs
-│       └── blog-posts.ts         # SEO blog content
+│   │   ├── ui/                       # 48 shadcn/ui components
+│   │   ├── chat/                     # AI chat widget (SolarBot)
+│   │   ├── county/                   # Hero, Nav, FAQ, Services, etc.
+│   │   ├── exit-intent/              # Exit intent popup overlay
+│   │   ├── lead/                     # Lead capture & qualification flow
+│   │   ├── roi/                      # ROI certificate component
+│   │   ├── whatsapp/                 # WhatsApp chat widget
+│   │   └── v8-script-loader.tsx      # Homepage script loader
+│   ├── data/
+│   │   ├── counties.ts               # 32 county data + services + FAQs
+│   │   └── blog-posts.ts             # SEO blog content
+│   ├── hooks/                        # use-mobile, use-toast
+│   └── lib/
+│       ├── utils.ts                  # General helpers (cn, etc.)
+│       ├── db.ts                     # Database client
+│       ├── eircode.ts                # Eircode validation
+│       ├── jsonld.ts                 # JSON-LD schema generation
+│       ├── savings-calculator.ts     # ROI calculations
+│       └── v8-body-content.ts        # Homepage HTML content
 ├── prisma/
-│   └── schema.prisma             # SQLite database schema
+│   └── schema.prisma                 # SQLite database schema (User, Post)
 ├── public/
-│   ├── v8-homepage.html          # Standalone neo-brutalist homepage
-│   └── images/                   # Favicons, logos, OG images
-└── upload/                       # Source assets (logo, audits, screenshots)
+│   ├── favicon.ico / .svg / .png    # Multi-format favicons
+│   ├── favicon-16x16.png / 32x32.png
+│   ├── robots.txt                   # Search engine crawling rules
+│   └── images/
+│       ├── logo.png                 # Company logo (transparent PNG)
+│       ├── apple-touch-icon.png     # iOS homescreen icon (180x180)
+│       ├── favicon-192x192.png      # Android Chrome icon
+│       └── hero-solar.webp          # Hero section background image
+├── next.config.ts                    # Next.js config (standalone output, rewrites)
+├── tailwind.config.ts                # Tailwind CSS configuration
+├── components.json                   # shadcn/ui component configuration
+├── package.json                      # Dependencies and scripts
+├── bun.lock / package-lock.json      # Lockfiles
+└── .env.example                      # Environment variable template
 ```
 
 ## Features
@@ -183,7 +202,9 @@ The site will be available at [http://localhost:3000](http://localhost:3000).
 | Variable | Description | Required |
 |----------|-------------|----------|
 | `DATABASE_URL` | SQLite database path | Yes |
-| `Z_AI_BASE_URL` | AI service base URL | For chat |
+| `Z_AI_BASE_URL` | AI service base URL (SolarBot chat) | For chat |
+| `Z_AI_API_KEY` | AI service API key | For chat |
+| `NEXT_PUBLIC_SITE_URL` | Canonical site URL (sitemap, OG) | Yes |
 
 ## Available Scripts
 
