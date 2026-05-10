@@ -530,10 +530,37 @@ export const v8BodyHtml = `
 
 
 <!-- MANIFESTO -->
+<style>
+.mf-headline{padding:40px 64px 36px;border-bottom:1px solid rgba(255,255,255,.07)}
+.mf-grid{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid rgba(255,255,255,.07)}
+.mf-left{padding:48px 56px 48px 64px;border-right:1px solid rgba(255,255,255,.07)}
+.mf-right{padding:48px 64px 48px 56px}
+.mf-stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;border:1px solid rgba(255,255,255,.08);border-radius:var(--r);overflow:hidden}
+.mf-stats-r{border-right:1px solid rgba(255,255,255,.08)}
+.mf-stats-t{border-top:1px solid rgba(255,255,255,.08)}
+.mf-promise{padding:24px 64px;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap}
+@media(max-width:768px){
+  .mf-headline{padding:28px 20px 24px!important}
+  .mf-grid{grid-template-columns:1fr!important}
+  .mf-left{padding:28px 20px!important;border-right:none!important;border-bottom:1px solid rgba(255,255,255,.07)}
+  .mf-right{padding:28px 20px!important}
+  .mf-stats-grid{grid-template-columns:1fr 1fr!important}
+  .mf-stats-r{border-right:none!important}
+  .mf-promise{padding:20px!important;flex-direction:column;align-items:flex-start;gap:16px}
+}
+@media(max-width:480px){
+  .mf-headline{padding:24px 16px 20px!important}
+  .mf-grid{grid-template-columns:1fr!important}
+  .mf-left{padding:24px 16px!important}
+  .mf-right{padding:24px 16px!important}
+  .mf-stats-grid{grid-template-columns:1fr!important}
+  .mf-stats-r{border-right:none!important;border-bottom:1px solid rgba(255,255,255,.08)!important}
+}
+</style>
 <section style="background:var(--black);border-bottom:var(--bd)">
 
   <!-- Full-width headline -->
-  <div style="padding:40px 64px 36px;border-bottom:1px solid rgba(255,255,255,.07)">
+  <div class="mf-headline">
     <div style="font-family:'Barlow Condensed',sans-serif;font-size:clamp(40px,5.5vw,80px);font-weight:800;color:var(--white);line-height:.95;text-transform:uppercase;letter-spacing:-.02em">
       The grid is a subscription<br>
       <span style="color:var(--lime)">you never signed up for.</span><br>
@@ -542,18 +569,18 @@ export const v8BodyHtml = `
   </div>
 
   <!-- 2-column body -->
-  <div style="display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid rgba(255,255,255,.07)">
-    <div style="padding:48px 56px 48px 64px;border-right:1px solid rgba(255,255,255,.07)">
+  <div class="mf-grid">
+    <div class="mf-left">
       <p style="font-size:22px;color:rgba(255,255,255,.9);line-height:1.6;margin-bottom:24px;font-weight:500">Renewable Ireland cuts your bills, locks in your savings, and puts you back in control.</p>
       <p style="font-size:16px;color:rgba(255,255,255,.45);line-height:1.8;margin-bottom:24px">For decades, energy companies have treated your home like a recurring revenue stream. It's time to flip the script.</p>
       <p style="font-size:16px;color:rgba(255,255,255,.45);line-height:1.8;margin-bottom:28px">Solar isn't just good for the environment. It's the single highest-return investment an Irish homeowner can make. Over 20 years, the average household hands <strong style="color:var(--white)">€30,000 to the grid.</strong></p>
       <p style="font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:800;color:#C4855A;text-transform:uppercase;letter-spacing:.02em">We help you keep it.</p>
     </div>
-    <div style="padding:48px 64px 48px 56px">
+    <div class="mf-right">
       <p style="font-size:16px;color:rgba(255,255,255,.45);line-height:1.8;margin-bottom:28px">At Renewable Ireland, we don't just install panels. We help you build energy independence. From your first question to your first live watt, we manage the SEAI grant, deliver exceptional installations, and provide full aftercare — all tracked in real time through your personal project portal.</p>
       <p style="font-size:16px;color:rgba(255,255,255,.45);line-height:1.8;margin-bottom:32px">Join hundreds of Irish families who now own their power.</p>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:2px;border:1px solid rgba(255,255,255,.08);border-radius:var(--r);overflow:hidden">
-        <div style="padding:20px;border-right:1px solid rgba(255,255,255,.08)">
+      <div class="mf-stats-grid">
+        <div class="mf-stats-r" style="padding:20px">
           <div style="font-family:'Barlow Condensed',sans-serif;font-size:36px;font-weight:800;color:var(--lime);line-height:1;margin-bottom:4px">200+</div>
           <div style="font-size:11px;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.08em;font-weight:700">Installs completed</div>
         </div>
@@ -561,11 +588,11 @@ export const v8BodyHtml = `
           <div style="font-family:'Barlow Condensed',sans-serif;font-size:36px;font-weight:800;color:var(--lime);line-height:1;margin-bottom:4px">€1,240</div>
           <div style="font-size:11px;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.08em;font-weight:700">Avg saving / year</div>
         </div>
-        <div style="padding:20px;border-top:1px solid rgba(255,255,255,.08);border-right:1px solid rgba(255,255,255,.08)">
+        <div class="mf-stats-r mf-stats-t" style="padding:20px">
           <div style="font-family:'Barlow Condensed',sans-serif;font-size:36px;font-weight:800;color:var(--white);line-height:1;margin-bottom:4px">4.9★</div>
           <div style="font-size:11px;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.08em;font-weight:700">Google rating</div>
         </div>
-        <div style="padding:20px;border-top:1px solid rgba(255,255,255,.08);background:rgba(109,201,58,.06)">
+        <div class="mf-stats-t" style="padding:20px;background:rgba(109,201,58,.06)">
           <div style="font-family:'Barlow Condensed',sans-serif;font-size:36px;font-weight:800;color:var(--lime);line-height:1;margin-bottom:4px">1 day</div>
           <div style="font-size:11px;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.08em;font-weight:700">Installation time</div>
         </div>
@@ -574,7 +601,7 @@ export const v8BodyHtml = `
   </div>
 
   <!-- Promise bar -->
-  <div style="padding:24px 64px;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap">
+  <div class="mf-promise">
     <div style="font-family:'Barlow Condensed',sans-serif;font-size:clamp(16px,2vw,24px);font-weight:800;text-transform:uppercase;line-height:1.2;color:var(--white)">
       No hidden costs. No fine print.
       <span style="color:var(--lime)"> No more bills.</span><span style="color:#C4855A"> That's our promise.</span>
