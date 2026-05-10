@@ -1158,6 +1158,46 @@ const louth: CountyData = {
   accentHover: "#4fffff",
 };
 
+const mayo: CountyData = {
+  slug: "mayo",
+  name: "Mayo",
+  region: "Connacht",
+  province: "Connacht",
+  country: "IE",
+  phone: "+353-94-902-3100",
+  email: "info@renewablemayo.ie",
+  domain: "renewablemayo.ie",
+  mainTown: "Castlebar",
+  areaTowns: ["Castlebar", "Westport", "Ballina", "Claremorris", "Belmullet", "Achill"],
+  lat: "53.8606",
+  lng: "-9.2889",
+  currency: "€",
+  accreditation: "SEAI",
+  grants: [
+    "SEAI Domestic Solar PV Grant — up to €1,800 for homes",
+    "SEAI Non-Domestic Solar PV Grant — for businesses",
+    "TACs (Tax Exemption for Solar PV under €1,000 annual income)",
+  ],
+  heroSubtitle:
+    "SEAI registered solar panel installers serving County Mayo — from Castlebar to Westport, Ballina to Claremorris.",
+  testimonials: [
+    { name: "Tommy Gallagher", location: "Castlebar", rating: 5, text: "Renewable Mayo installed a 4kW system on our home and the results have been fantastic. Even through the Atlantic weather we're generating consistently. Professional team from start to finish." },
+    { name: "Maura Healy", location: "Westport", rating: 5, text: "We were recommended Renewable Mayo by a neighbour and they didn't disappoint. The installation was quick, clean, and our electricity bills have dropped by over 60%." },
+    { name: "Padraig Kelly", location: "Ballina", rating: 5, text: "As a farmer outside Ballina, I needed a system that could handle heavy daytime usage. Renewable Mayo designed a solution that covers nearly all our electricity needs. Great local company." },
+  ],
+  faqs: [
+    { question: "How much do solar panels cost in Mayo?", answer: "A typical 4kW system in County Mayo costs between €4,500 and €6,500. The SEAI grant can reduce this by up to €1,800." },
+    { question: "Does solar work in Mayo's Atlantic climate?", answer: "Yes. Solar panels generate electricity from daylight, not direct sunshine. Mayo receives ample daylight for effective solar generation, and modern panels are highly efficient in all weather conditions." },
+    { question: "What SEAI grants are available?", answer: "The Domestic Solar PV Grant offers up to €1,800 for homes. We manage the full application on your behalf." },
+    { question: "How long does installation take?", answer: "Most residential installations in Mayo are completed in one working day. We coordinate scaffolding and grid connection." },
+    { question: "Do I need planning permission?", answer: "Domestic solar panels are exempt from planning permission in Ireland within standard limits. We'll confirm during your free survey." },
+  ],
+  avgSystemCost: "€4,500 – €6,500",
+  avgPaybackYears: "5–7 years",
+  accentColor: "#00e5ff",
+  accentHover: "#33ebff",
+};
+
 const meath: CountyData = {
   slug: "meath",
   name: "Meath",
@@ -1703,6 +1743,7 @@ export const counties: Record<string, CountyData> = {
   longford,
   louth,
   meath,
+  mayo,
   monaghan,
   offaly,
   roscommon,

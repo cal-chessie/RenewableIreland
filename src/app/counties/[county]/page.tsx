@@ -439,7 +439,7 @@ export default async function CountyHomePage({ params }: Props) {
             </div>
             <div style={{ textAlign: "center" }}>
               <div className={styles.grantAmount}>
-                {isNI ? "\u00a3800+" : "\u00a31,800"}<span> {isNI ? "Annual Savings" : "Government Grant"}</span>
+                {isNI ? "\u00a3800+" : "\u20ac1,800"}<span> {isNI ? "Annual Savings" : "Government Grant"}</span>
               </div>
               <p style={{ color: "rgba(255,255,255,.55)", fontSize: "1rem", marginBottom: 32 }}>
                 {isNI
@@ -526,7 +526,7 @@ export default async function CountyHomePage({ params }: Props) {
                 <span>Net return over 25 years</span>
               </div>
               <div className={styles.sidebarItem}>
-                <strong>\u00a30</strong>
+                <strong>{cur}0</strong>
                 <span>Hidden fees \u2014 guaranteed</span>
               </div>
             </aside>
