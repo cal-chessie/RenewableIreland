@@ -13,7 +13,7 @@ export function V8ScriptLoader() {
     };
 
     if ('requestIdleCallback' in window) {
-      (window as unknown as { requestIdleCallback: (cb: () => void) => void }).requestIdleCallback(loadScripts, { timeout: 2000 });
+      (window as unknown as { requestIdleCallback: (cb: () => void, opts?: { timeout: number }) => void }).requestIdleCallback(loadScripts, { timeout: 2000 });
     } else {
       setTimeout(loadScripts, 300);
     }
