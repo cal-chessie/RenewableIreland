@@ -1,4 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
+import { createClient } from "@supabase/supabase-js";
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
 
 // ─── Types ───
 interface LeadQualifyPayload {
@@ -113,23 +119,36 @@ export async function POST(request: NextRequest) {
     // Generate reference
     const reference = generateReference();
 
-    // In production, you would save to database here:
-    // await db.lead.create({ data: { ...body, reference, createdAt: new Date() } });
+    // ─── Save to Supabase ───
+    const address = `${body.postcode}, ${body.county}, ${body.country}`;
+    const billNum = body.billAmount ? Number(body.billAmount) : null;
+    const notes = [
+      `Home type: ${body.homeType}`,
+      body.recommendedSystem ? `Recommended system: ${body.recommendedSystem}` : null,
+      `Survey date: ${body.surveyDate}`,
+      `Survey time: ${body.surveyTime}`,
+      "Lead from renewableireland.ie intake form",
+    ]
+      .filter(Boolean)
+      .join("\n");
 
-    console.log(`[Lead Qualification] New lead: ${reference}`, {
-      reference,
+    const { error: dbError } = await supabase.from("leads").insert({
       name: body.fullName,
       email: body.email,
-      phone: body.phone,
-      county: body.county,
-      country: body.country,
-      postcode: body.postcode,
-      billAmount: body.billAmount,
-      homeType: body.homeType,
-      recommendedSystem: body.recommendedSystem,
-      surveyDate: body.surveyDate,
-      surveyTime: body.surveyTime,
+      phone: body.phone || null,
+      address,
+      monthly_bill: billNum,
+      workflow_stage: "new",
+      notes,
     });
+
+    if (dbError) {
+      console.error("[Lead Qualification] Supabase insert failed:", dbError);
+      return NextResponse.json(
+        { success: false, message: "Failed to save lead. Please try again." },
+        { status: 500 }
+      );
+    }
 
     return NextResponse.json(
       {
