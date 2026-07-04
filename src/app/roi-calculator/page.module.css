@@ -1,0 +1,577 @@
+/* ===== ROI CALCULATOR PAGE STYLES ===== */
+/* Dark theme form with lime accents, light certificate preview */
+
+.pageWrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #050505;
+  color: #f0f0f0;
+  padding-top: 40px;
+  padding-bottom: 80px;
+}
+
+.pageContainer {
+  max-width: 860px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* ===== HERO SECTION ===== */
+.heroSection {
+  text-align: center;
+  padding: 40px 0 48px;
+}
+
+.heroBadge {
+  display: inline-block;
+  background: rgba(200, 255, 0, 0.1);
+  border: 1px solid rgba(200, 255, 0, 0.3);
+  color: #c8ff00;
+  padding: 8px 20px;
+  border-radius: 50px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  margin-bottom: 20px;
+  letter-spacing: 0.5px;
+}
+
+.heroTitle {
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 5vw, 3.4rem);
+  font-weight: 800;
+  letter-spacing: -1px;
+  line-height: 1.15;
+  margin-bottom: 16px;
+  color: #fff;
+}
+
+.heroTitle .lime {
+  color: #c8ff00;
+}
+
+.heroDesc {
+  font-size: 1.1rem;
+  color: #999;
+  max-width: 560px;
+  margin: 0 auto;
+  line-height: 1.7;
+}
+
+/* ===== FORM CARD ===== */
+.formCard {
+  background: #111;
+  border: 1px solid rgba(200, 255, 0, 0.12);
+  border-radius: 16px;
+  padding: 40px 36px;
+  margin-bottom: 48px;
+}
+
+.formTitle {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 28px;
+  color: #fff;
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.formField {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.formFieldFull {
+  grid-column: 1 / -1;
+}
+
+.formLabel {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #bbb;
+  letter-spacing: 0.3px;
+}
+
+.formInput,
+.formSelect {
+  width: 100%;
+  padding: 14px 16px;
+  background: #0a0a0a;
+  border: 1px solid #2a2a2a;
+  border-radius: 8px;
+  color: #f0f0f0;
+  font-size: 1rem;
+  font-family: var(--font-body);
+  transition: border-color 0.2s;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.formSelect {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23999' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  padding-right: 40px;
+}
+
+.formInput:focus,
+.formSelect:focus {
+  outline: none;
+  border-color: #c8ff00;
+  box-shadow: 0 0 0 2px rgba(200, 255, 0, 0.1);
+}
+
+/* Radio Buttons for System Size */
+.radioGroup {
+  display: flex;
+  gap: 12px;
+}
+
+.radioOption {
+  flex: 1;
+  position: relative;
+}
+
+.radioOption input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.radioLabel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 16px 8px;
+  background: #0a0a0a;
+  border: 2px solid #2a2a2a;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+
+.radioOption input[type="radio"]:checked + .radioLabel {
+  border-color: #c8ff00;
+  background: rgba(200, 255, 0, 0.06);
+}
+
+.radioLabel:hover {
+  border-color: #444;
+}
+
+.radioOption input[type="radio"]:focus-visible + .radioLabel {
+  outline: 2px solid #c8ff00;
+  outline-offset: 2px;
+}
+
+.radioSizeLabel {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.radioPanels {
+  font-size: 0.7rem;
+  color: #888;
+}
+
+/* Slider */
+.sliderContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sliderHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sliderValue {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #c8ff00;
+}
+
+.slider {
+  width: 100%;
+  height: 6px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: #2a2a2a;
+  border-radius: 3px;
+  outline: none;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 22px;
+  height: 22px;
+  background: #c8ff00;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 3px solid #050505;
+  transition: transform 0.15s;
+}
+
+.slider::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+}
+
+.slider::-moz-range-thumb {
+  width: 22px;
+  height: 22px;
+  background: #c8ff00;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 3px solid #050505;
+}
+
+.sliderLabels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.72rem;
+  color: #666;
+}
+
+/* Generate Button */
+.generateBtn {
+  width: 100%;
+  padding: 18px 32px;
+  background: #c8ff00;
+  color: #050505;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  font-family: var(--font-body);
+  cursor: pointer;
+  transition: all 0.25s;
+  margin-top: 12px;
+  letter-spacing: 0.3px;
+}
+
+.generateBtn:hover {
+  background: #d9ff4d;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(200, 255, 0, 0.2);
+}
+
+.generateBtn:active {
+  transform: translateY(0);
+}
+
+.generateBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.generateBtn:focus-visible {
+  outline: 3px solid #c8ff00;
+  outline-offset: 3px;
+}
+
+/* ===== LOADING STATE ===== */
+.loadingState {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.loadingSpinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #2a2a2a;
+  border-top-color: #c8ff00;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto 16px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loadingText {
+  color: #888;
+  font-size: 0.95rem;
+}
+
+/* ===== RESULTS SECTION ===== */
+.resultsSection {
+  animation: fadeInUp 0.5s ease;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.resultsHeader {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.resultsTitle {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 8px;
+}
+
+.resultsSubtitle {
+  color: #888;
+  font-size: 0.95rem;
+}
+
+/* Certificate Preview Wrapper */
+.certPreviewWrapper {
+  margin-bottom: 32px;
+  overflow: hidden;
+  border-radius: 12px;
+  border: 1px solid rgba(200, 255, 0, 0.1);
+}
+
+/* Action Buttons */
+.actionButtons {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 32px;
+}
+
+.actionBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 28px;
+  border-radius: 10px;
+  font-size: 0.92rem;
+  font-weight: 700;
+  font-family: var(--font-body);
+  cursor: pointer;
+  transition: all 0.25s;
+  border: none;
+}
+
+.actionBtnPrimary {
+  background: #c8ff00;
+  color: #050505;
+}
+
+.actionBtnPrimary:hover {
+  background: #d9ff4d;
+  transform: translateY(-1px);
+}
+
+.actionBtnSecondary {
+  background: transparent;
+  color: #f0f0f0;
+  border: 2px solid #333;
+}
+
+.actionBtnSecondary:hover {
+  border-color: #c8ff00;
+  color: #c8ff00;
+}
+
+.actionBtn:focus-visible {
+  outline: 3px solid #c8ff00;
+  outline-offset: 3px;
+}
+
+/* Toast notification */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: #111;
+  color: #c8ff00;
+  border: 1px solid rgba(200, 255, 0, 0.3);
+  padding: 12px 24px;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  z-index: 9999;
+  transition: transform 0.3s ease;
+  pointer-events: none;
+}
+
+.toast.show {
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ===== SUMMARY STATS ===== */
+.summaryStats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.summaryStat {
+  background: #111;
+  border: 1px solid rgba(200, 255, 0, 0.1);
+  border-radius: 12px;
+  padding: 24px 16px;
+  text-align: center;
+}
+
+.summaryStatValue {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #c8ff00;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+
+.summaryStatLabel {
+  font-size: 0.78rem;
+  color: #888;
+  font-weight: 500;
+}
+
+/* ===== CTA SECTION ===== */
+.ctaSection {
+  text-align: center;
+  margin-top: 48px;
+  padding: 40px 24px;
+  background: linear-gradient(135deg, rgba(200, 255, 0, 0.04) 0%, transparent 50%);
+  border-top: 1px solid rgba(200, 255, 0, 0.08);
+  border-radius: 16px;
+}
+
+.ctaTitle {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: #fff;
+}
+
+.ctaText {
+  color: #888;
+  font-size: 0.95rem;
+  margin-bottom: 20px;
+  max-width: 480px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.ctaPhone {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #c8ff00;
+  display: block;
+  margin-bottom: 16px;
+  text-decoration: none;
+}
+
+.ctaPhone:hover {
+  color: #d9ff4d;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 640px) {
+  .pageContainer {
+    padding: 0 16px;
+  }
+
+  .heroSection {
+    padding: 24px 0 32px;
+  }
+
+  .formCard {
+    padding: 28px 20px;
+  }
+
+  .formGrid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .radioGroup {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .radioLabel {
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 12px 16px;
+  }
+
+  .summaryStats {
+    grid-template-columns: 1fr;
+  }
+
+  .actionButtons {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .actionBtn {
+    justify-content: center;
+  }
+}
+
+/* ===== PRINT STYLES ===== */
+@media print {
+  .pageWrapper {
+    background: #fff;
+    padding: 0;
+  }
+
+  .heroSection,
+  .formCard,
+  .resultsHeader,
+  .actionButtons,
+  .ctaSection,
+  .toast,
+  .summaryStats {
+    display: none !important;
+  }
+
+  .certPreviewWrapper {
+    border: none;
+    border-radius: 0;
+  }
+
+  body {
+    background: #fff !important;
+    color: #000 !important;
+  }
+
+  @page {
+    size: A4;
+    margin: 8mm;
+  }
+}
