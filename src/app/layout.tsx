@@ -211,7 +211,7 @@ export default function RootLayout({
           href="https://fonts.googleapis.com"
           crossOrigin=""
         />
-        <link rel="preconnect" href="https://solarpilot.ie" crossOrigin="" />
+        
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
