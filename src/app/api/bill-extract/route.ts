@@ -42,8 +42,10 @@ Important Irish bill context:
 async function extractPdfText(buffer: Buffer): Promise<string> {
   try {
     // Dynamic import to avoid bundling issues on Vercel
-    const pdfParse = (await import("pdf-parse")).default;
-    const data = await pdfParse(buffer);
+    // pdf-parse is CJS — .default may not exist, so fallback to the module itself
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const mod = await import("pdf-parse") as any;
+    const data = await (mod.default || mod)(buffer);
     return data.text || "";
   } catch (err) {
     console.error("[BillExtract] PDF parse failed:", err);
