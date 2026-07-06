@@ -93,7 +93,8 @@ export async function POST(req: NextRequest) {
     // Use OpenAI with Vercel env keys
     const openai = new OpenAI();
 
-    const completion = await openai.chat.completions.create({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const completion = await (openai.chat.completions.create as any)({
       model: 'gpt-4o',
       messages: [
         {
