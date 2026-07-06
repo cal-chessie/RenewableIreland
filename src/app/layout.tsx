@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Barlow_Condensed, Barlow } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 
 const barlowCondensed = Barlow_Condensed({
   variable: "--font-display",
@@ -242,6 +243,7 @@ export default function RootLayout({
         style={{ margin: 0 }}
       >
         {children}
+        <Analytics />
       </body>
     </html>
   );
