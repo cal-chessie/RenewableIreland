@@ -739,8 +739,6 @@ footer{background:var(--black);border-top:var(--bd);padding:48px 64px 26px}
 .whycard:hover{transform:translateY(-3px);box-shadow:var(--shxl)}
 </style>
 </head>
-<!-- Cal.com embed script — preloaded so cal-inline web component is ready -->
-<script src="https://cal.com/embed.js" async></script>
 <body>
 
 <nav id="mainnav">
@@ -3766,20 +3764,16 @@ var origPmClassToggle = function(cls){ if(cls==='on') document.body.style.overfl
           <div class="em-recap-item"><div class="em-recap-val" id="em-s4-co2">0</div><div class="em-recap-lbl">CO2 saved</div></div>
         </div>
 
-        <!-- Hero booking CTA -->
-        <div class="em-book-cta">
-          <div class="em-book-cta-title">Lock in your €<span id="em-s4-grant">1,800</span> grant</div>
-          <div class="em-book-cta-sub">15-minute call — no obligation, we'll just confirm your roof and quote.</div>
-          <a href="https://cal.com/renewably/aisolar" target="_blank" rel="noopener" class="em-book-btn" id="em-book-main" onclick="_analytics.track('booking_click',{type:'modal_step4'})">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6.75 3v1.5M17.25 3v1.5M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg>
-            Book your free call now
-          </a>
+        <!-- Cal.com embedded calendar -->
+        <div id="em-cal-embed" style="margin-bottom:16px;border-radius:var(--r);overflow:hidden;border:1px solid rgba(255,255,255,.08)">
+          <iframe id="em-cal-iframe" src="" frameborder="0" style="width:100%;min-height:500px;border:none;display:block" loading="lazy" title="Book a call with Renewable Ireland" allow="camera;microphone"></iframe>
         </div>
 
-        <!-- Cal.com embed (hidden by default, shown if embed renders) -->
-        <div id="em-cal-embed" style="margin-bottom:12px;border-radius:var(--r);overflow:hidden;border:1px solid rgba(255,255,255,.08);display:none">
-          <cal-inline cal-link="renewably/aisolar" style="width:100%;display:block;min-height:400px"></cal-inline>
-        </div>
+        <!-- Fallback button if iframe fails -->
+        <a href="https://cal.com/renewably/aisolar" target="_blank" rel="noopener" class="em-book-btn" id="em-cal-fallback" style="display:none;margin-bottom:16px">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6.75 3v1.5M17.25 3v1.5M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg>
+          Book your free call now
+        </a>
 
         <!-- Next steps timeline -->
         <div class="em-timeline">
@@ -3903,17 +3897,31 @@ function emGoStep(n){
     document.getElementById('em-s4-save').textContent='€'+_emEstimate.annSave.toLocaleString();
     document.getElementById('em-s4-payback').textContent=(_emEstimate.payback?_emEstimate.payback:'<10')+' yrs';
     document.getElementById('em-s4-co2').textContent=_emEstimate.co2Saved.toFixed(1)+' t';
-    document.getElementById('em-s4-grant').textContent=_emEstimate.grant.toLocaleString();
   }
-  // Check if Cal.com embed rendered — if so, show it
+  // Load Cal.com iframe when step 4 shown
   if(n===4){
-    var embedContainer=document.getElementById('em-cal-embed');
-    setTimeout(function(){
-      var calEl=embedContainer?embedContainer.querySelector('cal-inline'):null;
-      if(calEl && calEl.shadowRoot && calEl.shadowRoot.querySelector('iframe')){
-        embedContainer.style.display='block';
-      }
-    },4000);
+    var calIframe=document.getElementById('em-cal-iframe');
+    var calFallback=document.getElementById('em-cal-fallback');
+    if(calIframe && !calIframe.dataset.loaded){
+      calIframe.dataset.loaded='1';
+      calIframe.src='https://cal.com/renewably/aisolar';
+      calIframe.onload=function(){
+        _analytics.track('cal_embed_loaded',{});
+      };
+      calIframe.onerror=function(){
+        document.getElementById('em-cal-embed').style.display='none';
+        if(calFallback) calFallback.style.display='flex';
+      };
+      // Fallback if nothing loads after 8s
+      setTimeout(function(){
+        try{
+          // If iframe is cross-origin and loaded, this will throw — which means it worked
+          calIframe.contentWindow.document;
+        }catch(e){
+          // Cross-origin = loaded successfully, do nothing
+        }
+      },8000);
+    }
   }
   document.getElementById('em-s'+_emStep).classList.remove('on');
   document.getElementById('em-s'+n).classList.add('on');
