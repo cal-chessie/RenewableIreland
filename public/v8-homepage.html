@@ -2352,10 +2352,13 @@ function processFile(f){
         window._billData = d.data;
         var monthly = d.data.monthly_amount;
         var supplier = d.data.supplier;
-        var conf = d.data.confidence;
+        var mprn = d.data.mprn;
+        var period = d.data.billing_period;
+        var tariff = d.data.tariff;
+        var usageKwh = d.data.usage_kwh;
         // Show file size
         document.getElementById('fpsize').textContent = sizeStr + ' · Analysis complete';
-        // Show result summary
+        // Show result summary with all extracted details
         var resDiv = document.getElementById('upload-result');
         if(resDiv){
           var html = '<div class="upload-result">';
@@ -2365,10 +2368,19 @@ function processFile(f){
             html += '<div class="upload-result-supplier">' + supplier + '</div>';
           }
           if(monthly){
-            html += '<div class="upload-result-amount">€' + monthly.toFixed(0) + '<span>/month</span></div>';
+            html += '<div class="upload-result-amount">&euro;' + monthly.toFixed(0) + '<span>/month</span></div>';
           }
-          if(!monthly && d.message){
-            html += '<div class="upload-result-msg">' + d.message + '</div>';
+          // Show extra details if found
+          var details = [];
+          if(mprn) details.push('MPRN: ' + mprn);
+          if(period) details.push(period);
+          if(tariff) details.push(tariff);
+          if(usageKwh) details.push(usageKwh + ' kWh');
+          if(details.length){
+            html += '<div class="upload-result-msg">' + details.join(' &middot; ') + '</div>';
+          }
+          if(d.data.message && d.data.confidence === 'low'){
+            html += '<div class="upload-result-msg" style="color:#c90;font-style:italic">' + d.data.message + '</div>';
           }
           html += '</div></div>';
           resDiv.innerHTML = html;
@@ -2377,14 +2389,15 @@ function processFile(f){
         // Enable submit
         if(subBtn){ subBtn.disabled = false; }
       } else {
-        // API returned an error
+        // API returned an error (including "not a bill")
         document.getElementById('fpsize').textContent = sizeStr;
         var resDiv = document.getElementById('upload-result');
         if(resDiv){
-          resDiv.innerHTML = '<div class="upload-result-error">' + (d.message || 'Could not read this bill.') + (d.debug ? ' ('+d.debug+')' : '') + '</div>';
+          var errClass = d.debug === 'not_a_bill' ? 'upload-result-error' : 'upload-result-error';
+          resDiv.innerHTML = '<div class="' + errClass + '">' + (d.message || 'Could not read this bill.') + '</div>';
           resDiv.style.display = 'block';
         }
-        // Still enable submit — user can proceed without bill data
+        // Re-enable submit so user can try again or switch to manual
         if(subBtn){ subBtn.disabled = false; }
       }
     })

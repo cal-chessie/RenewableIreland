@@ -1,31 +1,52 @@
 import { NextRequest, NextResponse } from 'next/server';
-import ZAI from 'z-ai-web-dev-sdk';
+import OpenAI from 'openai';
 
-const SYSTEM_PROMPT = `You are an expert at reading Irish electricity bills. Extract the following from the bill image:
+const SYSTEM_PROMPT = `You are an expert at reading Irish electricity bills. You MUST first verify this is actually an electricity or gas utility bill — NOT a photo of a car, dog, house, receipt, invoice for other services, or any non-utility document.
 
-1. **supplier** - The energy supplier name (e.g. "Electric Ireland", "Bord Gáis Energy", "SSE Airtricity", "Pumpkin", "Energia", "Flogas", "PrepayPower", "Yuno", "Community Power", etc.)
-2. **monthly_amount** - The monthly bill amount in euros (€). Look for the total due, current charges, or "amount payable". Return as a number only.
-3. **billing_period** - The billing period if visible (e.g. "1 May 2025 - 31 May 2025")
-4. **account_number** - The account number if visible
-5. **mpx** - The MPRN or MPAN number if visible
+If the image is NOT an electricity/gas bill, respond with exactly:
+{"is_bill": false, "reason": "brief description of what the image actually shows"}
 
-Return ONLY valid JSON with this exact structure:
+If it IS a valid electricity/gas bill, extract ALL of the following sensitive details:
+
+1. **supplier** - The energy supplier name (e.g. "Electric Ireland", "Bord Gáis Energy", "SSE Airtricity", "Pumpkin", "Energia", "Flogas", "PrepayPower", "Yuno", "Community Power", "Pinergy", "Budget Energy", "Iberdrola", "Tap Electric", etc.)
+2. **monthly_amount** - The bill amount in euros (€). Look for "total due", "amount payable", "current charges", or the final total. Return as a number.
+3. **billing_period** - The billing period (e.g. "1 May 2025 - 31 May 2025")
+4. **account_number** - The customer account number
+5. **mprn** - The MPRN (Meter Point Reference Number) — this is an 11-digit number unique to Irish electricity meters. Critical for solar applications.
+6. **mpan** - The MPAN if it's a UK/Northern Ireland gas bill
+7. **name** - The account holder's name as shown on the bill
+8. **address** - The supply address as shown on the bill
+9. **usage_kwh** - The electricity usage in kWh if shown
+10. **tariff** - The tariff name or plan if visible (e.g. "Standard 24hr", "Urban 24hr", "Time of Use Nightsaver")
+11. **standing_charge** - The daily standing charge amount
+12. **unit_rate** - The per-kWh unit rate
+
+Return ONLY valid JSON:
 {
+  "is_bill": true,
   "supplier": "Supplier Name",
   "monthly_amount": 150,
   "billing_period": "period if found",
   "account_number": "if found",
-  "mpx": "MPRN/MPAN if found",
+  "mprn": "11-digit MPRN if found",
+  "mpan": "MPAN if found",
+  "name": "account holder name if found",
+  "address": "supply address if found",
+  "usage_kwh": number or null,
+  "tariff": "tariff name if found",
+  "standing_charge": number or null,
+  "unit_rate": number or null,
   "confidence": "high|medium|low",
-  "message": "Brief note about what was found"
+  "message": "Brief note about what was found or any issues"
 }
 
 Rules:
-- If you can't determine the supplier, return null for it
-- If you can't find a clear monthly amount, estimate based on any charges shown and set confidence to "low"
-- Always return valid JSON, no markdown
-- Amounts should be in euros as a number (not a string)
-- If the image is not a bill or is unreadable, return {"success": false, "message": "description of the problem"}`;
+- NEVER guess or fabricate numbers. Only return what you can actually read from the bill.
+- If a field is not visible, return null for it — do NOT make it up.
+- The MPRN is critical for SEAI grant applications. Look carefully for it — it's usually near the top or in a "Your supply details" section.
+- Always return valid JSON, no markdown wrapping.
+- Amounts should be numbers (not strings).
+- Confidence "high" = all key fields clearly readable. "medium" = amount and supplier clear but some details unclear. "low" = partially readable or estimated.`;
 
 export async function POST(req: NextRequest) {
   try {
@@ -43,7 +64,7 @@ export async function POST(req: NextRequest) {
     const allowedTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'];
     if (!allowedTypes.includes(file.type)) {
       return NextResponse.json(
-        { success: false, message: 'Invalid file type. Please upload a PDF, JPG or PNG.' },
+        { success: false, message: 'Invalid file type. Please upload a PDF, JPG or PNG of your electricity bill.' },
         { status: 400 }
       );
     }
@@ -59,13 +80,12 @@ export async function POST(req: NextRequest) {
     // Convert file to base64
     const bytes = await file.arrayBuffer();
     const base64 = Buffer.from(bytes).toString('base64');
-    const mimeType = file.type;
+    const mimeType = file.type === 'image/jpg' ? 'image/jpeg' : file.type;
 
-    // Use ZAI vision to read the bill
-    const zai = await ZAI.create();
+    // Use OpenAI with Vercel env keys
+    const openai = new OpenAI();
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const completion = await (zai.chat.completions.create as any)({
+    const completion = await openai.chat.completions.create({
       model: 'gpt-4o',
       messages: [
         {
@@ -82,8 +102,8 @@ export async function POST(req: NextRequest) {
           ],
         },
       ],
-      max_tokens: 500,
-      temperature: 0.1,
+      max_tokens: 800,
+      temperature: 0.05,
     });
 
     const responseText = completion.choices?.[0]?.message?.content ?? '';
@@ -91,7 +111,6 @@ export async function POST(req: NextRequest) {
     // Try to parse the response as JSON
     let parsed;
     try {
-      // Strip markdown code blocks if present
       const cleanJson = responseText
         .replace(/```json\n?/g, '')
         .replace(/```\n?/g, '')
@@ -100,16 +119,17 @@ export async function POST(req: NextRequest) {
     } catch {
       return NextResponse.json({
         success: false,
-        message: 'Could not parse the bill. Please try again or enter details manually.',
+        message: 'Could not read the bill. Please try again or enter details manually.',
         debug: 'parse_error',
       });
     }
 
-    // Check if the model said it couldn't read it
-    if (parsed.success === false) {
+    // If model says it's not a bill, reject it
+    if (parsed.is_bill === false) {
       return NextResponse.json({
         success: false,
-        message: parsed.message || 'Could not read this bill.',
+        message: `That doesn't look like an electricity bill${parsed.reason ? ' — ' + parsed.reason : ''}. Please upload a photo of your electricity or gas bill.`,
+        debug: 'not_a_bill',
       });
     }
 
@@ -123,7 +143,7 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // Clamp to reasonable range (€20-€1000/month)
+    // Clamp to reasonable range
     const clampedAmount = Math.max(20, Math.min(1000, Math.round(monthlyAmount)));
 
     return NextResponse.json({
@@ -133,17 +153,26 @@ export async function POST(req: NextRequest) {
         supplier: parsed.supplier || null,
         billing_period: parsed.billing_period || null,
         account_number: parsed.account_number || null,
-        mpx: parsed.mpx || null,
+        mprn: parsed.mprn || null,
+        mpan: parsed.mpan || null,
+        name: parsed.name || null,
+        address: parsed.address || null,
+        usage_kwh: parsed.usage_kwh || null,
+        tariff: parsed.tariff || null,
+        standing_charge: parsed.standing_charge || null,
+        unit_rate: parsed.unit_rate || null,
         confidence: parsed.confidence || 'medium',
         message: parsed.message || null,
       },
     });
   } catch (error) {
     console.error('Bill extract error:', error);
+    const msg = error instanceof Error ? error.message : 'Unknown error';
     return NextResponse.json(
       {
         success: false,
-        message: 'Something went wrong. Please try again or enter your details manually.',
+        message: 'Something went wrong reading your bill. Please try again or enter details manually.',
+        debug: msg.includes('API key') ? 'api_key_missing' : undefined,
       },
       { status: 500 }
     );
