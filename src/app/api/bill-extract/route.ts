@@ -69,10 +69,10 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Validate file size (10MB max)
+    // Validate file size (10MB raw max — client compresses images before upload)
     if (file.size > 10 * 1024 * 1024) {
       return NextResponse.json(
-        { success: false, message: 'File too large (max 10MB).' },
+        { success: false, message: 'File too large. Take a clearer photo closer to the bill.' },
         { status: 400 }
       );
     }
@@ -80,6 +80,14 @@ export async function POST(req: NextRequest) {
     // Convert file to base64
     const bytes = await file.arrayBuffer();
     const base64 = Buffer.from(bytes).toString('base64');
+
+    // Safety: reject if base64 payload exceeds 4MB (Vercel body limit headroom)
+    if (base64.length > 4 * 1024 * 1024) {
+      return NextResponse.json(
+        { success: false, message: 'Image too large after processing. Please take a closer, clearer photo of your bill.' },
+        { status: 400 }
+      );
+    }
     const mimeType = file.type === 'image/jpg' ? 'image/jpeg' : file.type;
 
     // Use OpenAI with Vercel env keys

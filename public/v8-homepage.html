@@ -2312,6 +2312,37 @@ function handleDragOver(e){e.preventDefault();document.getElementById('dropzone'
 function handleDragLeave(){document.getElementById('dropzone').classList.remove('over')}
 function handleDrop(e){e.preventDefault();document.getElementById('dropzone').classList.remove('over');if(e.dataTransfer.files[0])processFile(e.dataTransfer.files[0])}
 function handleFile(f){if(f)processFile(f)}
+// Compress image using Canvas before upload — keeps PDFs as-is
+function compressBillFile(file, maxDim, quality){
+  return new Promise(function(resolve){
+    // Don't compress PDFs or files already small
+    if(file.type === 'application/pdf' || file.size < 800 * 1024){
+      resolve(file);
+      return;
+    }
+    var img = new Image();
+    var url = URL.createObjectURL(file);
+    img.onload = function(){
+      URL.revokeObjectURL(url);
+      var w = img.width, h = img.height;
+      // Only resize if larger than maxDim on either side
+      if(w <= maxDim && h <= maxDim){
+        resolve(file);
+        return;
+      }
+      if(w > h){ h = Math.round(h * maxDim / w); w = maxDim; }
+      else { w = Math.round(w * maxDim / h); h = maxDim; }
+      var canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      canvas.toBlob(function(blob){
+        resolve(blob || file);
+      }, 'image/jpeg', quality);
+    };
+    img.onerror = function(){ URL.revokeObjectURL(url); resolve(file); };
+    img.src = url;
+  });
+}
 function processFile(f){
   var ALLOWED_TYPES = ['application/pdf','image/jpeg','image/jpg','image/png'];
   var MAX_SIZE_MB = 10;
@@ -2341,13 +2372,17 @@ function processFile(f){
   // Disable submit until analysis completes
   var subBtn = document.getElementById('up-submit-btn');
   if(subBtn){ subBtn.disabled = true; }
-  // POST to bill-extract API
-  var fd = new FormData();
-  fd.append('bill', f);
-  fetch('/api/bill-extract', { method: 'POST', body: fd })
-    .then(function(r){ return r.json(); })
-    .then(function(d){
-      var sizeStr = (f.size/1024).toFixed(0) + ' KB';
+  // Compress image client-side before upload (max 2048px, 80% JPEG quality)
+  compressBillFile(f, 2048, 0.8).then(function(compressed){
+    var uploadFile = compressed;
+    var origSize = f.size;
+    // POST to bill-extract API
+    var fd = new FormData();
+    fd.append('bill', uploadFile, f.name);
+    fetch('/api/bill-extract', { method: 'POST', body: fd })
+      .then(function(r){ return r.json(); })
+      .then(function(d){
+        var sizeStr = (origSize/1024).toFixed(0) + ' KB';
       if(d.success && d.data){
         window._billData = d.data;
         var monthly = d.data.monthly_amount;
@@ -2403,7 +2438,7 @@ function processFile(f){
     })
     .catch(function(err){
       console.error('Bill extract error:', err);
-      document.getElementById('fpsize').textContent = (f.size/1024).toFixed(0) + ' KB';
+      document.getElementById('fpsize').textContent = (origSize/1024).toFixed(0) + ' KB';
       var resDiv = document.getElementById('upload-result');
       if(resDiv){
         resDiv.innerHTML = '<div class="upload-result-error">Something went wrong. Please try again or enter your details manually.</div>';
@@ -2411,6 +2446,7 @@ function processFile(f){
       }
       if(subBtn){ subBtn.disabled = false; }
     });
+  }); // end compressBillFile.then
 }
 function removeFile(){
   document.getElementById('fprev').classList.remove('on');
