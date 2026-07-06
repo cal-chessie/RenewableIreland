@@ -3904,7 +3904,7 @@ function emGoStep(n){
     var calFallback=document.getElementById('em-cal-fallback');
     if(calIframe && !calIframe.dataset.loaded){
       calIframe.dataset.loaded='1';
-      calIframe.src='https://cal.com/renewably/aisolar';
+      calIframe.src='https://cal.com/renewably/aisolar?embed=true';
       calIframe.onload=function(){
         _analytics.track('cal_embed_loaded',{});
       };
@@ -3960,8 +3960,12 @@ function closeEstimateModal(){
   document.getElementById('em-s1').classList.add('on');
   document.getElementById('em-p1').className='em-prog-step act';
   // Reset embed so it reloads next time
-  var embedEl=document.getElementById('em-cal-embed');
-  if(embedEl) delete embedEl.dataset.loaded;
+  var calIframeReset=document.getElementById('em-cal-iframe');
+  if(calIframeReset){ delete calIframeReset.dataset.loaded; calIframeReset.src=''; }
+  var calEmbedWrap=document.getElementById('em-cal-embed');
+  if(calEmbedWrap) calEmbedWrap.style.display='';
+  var calFallbackReset=document.getElementById('em-cal-fallback');
+  if(calFallbackReset) calFallbackReset.style.display='none';
 }
 function emSubmitLead(){
   var name=(document.getElementById('em-name').value||'').trim();
