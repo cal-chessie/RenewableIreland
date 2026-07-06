@@ -127,7 +127,7 @@ export async function POST(request: NextRequest) {
     const supabase = getSupabase();
     if (supabase) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { error: dbError } = await (supabase.from('leads').insert({
+      const rowData: any = {
         name: body.name.trim(),
         email: body.email.trim(),
         phone: body.phone.trim(),
@@ -135,7 +135,8 @@ export async function POST(request: NextRequest) {
         monthly_bill: body.monthly_bill || null,
         workflow_stage: 'estimate-modal',
         notes,
-      }) as any);
+      };
+      const { error: dbError } = await supabase.from('leads').insert(rowData);
 
       if (dbError) {
         console.error('[Lead API] Supabase insert failed:', dbError);
