@@ -3945,7 +3945,7 @@ function emGoStep(n){
   if(n===4 && _emEstimate){
     document.getElementById('em-s4-save').textContent='€'+_emEstimate.annSave.toLocaleString();
     document.getElementById('em-s4-payback').textContent=(_emEstimate.payback?_emEstimate.payback:'<10')+' yrs';
-    document.getElementById('em-s4-co2').textContent=_emEstimate.co2Saved.toFixed(1)+' t';
+    document.getElementById('em-s4-co2').textContent=_emEstimate.co2.toFixed(1)+' t';
   }
   // Load Cal.com iframe when step 4 shown
   if(n===4){
