@@ -2380,7 +2380,10 @@ function processFile(f){
     var fd = new FormData();
     fd.append('bill', uploadFile, f.name);
     fetch('/api/bill-extract', { method: 'POST', body: fd })
-      .then(function(r){ return r.json(); })
+      .then(function(r){
+        if(!r.ok) return r.text().then(function(t){ throw new Error('Server returned ' + r.status + (t ? ': ' + t.slice(0,120) : '')); });
+        return r.json();
+      })
       .then(function(d){
         var sizeStr = (origSize/1024).toFixed(0) + ' KB';
       if(d.success && d.data){
@@ -2440,8 +2443,14 @@ function processFile(f){
       console.error('Bill extract error:', err);
       document.getElementById('fpsize').textContent = (origSize/1024).toFixed(0) + ' KB';
       var resDiv = document.getElementById('upload-result');
+      var errMsg = 'Something went wrong. Please try again or enter your details manually.';
+      if(err.message && err.message.indexOf('Failed to fetch') > -1){
+        errMsg = 'Network error — check your connection and try again.';
+      } else if(err.message){
+        errMsg = 'Error: ' + err.message;
+      }
       if(resDiv){
-        resDiv.innerHTML = '<div class="upload-result-error">Something went wrong. Please try again or enter your details manually.</div>';
+        resDiv.innerHTML = '<div class="upload-result-error">' + errMsg + '</div>';
         resDiv.style.display = 'block';
       }
       if(subBtn){ subBtn.disabled = false; }

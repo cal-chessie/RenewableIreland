@@ -2,6 +2,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import OpenAI from 'openai';
 
+export const maxDuration = 30;
+
 const SYSTEM_PROMPT = `You are an expert at reading Irish electricity bills. You MUST first verify this is actually an electricity or gas utility bill — NOT a photo of a car, dog, house, receipt, invoice for other services, or any non-utility document.
 
 If the image is NOT an electricity/gas bill, respond with exactly:
