@@ -1,6 +1,5 @@
 // @ts-nocheck
 import { NextRequest, NextResponse } from 'next/server';
-import OpenAI from 'openai';
 
 export const maxDuration = 30;
 
@@ -93,31 +92,53 @@ export async function POST(req: NextRequest) {
     }
     const mimeType = file.type === 'image/jpg' ? 'image/jpeg' : file.type;
 
-    // Use OpenAI with Vercel env keys
-    const openai = new OpenAI();
+    // Call OpenAI directly via fetch — no SDK, lighter cold start
+    const apiKey = process.env.OPENAI_API_KEY;
+    if (!apiKey) {
+      return NextResponse.json(
+        { success: false, message: 'Bill analysis is temporarily unavailable.', debug: 'api_key_missing' },
+        { status: 500 }
+      );
+    }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const completion = await (openai.chat.completions.create as any)({
-      model: 'gpt-4o',
-      messages: [
-        {
-          role: 'user',
-          content: [
-            { type: 'text', text: SYSTEM_PROMPT },
-            {
-              type: 'image_url',
-              image_url: {
-                url: `data:${mimeType};base64,${base64}`,
-                detail: 'high',
+    const res = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'gpt-4o',
+        messages: [
+          {
+            role: 'user',
+            content: [
+              { type: 'text', text: SYSTEM_PROMPT },
+              {
+                type: 'image_url',
+                image_url: {
+                  url: `data:${mimeType};base64,${base64}`,
+                  detail: 'high',
+                },
               },
-            },
-          ],
-        },
-      ],
-      max_tokens: 800,
-      temperature: 0.05,
+            ],
+          },
+        ],
+        max_tokens: 800,
+        temperature: 0.05,
+      }),
     });
 
+    if (!res.ok) {
+      const errBody = await res.text().catch(() => '');
+      console.error('[BillExtract] OpenAI error:', res.status, errBody.slice(0, 200));
+      return NextResponse.json(
+        { success: false, message: 'Could not analyse the bill. Please try again or enter details manually.', debug: 'openai_' + res.status },
+        { status: 502 }
+      );
+    }
+
+    const completion = await res.json();
     const responseText = completion.choices?.[0]?.message?.content ?? '';
 
     // Try to parse the response as JSON
@@ -184,7 +205,7 @@ export async function POST(req: NextRequest) {
       {
         success: false,
         message: 'Something went wrong reading your bill. Please try again or enter details manually.',
-        debug: msg.includes('API key') ? 'api_key_missing' : undefined,
+        debug: msg.includes('API key') ? 'api_key_missing' : msg.slice(0, 100),
       },
       { status: 500 }
     );

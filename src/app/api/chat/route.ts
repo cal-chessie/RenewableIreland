@@ -1,6 +1,5 @@
 // @ts-nocheck
 import { NextRequest, NextResponse } from 'next/server';
-import OpenAI from 'openai';
 
 /* ------------------------------------------------------------------ */
 /*  Rate Limiter (simple in-memory)                                    */
@@ -156,17 +155,31 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    /* Call OpenAI */
-    const openai = new OpenAI();
+    /* Call OpenAI via fetch — lighter than SDK for Vercel cold starts */
+    const apiKey = process.env.OPENAI_API_KEY;
+    if (!apiKey) {
+      return NextResponse.json(
+        { message: 'Chat service is temporarily unavailable.', error: 'config_error' },
+        { status: 500 },
+      );
+    }
 
-    const completion = await (openai.chat.completions.create as any)({
-      model: 'gpt-4o-mini',
-      messages: apiMessages,
-      temperature: 0.7,
-      max_tokens: 500,
+    const res = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: 'gpt-4o-mini', messages: apiMessages, temperature: 0.7, max_tokens: 500 }),
     });
 
-    const reply = completion.choices?.[0]?.message?.content ?? "I'm sorry, I couldn't generate a response. Please try again or call us at +353 87 395 8424.";
+    if (!res.ok) {
+      console.error('[SolarChat] OpenAI error:', res.status);
+      return NextResponse.json(
+        { message: 'Something went wrong. Please try again or call us at +353 87 395 8424.', error: 'llm_error' },
+        { status: 500 },
+      );
+    }
+
+    const json = await res.json();
+    const reply = json.choices?.[0]?.message?.content ?? "I'm sorry, I couldn't generate a response. Please try again or call us at +353 87 395 8424.";
 
     /* Simple lead qualification detection */
     const userLastMsg = messages[messages.length - 1]?.content?.toLowerCase() ?? '';
