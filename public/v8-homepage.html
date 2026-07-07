@@ -2312,6 +2312,37 @@ function handleDragOver(e){e.preventDefault();document.getElementById('dropzone'
 function handleDragLeave(){document.getElementById('dropzone').classList.remove('over')}
 function handleDrop(e){e.preventDefault();document.getElementById('dropzone').classList.remove('over');if(e.dataTransfer.files[0])processFile(e.dataTransfer.files[0])}
 function handleFile(f){if(f)processFile(f)}
+// Compress image using Canvas before upload — keeps PDFs as-is
+function compressBillFile(file, maxDim, quality){
+  return new Promise(function(resolve){
+    // Don't compress PDFs or files already small
+    if(file.type === 'application/pdf' || file.size < 200 * 1024){
+      resolve(file);
+      return;
+    }
+    var img = new Image();
+    var url = URL.createObjectURL(file);
+    img.onload = function(){
+      URL.revokeObjectURL(url);
+      var w = img.width, h = img.height;
+      // Only resize if larger than maxDim on either side
+      if(w <= maxDim && h <= maxDim){
+        resolve(file);
+        return;
+      }
+      if(w > h){ h = Math.round(h * maxDim / w); w = maxDim; }
+      else { w = Math.round(w * maxDim / h); h = maxDim; }
+      var canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      canvas.toBlob(function(blob){
+        resolve(blob || file);
+      }, 'image/jpeg', quality);
+    };
+    img.onerror = function(){ URL.revokeObjectURL(url); resolve(file); };
+    img.src = url;
+  });
+}
 function processFile(f){
   var ALLOWED_TYPES = ['application/pdf','image/jpeg','image/jpg','image/png'];
   var MAX_SIZE_MB = 10;
@@ -2341,13 +2372,30 @@ function processFile(f){
   // Disable submit until analysis completes
   var subBtn = document.getElementById('up-submit-btn');
   if(subBtn){ subBtn.disabled = true; }
-  // POST to bill-extract API
-  var fd = new FormData();
-  fd.append('bill', f);
-  fetch('/api/bill-extract', { method: 'POST', body: fd })
-    .then(function(r){ return r.json(); })
-    .then(function(d){
-      var sizeStr = (f.size/1024).toFixed(0) + ' KB';
+  // Compress image client-side before upload (max 1024px, 70% JPEG quality — bills are text, don't need high res)
+  compressBillFile(f, 1024, 0.7).then(function(compressed){
+    var uploadFile = compressed;
+    var origSize = f.size;
+    var compSize = uploadFile.size;
+    // If canvas converted PNG→JPEG, rename so server sees correct type
+    var uploadName = f.name;
+    if (uploadFile.type === 'image/jpeg' && /\.png$/i.test(uploadName)) {
+      uploadName = uploadName.replace(/\.png$/i, '.jpg');
+    }
+    // POST to bill-extract API with 25s timeout
+    var controller = new AbortController();
+    var timeoutId = setTimeout(function(){ controller.abort(); }, 25000);
+    var fd = new FormData();
+    fd.append('bill', uploadFile, uploadName);
+    fetch('/api/bill-extract', { method: 'POST', body: fd, signal: controller.signal })
+      .then(function(r){
+        clearTimeout(timeoutId);
+        if(!r.ok) return r.text().then(function(t){ throw new Error('Server returned ' + r.status + (t ? ': ' + t.slice(0,120) : '')); });
+        return r.json();
+      })
+      .then(function(d){
+        var sizeStr = (origSize/1024).toFixed(0) + ' KB';
+        if (compSize < origSize) sizeStr += ' → ' + (compSize/1024).toFixed(0) + ' KB';
       if(d.success && d.data){
         window._billData = d.data;
         var monthly = d.data.monthly_amount;
@@ -2402,15 +2450,34 @@ function processFile(f){
       }
     })
     .catch(function(err){
+      clearTimeout(timeoutId);
       console.error('Bill extract error:', err);
-      document.getElementById('fpsize').textContent = (f.size/1024).toFixed(0) + ' KB';
+      document.getElementById('fpsize').textContent = (origSize/1024).toFixed(0) + ' KB';
       var resDiv = document.getElementById('upload-result');
+      var errMsg = 'Something went wrong. Please try again or enter your details manually.';
+      if(err.name === 'AbortError'){
+        errMsg = 'Analysis timed out — your bill may be too large. Try a clearer, closer photo or enter details manually.';
+      } else if(err.message && err.message.indexOf('Failed to fetch') > -1){
+        errMsg = 'Could not reach the server. Please check your connection and try again.';
+      } else if(err.message && err.message.indexOf('413') > -1){
+        errMsg = 'Image too large. Take a closer photo or use a smaller file.';
+      } else if(err.message){
+        errMsg = 'Error: ' + err.message;
+      }
       if(resDiv){
-        resDiv.innerHTML = '<div class="upload-result-error">Something went wrong. Please try again or enter your details manually.</div>';
+        resDiv.innerHTML = '<div class="upload-result-error">' + errMsg + ' <a href="javascript:void(0)" onclick="retryUpload() " style="color:#c00;text-decoration:underline;margin-left:6px">Retry</a></div>';
         resDiv.style.display = 'block';
       }
       if(subBtn){ subBtn.disabled = false; }
     });
+  }); // end compressBillFile.then
+}
+function retryUpload() {
+  if(window._uploadedFile){
+    document.getElementById('upload-result').style.display='none';
+    document.getElementById('upload-result').innerHTML='';
+    processFile(window._uploadedFile);
+  }
 }
 function removeFile(){
   document.getElementById('fprev').classList.remove('on');
@@ -3909,7 +3976,7 @@ function emGoStep(n){
   if(n===4 && _emEstimate){
     document.getElementById('em-s4-save').textContent='€'+_emEstimate.annSave.toLocaleString();
     document.getElementById('em-s4-payback').textContent=(_emEstimate.payback?_emEstimate.payback:'<10')+' yrs';
-    document.getElementById('em-s4-co2').textContent=_emEstimate.co2Saved.toFixed(1)+' t';
+    document.getElementById('em-s4-co2').textContent=_emEstimate.co2.toFixed(1)+' t';
   }
   // Load Cal.com iframe when step 4 shown
   if(n===4){

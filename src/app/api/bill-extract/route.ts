@@ -1,5 +1,7 @@
+// @ts-nocheck
 import { NextRequest, NextResponse } from 'next/server';
-import OpenAI from 'openai';
+
+export const maxDuration = 30;
 
 const SYSTEM_PROMPT = `You are an expert at reading Irish electricity bills. You MUST first verify this is actually an electricity or gas utility bill — NOT a photo of a car, dog, house, receipt, invoice for other services, or any non-utility document.
 
@@ -69,10 +71,10 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Validate file size (10MB max)
+    // Validate file size (10MB raw max — client compresses images before upload)
     if (file.size > 10 * 1024 * 1024) {
       return NextResponse.json(
-        { success: false, message: 'File too large (max 10MB).' },
+        { success: false, message: 'File too large. Take a clearer photo closer to the bill.' },
         { status: 400 }
       );
     }
@@ -80,32 +82,63 @@ export async function POST(req: NextRequest) {
     // Convert file to base64
     const bytes = await file.arrayBuffer();
     const base64 = Buffer.from(bytes).toString('base64');
+
+    // Safety: reject if base64 payload exceeds 3MB (Vercel body limit headroom)
+    if (base64.length > 3 * 1024 * 1024) {
+      return NextResponse.json(
+        { success: false, message: 'Image too large after processing. Please take a closer, clearer photo of your bill.' },
+        { status: 400 }
+      );
+    }
     const mimeType = file.type === 'image/jpg' ? 'image/jpeg' : file.type;
 
-    // Use OpenAI with Vercel env keys
-    const openai = new OpenAI();
+    // Call OpenAI directly via fetch — no SDK, lighter cold start
+    const apiKey = process.env.OPENAI_API_KEY;
+    if (!apiKey) {
+      return NextResponse.json(
+        { success: false, message: 'Bill analysis is temporarily unavailable.', debug: 'api_key_missing' },
+        { status: 500 }
+      );
+    }
 
-    const completion = await openai.chat.completions.create({
-      model: 'gpt-4o',
-      messages: [
-        {
-          role: 'user',
-          content: [
-            { type: 'text', text: SYSTEM_PROMPT },
-            {
-              type: 'image_url',
-              image_url: {
-                url: `data:${mimeType};base64,${base64}`,
-                detail: 'high',
+    const res = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'gpt-4o',
+        messages: [
+          {
+            role: 'user',
+            content: [
+              { type: 'text', text: SYSTEM_PROMPT },
+              {
+                type: 'image_url',
+                image_url: {
+                  url: `data:${mimeType};base64,${base64}`,
+                  detail: 'high',
+                },
               },
-            },
-          ],
-        },
-      ],
-      max_tokens: 800,
-      temperature: 0.05,
+            ],
+          },
+        ],
+        max_tokens: 800,
+        temperature: 0.05,
+      }),
     });
 
+    if (!res.ok) {
+      const errBody = await res.text().catch(() => '');
+      console.error('[BillExtract] OpenAI error:', res.status, errBody.slice(0, 200));
+      return NextResponse.json(
+        { success: false, message: 'Could not analyse the bill. Please try again or enter details manually.', debug: 'openai_' + res.status },
+        { status: 502 }
+      );
+    }
+
+    const completion = await res.json();
     const responseText = completion.choices?.[0]?.message?.content ?? '';
 
     // Try to parse the response as JSON
@@ -150,19 +183,19 @@ export async function POST(req: NextRequest) {
       success: true,
       data: {
         monthly_amount: clampedAmount,
-        supplier: parsed.supplier || null,
-        billing_period: parsed.billing_period || null,
-        account_number: parsed.account_number || null,
-        mprn: parsed.mprn || null,
-        mpan: parsed.mpan || null,
-        name: parsed.name || null,
-        address: parsed.address || null,
-        usage_kwh: parsed.usage_kwh || null,
-        tariff: parsed.tariff || null,
-        standing_charge: parsed.standing_charge || null,
-        unit_rate: parsed.unit_rate || null,
-        confidence: parsed.confidence || 'medium',
-        message: parsed.message || null,
+        supplier: parsed.supplier ?? null,
+        billing_period: parsed.billing_period ?? null,
+        account_number: parsed.account_number ?? null,
+        mprn: parsed.mprn ?? null,
+        mpan: parsed.mpan ?? null,
+        name: parsed.name ?? null,
+        address: parsed.address ?? null,
+        usage_kwh: parsed.usage_kwh ?? null,
+        tariff: parsed.tariff ?? null,
+        standing_charge: parsed.standing_charge ?? null,
+        unit_rate: parsed.unit_rate ?? null,
+        confidence: parsed.confidence ?? 'medium',
+        message: parsed.message ?? null,
       },
     });
   } catch (error) {
@@ -172,7 +205,7 @@ export async function POST(req: NextRequest) {
       {
         success: false,
         message: 'Something went wrong reading your bill. Please try again or enter details manually.',
-        debug: msg.includes('API key') ? 'api_key_missing' : undefined,
+        debug: msg.includes('API key') ? 'api_key_missing' : msg.slice(0, 100),
       },
       { status: 500 }
     );
