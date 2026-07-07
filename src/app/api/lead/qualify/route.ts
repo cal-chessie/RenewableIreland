@@ -1,10 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
+// Lazy-init Supabase to avoid crash during build (env vars not available at build time)
+function getSupabase() {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { createClient } = require('@supabase/supabase-js') as any;
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  );
+}
 
 // ─── Types ───
 interface LeadQualifyPayload {
@@ -132,6 +136,7 @@ export async function POST(request: NextRequest) {
       .filter(Boolean)
       .join("\n");
 
+    const supabase = getSupabase();
     const { error: dbError } = await supabase.from("leads").insert({
       name: body.fullName,
       email: body.email,
