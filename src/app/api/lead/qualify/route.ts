@@ -145,6 +145,8 @@ export async function POST(request: NextRequest) {
       monthly_bill: billNum,
       workflow_stage: "new",
       notes,
+      tenant_id: process.env.NEXT_PUBLIC_TENANT_ID,
+      brand: process.env.NEXT_PUBLIC_BRAND,
     });
 
     if (dbError) {

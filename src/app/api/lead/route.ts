@@ -51,6 +51,8 @@ export async function POST(req: NextRequest) {
           monthly_bill: monthly_bill ?? null,
           workflow_stage: 'new',
           notes: notesParts,
+          tenant_id: process.env.NEXT_PUBLIC_TENANT_ID,
+          brand: process.env.NEXT_PUBLIC_BRAND,
         });
         if (error) {
           console.error('[Lead] Supabase insert error:', error);
