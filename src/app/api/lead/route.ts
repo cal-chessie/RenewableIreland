@@ -51,8 +51,8 @@ export async function POST(req: NextRequest) {
           monthly_bill: monthly_bill ?? null,
           workflow_stage: 'new',
           notes: notesParts,
-          tenant_id: process.env.NEXT_PUBLIC_TENANT_ID,
-          brand: process.env.NEXT_PUBLIC_BRAND,
+          tenant_id: "b05a5672-822b-48f2-b0e4-be88f724dfd7",
+          brand: "renewable-ireland",
         });
         if (error) {
           console.error('[Lead] Supabase insert error:', error);

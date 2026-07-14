@@ -145,8 +145,8 @@ export async function POST(request: NextRequest) {
       monthly_bill: billNum,
       workflow_stage: "new",
       notes,
-      tenant_id: process.env.NEXT_PUBLIC_TENANT_ID,
-      brand: process.env.NEXT_PUBLIC_BRAND,
+      tenant_id: "b05a5672-822b-48f2-b0e4-be88f724dfd7",
+      brand: "renewable-ireland",
     });
 
     if (dbError) {
