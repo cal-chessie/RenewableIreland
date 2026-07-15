@@ -45,15 +45,14 @@ export async function POST(req: NextRequest) {
       if (supabaseUrl && supabaseKey) {
         const supabase = createClient(supabaseUrl, supabaseKey);
         const { error } = await supabase.from('leads').insert({
-          name,
-          email,
-          phone: phone || null,
-          monthly_bill: monthly_bill ?? null,
-          workflow_stage: 'new',
-          notes: notesParts,
-          tenant_id: "b05a5672-822b-48f2-b0e4-be88f724dfd7",
-          brand: "renewable-ireland",
-        });
+  name,
+  email,
+  phone: phone || null,
+  // ...whatever else is there...
+  tenant_id: process.env.NEXT_PUBLIC_TENANT_ID,
+  brand: process.env.NEXT_PUBLIC_BRAND,
+  source: body.source || 'website',   // ← ADD THIS LINE
+});
         if (error) {
           console.error('[Lead] Supabase insert error:', error);
         } else {
