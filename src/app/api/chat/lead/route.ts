@@ -87,7 +87,7 @@ export async function POST(req: NextRequest) {
       phone: body.phone.trim(),
       county: body.county?.trim(),
       message: body.message?.trim(),
-      monthlyBill: parseFloat(body.billAmount) || undefined,
+      monthlyBill: parseFloat(body.billAmount ?? '') || undefined,
       meta: { reference: leadRef, systemSize: body.systemSize?.trim() },
     });
 

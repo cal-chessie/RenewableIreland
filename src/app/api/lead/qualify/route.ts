@@ -155,7 +155,7 @@ export async function POST(request: NextRequest) {
       phone: body.phone,
       county: body.county,
       eircode: body.postcode,
-      monthlyBill: parseFloat(body.billAmount) || undefined,
+      monthlyBill: parseFloat(body.billAmount ?? '') || undefined,
       meta: {
         reference,
         homeType: body.homeType,
