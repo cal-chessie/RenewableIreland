@@ -1,0 +1,537 @@
+/* ================================
+   REFERRAL LANDING PAGE — CSS MODULE
+   Dark theme with #c8ff00 lime accent
+   Barlow Condensed font
+   ================================ */
+
+.landingPage {
+  --lime: #c8ff00;
+  --lime-dark: #a3d900;
+  --lime-light: #d9ff4d;
+  --black: #050505;
+  --black-light: #0a0a0a;
+  --black-lighter: #111111;
+  --grey: #2a2a2a;
+  --grey-mid: #555555;
+  --grey-light: #888888;
+  --grey-lighter: #bbbbbb;
+  --white: #f0f0f0;
+  --white-pure: #ffffff;
+  --font-display: 'Barlow Condensed', 'Arial Narrow', sans-serif;
+  --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --max-width: 1200px;
+  --radius: 8px;
+  --radius-lg: 16px;
+  --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--white);
+  background: var(--black);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.landingPage *,
+.landingPage *::before,
+.landingPage *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ---- Container ---- */
+.container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* ---- Screen reader ---- */
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ================================
+   SKIP LINK
+   ================================ */
+.skipLink {
+  position: absolute;
+  top: -100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--lime);
+  color: var(--black);
+  padding: 12px 24px;
+  font-weight: 700;
+  border-radius: 0 0 var(--radius) var(--radius);
+  z-index: 10000;
+  transition: top 0.2s;
+}
+
+.skipLink:focus {
+  top: 0;
+  outline: 3px solid var(--lime);
+  outline-offset: 2px;
+}
+
+/* ================================
+   NAVIGATION
+   ================================ */
+.nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: rgba(5, 5, 5, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(200, 255, 0, 0.1);
+}
+
+.navInner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 72px;
+}
+
+.navLogo {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--white-pure);
+  text-decoration: none;
+  letter-spacing: -0.5px;
+}
+
+.navLogo:hover {
+  color: var(--white-pure);
+}
+
+.navLogo span {
+  color: var(--lime);
+}
+
+.navCta {
+  background: var(--lime) !important;
+  color: var(--black) !important;
+  padding: 10px 24px;
+  border-radius: var(--radius);
+  font-weight: 700 !important;
+  font-size: 0.9rem !important;
+  text-decoration: none;
+  transition: all var(--transition);
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+
+.navCta:hover {
+  background: var(--lime-light) !important;
+  color: var(--black) !important;
+  transform: translateY(-1px);
+}
+
+/* ================================
+   HERO
+   ================================ */
+.hero {
+  padding: 140px 0 80px;
+  text-align: center;
+  background: radial-gradient(ellipse at 50% 0%, rgba(200, 255, 0, 0.1) 0%, transparent 60%);
+  flex: 1;
+}
+
+.referralBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(200, 255, 0, 0.15);
+  border: 1px solid rgba(200, 255, 0, 0.4);
+  color: var(--lime);
+  padding: 10px 24px;
+  border-radius: 50px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin-bottom: 24px;
+  letter-spacing: 0.5px;
+  animation: badgePulse 2s ease-in-out infinite;
+}
+
+@keyframes badgePulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(200, 255, 0, 0.2); }
+  50% { box-shadow: 0 0 0 12px rgba(200, 255, 0, 0); }
+}
+
+.badgeIcon {
+  width: 20px;
+  height: 20px;
+}
+
+.hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 5vw, 3.8rem);
+  max-width: 800px;
+  margin: 0 auto 16px;
+  font-weight: 800;
+  letter-spacing: -1px;
+  line-height: 1.1;
+  color: var(--white-pure);
+}
+
+.hero h1 .referrerName {
+  color: var(--lime);
+}
+
+.heroSubtitle {
+  font-size: 1.15rem;
+  color: var(--grey-light);
+  max-width: 650px;
+  margin: 0 auto 40px;
+  line-height: 1.8;
+}
+
+.heroButtons {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* ================================
+   BUTTONS
+   ================================ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 16px 36px;
+  border-radius: var(--radius);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition);
+  text-align: center;
+  line-height: 1.3;
+  text-decoration: none;
+  min-height: 48px;
+  white-space: nowrap;
+}
+
+.btn:focus-visible {
+  outline: 3px solid var(--lime);
+  outline-offset: 3px;
+}
+
+.btnPrimary {
+  background: var(--lime) !important;
+  color: var(--black) !important;
+}
+
+.btnPrimary:hover {
+  background: var(--lime-light) !important;
+  color: var(--black) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(200, 255, 0, 0.25);
+}
+
+.btnSecondary {
+  background: transparent !important;
+  color: var(--white) !important;
+  border: 2px solid var(--grey);
+}
+
+.btnSecondary:hover {
+  border-color: var(--lime) !important;
+  color: var(--lime) !important;
+}
+
+/* ================================
+   HOW IT WORKS — 3 BULLET POINTS
+   ================================ */
+.benefitsSection {
+  padding: 80px 0;
+  background: var(--black-light);
+  border-top: 1px solid rgba(200, 255, 0, 0.07);
+  border-bottom: 1px solid rgba(200, 255, 0, 0.07);
+}
+
+.benefitsGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.benefitCard {
+  background: var(--black-lighter);
+  border: 1px solid rgba(200, 255, 0, 08);
+  border-radius: var(--radius-lg);
+  padding: 36px 28px;
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  transition: all var(--transition);
+}
+
+.benefitCard:hover {
+  border-color: rgba(200, 255, 0, 0.2);
+}
+
+.benefitIcon {
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  background: rgba(200, 255, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  color: var(--lime);
+  flex-shrink: 0;
+  border: 1px solid rgba(200, 255, 0, 0.15);
+}
+
+.benefitCard h3 {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  margin-bottom: 6px;
+  color: var(--white-pure);
+}
+
+.benefitCard p {
+  color: var(--grey-light);
+  font-size: 0.9rem;
+  line-height: 1.7;
+}
+
+/* ================================
+   DISCOUNT CALLOUT
+   ================================ */
+.discountCallout {
+  padding: 60px 0;
+  text-align: center;
+  background: linear-gradient(135deg, rgba(200, 255, 0, 0.06) 0%, transparent 50%);
+  border-top: 1px solid rgba(200, 255, 0, 0.1);
+}
+
+.discountAmount {
+  font-family: var(--font-display);
+  font-size: clamp(3.5rem, 8vw, 6rem);
+  font-weight: 800;
+  color: var(--lime);
+  line-height: 1;
+  margin-bottom: 12px;
+}
+
+.discountAmount span {
+  font-size: 0.4em;
+  color: var(--grey-light);
+}
+
+.discountLabel {
+  font-size: 1.1rem;
+  color: var(--grey-light);
+  margin-bottom: 28px;
+}
+
+/* ================================
+   CTA SECTION
+   ================================ */
+.ctaSection {
+  padding: 80px 0;
+  text-align: center;
+  background: var(--black);
+  border-top: 1px solid rgba(200, 255, 0, 0.07);
+}
+
+.ctaSection h2 {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  margin-bottom: 16px;
+  color: var(--white-pure);
+}
+
+.ctaSection p {
+  color: var(--grey-light);
+  font-size: 1.05rem;
+  max-width: 600px;
+  margin: 0 auto 28px;
+  line-height: 1.8;
+}
+
+.ctaPhone {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 3vw, 2.2rem);
+  font-weight: 800;
+  color: var(--lime);
+  margin-bottom: 28px;
+  display: block;
+  text-decoration: none;
+  transition: color var(--transition);
+}
+
+.ctaPhone:hover {
+  color: var(--lime-light);
+}
+
+/* ================================
+   FOOTER
+   ================================ */
+.footer {
+  background: var(--black-light);
+  color: var(--grey-light);
+  padding: 40px 0 24px;
+  border-top: 1px solid rgba(200, 255, 0, 0.07);
+}
+
+.footerInner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 24px;
+  text-align: center;
+}
+
+.footerLogo {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--white-pure);
+  text-decoration: none;
+}
+
+.footerLogo span {
+  color: var(--lime);
+}
+
+.footerTagline {
+  color: var(--grey-mid);
+  font-size: 0.85rem;
+  margin-top: 8px;
+}
+
+.footerBottom {
+  border-top: 1px solid rgba(200, 255, 0, 0.07);
+  padding-top: 20px;
+  margin-top: 20px;
+}
+
+.footerBottom p {
+  font-size: 0.8rem;
+  color: var(--grey-mid);
+}
+
+.footerBottom a {
+  font-size: 0.8rem;
+  color: var(--grey-mid);
+  text-decoration: none;
+  transition: color var(--transition);
+}
+
+.footerBottom a:hover {
+  color: var(--lime);
+}
+
+/* ================================
+   ERROR STATE
+   ================================ */
+.errorSection {
+  padding: 160px 0 100px;
+  text-align: center;
+  flex: 1;
+}
+
+.errorSection h1 {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 5vw, 3rem);
+  margin-bottom: 16px;
+  color: var(--white-pure);
+}
+
+.errorSection p {
+  color: var(--grey-light);
+  font-size: 1.05rem;
+  max-width: 500px;
+  margin: 0 auto 32px;
+  line-height: 1.8;
+}
+
+/* ================================
+   RESPONSIVE — TABLET (769px+)
+   ================================ */
+@media (min-width: 769px) {
+  .hero {
+    padding: 160px 0 100px;
+  }
+
+  .benefitsGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .ctaSection,
+  .benefitsSection,
+  .discountCallout {
+    padding: 100px 0;
+  }
+}
+
+/* ================================
+   RESPONSIVE — SMALL MOBILE (480px-)
+   ================================ */
+@media (max-width: 480px) {
+  .container {
+    padding: 0 16px;
+  }
+
+  .hero {
+    padding: 120px 0 60px;
+  }
+
+  .hero h1 {
+    font-size: 2rem;
+  }
+
+  .heroButtons {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .benefitCard {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .ctaSection,
+  .benefitsSection,
+  .discountCallout {
+    padding: 60px 0;
+  }
+}

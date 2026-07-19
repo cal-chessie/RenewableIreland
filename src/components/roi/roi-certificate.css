@@ -1,0 +1,339 @@
+/* ===== ROI CERTIFICATE STYLES ===== */
+/* Designed for both screen preview and print/PDF output */
+
+.roi-certificate {
+  background: #fafafa;
+  max-width: 800px;
+  width: 100%;
+  margin: 0 auto;
+  font-family: 'Barlow Condensed', 'Arial Narrow', Arial, sans-serif;
+  color: #1a1a1a;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+}
+
+/* Lime accent bars */
+.cert-lime-bar {
+  height: 6px;
+  background: #c8ff00;
+}
+
+.cert-content {
+  padding: 40px 48px 32px;
+}
+
+/* Header */
+.cert-header {
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.cert-sun-icon {
+  font-size: 2.5rem;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.cert-brand {
+  font-family: 'Barlow Condensed', 'Arial Narrow', Arial, sans-serif;
+  font-size: 2.2rem;
+  font-weight: 800;
+  letter-spacing: 3px;
+  color: #050505;
+  margin: 0;
+  line-height: 1.1;
+}
+
+.cert-subtitle {
+  font-family: 'Barlow Condensed', 'Arial Narrow', Arial, sans-serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #555;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+
+/* Divider */
+.cert-divider {
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #c8ff00, transparent);
+  margin: 24px 0;
+}
+
+/* Body */
+.cert-body {
+  text-align: center;
+}
+
+.cert-intro {
+  font-size: 1.05rem;
+  color: #555;
+  margin-bottom: 4px;
+}
+
+.cert-name {
+  font-family: 'Barlow Condensed', 'Arial Narrow', Arial, sans-serif;
+  font-size: 2rem;
+  font-weight: 800;
+  color: #050505;
+  margin: 4px 0;
+  line-height: 1.2;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.cert-location {
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 20px;
+}
+
+.cert-location strong {
+  color: #1a1a1a;
+}
+
+.cert-description {
+  font-size: 0.95rem;
+  color: #444;
+  margin-bottom: 28px;
+  line-height: 1.6;
+}
+
+.cert-description strong {
+  color: #050505;
+}
+
+/* Metric Cards */
+.cert-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.cert-card {
+  background: #f0f0f0;
+  border-radius: 8px;
+  padding: 20px 12px;
+  text-align: center;
+  border: 1px solid #e0e0e0;
+}
+
+.cert-card-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #777;
+  margin-bottom: 8px;
+}
+
+.cert-card-value {
+  font-family: 'Barlow Condensed', 'Arial Narrow', Arial, sans-serif;
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #050505;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.cert-card-highlight {
+  color: #4a7a00;
+}
+
+.cert-card-sub {
+  font-size: 0.7rem;
+  color: #999;
+  font-weight: 500;
+}
+
+/* Projection Table */
+.cert-projection {
+  margin-top: 28px;
+  text-align: left;
+}
+
+.cert-projection-title {
+  font-family: 'Barlow Condensed', 'Arial Narrow', Arial, sans-serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #050505;
+  margin-bottom: 12px;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.cert-projection-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.cert-projection-row {
+  display: contents;
+}
+
+.cert-projection-row > span {
+  padding: 10px 16px;
+  font-size: 0.85rem;
+  color: #333;
+}
+
+.cert-projection-row > span:first-child {
+  font-weight: 600;
+}
+
+.cert-projection-row > span:last-child {
+  text-align: right;
+  font-family: 'Barlow Condensed', 'Arial Narrow', Arial, sans-serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.cert-projection-header > span {
+  background: #e8e8e8;
+  font-weight: 700 !important;
+  font-size: 0.8rem !important;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #555 !important;
+}
+
+.cert-projection-alt > span {
+  background: #f5f5f5;
+}
+
+/* Certificate Meta */
+.cert-meta {
+  margin-top: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: center;
+}
+
+.cert-meta-row {
+  font-size: 0.8rem;
+  color: #777;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.cert-meta-label {
+  font-weight: 600;
+}
+
+.cert-meta-value {
+  color: #555;
+}
+
+.cert-mono {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.8rem;
+  letter-spacing: 0.5px;
+}
+
+/* Footer */
+.cert-footer {
+  text-align: center;
+  margin-top: 4px;
+}
+
+.cert-address {
+  font-size: 0.78rem;
+  color: #888;
+  margin-bottom: 4px;
+}
+
+.cert-contact {
+  font-size: 0.78rem;
+  color: #888;
+  margin-bottom: 2px;
+}
+
+.cert-website {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #050505;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 640px) {
+  .cert-content {
+    padding: 24px 20px 20px;
+  }
+
+  .cert-brand {
+    font-size: 1.6rem;
+    letter-spacing: 1.5px;
+  }
+
+  .cert-name {
+    font-size: 1.5rem;
+  }
+
+  .cert-cards-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .cert-card-value {
+    font-size: 1.5rem;
+  }
+
+  .cert-projection-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .cert-projection-row > span:last-child {
+    text-align: left;
+  }
+
+  .cert-projection-header {
+    display: none;
+  }
+
+  .cert-projection-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 12px;
+    border-bottom: 1px solid #eee;
+  }
+
+  .cert-projection-row > span {
+    padding: 8px 0;
+  }
+}
+
+/* ===== PRINT STYLES ===== */
+@media print {
+  .roi-certificate {
+    box-shadow: none;
+    max-width: 100%;
+    page-break-inside: avoid;
+  }
+
+  .cert-lime-bar {
+    background: #c8ff00 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .cert-card-highlight {
+    color: #4a7a00 !important;
+  }
+
+  /* Hide non-certificate elements when printing */
+  body > *:not(.roi-certificate-wrapper) {
+    display: none !important;
+  }
+
+  @page {
+    size: A4;
+    margin: 10mm;
+  }
+}

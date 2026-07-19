@@ -1,0 +1,144 @@
+# Environment
+.env*
+!.env.example
+
+# Dependencies
+node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# Next.js
+/.next/
+/out/
+
+# Production
+/build
+/dist
+
+# Testing
+/coverage
+
+# Database
+db/*.db
+
+# Misc
+.DS_Store
+*.pem
+Thumbs.db
+screenshot.png
+.accesslog
+.stats
+.config.json
+Caddyfile
+--timeout
+*.disabled
+*.disabled-*
+
+# Debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+*.log
+
+# Vercel
+.vercel
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# Local development
+local-*
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# AI / internal tools
+.claude
+.z-ai-config
+skills/
+.zscripts/
+agent-ctx/
+
+# Download directory (generated assets)
+download/
+
+# Upload directory (source assets)
+upload/
+
+# Examples
+examples/
+
+# Working scripts (not part of app)
+keepalive.sh
+keep-alive.sh
+keepalive2.sh
+keepalive-loop.sh
+fast-keepalive.sh
+simple-server.js
+python-server.py
+py-serve.py
+tiny-serve.py
+serve.js
+server.js
+start.sh
+start-server.sh
+run.sh
+check-homepage.js
+scripts/
+
+# Mini services
+mini-services/
+
+# Backup / working files
+*.bak
+*.bak-*
+*.backup
+*.fullbak
+*.unstyled-backup
+*.nextjs-backup
+*-cropped*
+*-transparent*
+*-source*
+*-dark*
+*-top-*
+public/original.html
+public/index.html
+public/logo.jpeg
+public/logo.svg
+public/v8-body.html
+public/v8-critical.css
+public/v8-deferred.css
+public/v8-scripts.js
+public/v8-styles.css
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Worklog
+worklog.md
+
+# Old/duplicate favicons and images (working files)
+public/favicon-48x48.png
+public/favicon-64x64.png
+public/images/favicon-180x180.png
+public/images/favicon-48x48.png
+public/images/favicon-mark-square.png
+public/images/favicon-mark.png
+public/images/favicon-source.png
+public/images/favicon.webp
+public/images/logo-dark.png
+public/images/logo-top-200.png
+public/images/logo.jpeg
+public/images/logo.webp

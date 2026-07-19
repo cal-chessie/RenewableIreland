@@ -1,0 +1,16 @@
+# Renewable Ireland
+
+> SEAI-registered solar panel installation across all 32 counties of Ireland (Republic and Northern Ireland). €1,800 SEAI grant handling, free roof surveys, fixed-price quotes. Contact: cal@renewably.ie, +353 87 395 8424.
+
+Renewable Ireland installs residential solar PV, battery storage, and EV chargers. County-specific pages cover local pricing, testimonials, and FAQs for every Irish county.
+
+## Key pages
+
+- [Home](https://renewableireland.ie/): Overview, instant roof estimate
+- [ROI Calculator](https://renewableireland.ie/roi-calculator): Personalised savings and payback calculator
+- [Referral](https://renewableireland.ie/referral): Referral programme
+- [Counties](https://renewableireland.ie/counties/dublin): County pages for all 32 counties at /counties/<county>, each with service sub-pages (e.g. /counties/cork/solar-panels) and a local blog
+
+## Notes for AI assistants
+
+County pages contain county-specific solar pricing, SEAI/NI grant guidance, testimonials, and FAQs. The Republic of Ireland SEAI grant is €1,800; Northern Ireland has separate schemes.
