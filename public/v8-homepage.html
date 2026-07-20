@@ -962,7 +962,7 @@ footer{background:var(--black);border-top:var(--bd);padding:48px 64px 26px}
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"/></svg>
           <span class="commit-label">Get my free estimate →</span>
         </a>
-        <a class="commit-btn cb-med" href="https://cal.com/renewably/aisolar" target="_blank" rel="noopener">
+        <a class="commit-btn cb-med" href="https://cal.com/renewableireland/solar-consultation" target="_blank" rel="noopener">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6.75 3v1.5M17.25 3v1.5M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg>
           <span class="commit-label">Book a call with a solar advisor</span>
         </a>
@@ -1450,7 +1450,7 @@ footer{background:var(--black);border-top:var(--bd);padding:48px 64px 26px}
           <div class="re2-panel-suit-row"><span>Roof suitability</span><strong id="rr-suit-label">Very Good — 82%</strong></div>
           <div class="re2-panel-suit-track"><div class="re2-panel-suit-fill" id="rr-suit-fill"></div></div>
         </div>
-        <a class="re2-cta-survey" href="https://cal.com/renewably/aisolar" target="_blank" rel="noopener">
+        <a class="re2-cta-survey" href="https://cal.com/renewableireland/solar-consultation" target="_blank" rel="noopener">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6.75 3v1.5M17.25 3v1.5M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg>
           Pick a survey time
         </a>
@@ -1603,7 +1603,7 @@ footer{background:var(--black);border-top:var(--bd);padding:48px 64px 26px}
     <strong>Still thinking? Your saved estimate:</strong>
     <span>Saving <span class="sb-est" id="sb-saving">€1,200</span>/yr · SEAI grant <span class="sb-est" id="sb-grant">€1,500</span> · Payback <span id=sb-payback">4.4 yrs</span></span>
   </div>
-  <a href="https://cal.com/renewably/aisolar" class="btn-lime" style="white-space:nowrap;padding:10px 18px;font-size:12px" target="_blank" rel="noopener">Book a call <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+  <a href="https://cal.com/renewableireland/solar-consultation" class="btn-lime" style="white-space:nowrap;padding:10px 18px;font-size:12px" target="_blank" rel="noopener">Book a call <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
   <button class="sb-dismiss" onclick="document.getElementById('save-bar').classList.remove('on');sessionStorage.setItem('sb-dismissed','1')" aria-label="Dismiss">✕</button>
 </div>
 
@@ -3850,7 +3850,7 @@ var origPmClassToggle = function(cls){ if(cls==='on') document.body.style.overfl
         </div>
 
         <!-- Fallback button if iframe fails -->
-        <a href="https://cal.com/renewably/aisolar" target="_blank" rel="noopener" class="em-book-btn" id="em-cal-fallback" style="display:none;margin-bottom:16px">
+        <a href="https://cal.com/renewableireland/solar-consultation" target="_blank" rel="noopener" class="em-book-btn" id="em-cal-fallback" style="display:none;margin-bottom:16px">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6.75 3v1.5M17.25 3v1.5M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg>
           Book your free call now
         </a>
@@ -3984,7 +3984,7 @@ function emGoStep(n){
     var calFallback=document.getElementById('em-cal-fallback');
     if(calIframe && !calIframe.dataset.loaded){
       calIframe.dataset.loaded='1';
-      calIframe.src='https://cal.com/renewably/aisolar?embed=true';
+      calIframe.src='https://cal.com/renewableireland/solar-consultation?embed=true';
       calIframe.onload=function(){
         _analytics.track('cal_embed_loaded',{});
       };

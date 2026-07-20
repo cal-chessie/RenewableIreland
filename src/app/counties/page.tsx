@@ -577,7 +577,7 @@ export default function CountiesPage() {
               </p>
 
               <a
-                href="https://cal.com/renewableireland/15min"
+                href="https://cal.com/renewableireland/solar-consultation"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="cnt-hero-btn"
@@ -664,7 +664,7 @@ export default function CountiesPage() {
             no-obligation quote and see how much you could save.
           </p>
           <a
-            href="https://cal.com/renewableireland/15min"
+            href="https://cal.com/renewableireland/solar-consultation"
             target="_blank"
             rel="noopener noreferrer"
             className="cnt-cta-btn"
@@ -680,7 +680,7 @@ export default function CountiesPage() {
         <div className="cnt-footer">
           &copy; {new Date().getFullYear()} Renewable Ireland &middot; SEAI Registered Partner &middot;{" "}
           <a href="/">Home</a> &middot;{" "}
-          <a href="https://cal.com/renewableireland/15min">Contact</a>
+          <a href="https://cal.com/renewableireland/solar-consultation">Contact</a>
         </div>
       </div>
     </>
