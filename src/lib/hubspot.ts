@@ -4,7 +4,7 @@ import { createHash } from 'node:crypto';
 
 const HUBSPOT_API = 'https://api.hubapi.com';
 const HUBSPOT_API_VERSION = '2026-03';
-const LEAD_KEY_PROPERTY = 'renewable_ireland_lead_key';
+const LEAD_KEY_PROPERTY = 'renewable_ireland_web_lead_id';
 const DEAL_TO_CONTACT_ASSOCIATION = 3;
 const NOTE_TO_CONTACT_ASSOCIATION = 202;
 const NOTE_TO_DEAL_ASSOCIATION = 214;
