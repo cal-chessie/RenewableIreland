@@ -6,6 +6,7 @@ export const metadata: Metadata = {
   title: "Counties We Cover | Renewable Ireland",
   description:
     "Renewable Ireland provides solar panel installation services across all 32 counties of Ireland — 26 in the Republic and 6 in Northern Ireland. Find your county and get a free quote today.",
+  robots: { index: false, follow: false },
 };
 
 export default function CountiesPage() {

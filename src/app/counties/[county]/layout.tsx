@@ -50,6 +50,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     other: {
       "theme-color": county.accentColor,
     },
+    robots: { index: false, follow: false },
   };
 }
 
