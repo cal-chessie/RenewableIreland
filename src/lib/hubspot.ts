@@ -264,7 +264,13 @@ export async function captureHubSpotLead(capture: HubSpotLeadCapture): Promise<{
 
     await hubSpotRequest(
       'PUT',
-      `/crm/objects/${HUBSPOT_API_VERSION}/deals/${encodeURIComponent(dealId)}/associations/contacts/${encodeURIComponent(contactId)}/${DEAL_TO_CONTACT_ASSOCIATION}`,
+      `/crm/objects/${HUBSPOT_API_VERSION}/deals/${encodeURIComponent(dealId)}/associations/contacts/${encodeURIComponent(contactId)}`,
+      [
+        {
+          associationCategory: 'HUBSPOT_DEFINED',
+          associationTypeId: DEAL_TO_CONTACT_ASSOCIATION,
+        },
+      ],
     );
   }
 
