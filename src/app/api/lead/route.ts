@@ -14,7 +14,8 @@ export async function POST(req: NextRequest) {
     const county = textField(body, 'county', 80);
     const monthly_bill = textField(body, 'monthly_bill', 40);
     const estimate_data = boundedDetail(body, 'estimate_data');
-    const source = textField(body, 'source', 80) || 'website';
+    // Source is owned by this endpoint, not by an untrusted browser payload.
+    const source = 'website';
     const leadRef = reference('RI');
 
     try {
