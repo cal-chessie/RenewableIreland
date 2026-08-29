@@ -1,31 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { captureHubSpotLead, hubSpotFailureResponse } from '@/lib/hubspot';
-
-const PHONE_REGEX = /^[\d\s\+\-\(\)]{7,15}$/;
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+import { assertBrowserOrigin, boundedDetail, emailField, IntakeError, intakeFailure, localBurstLimit, phoneField, readJsonObject, reference, textField } from '@/lib/intake';
 
 export async function POST(req: NextRequest) {
   try {
-    const body = await req.json();
-
-    const name = (body.name || '').trim();
-    const email = (body.email || '').trim();
-    const phone = (body.phone || '').trim();
-    const county = (body.county || '').trim();
-    const monthly_bill = body.monthly_bill;
-    const estimate_data = body.estimate_data;
-    const source = (body.source || 'website').trim();
-
-    const errors: string[] = [];
-    if (!name || name.length < 2) errors.push('Name is required');
-    if (!email || !EMAIL_REGEX.test(email)) errors.push('Valid email is required');
-    if (!phone || !PHONE_REGEX.test(phone)) errors.push('Valid phone is required');
-
-    if (errors.length > 0) {
-      return NextResponse.json({ success: false, message: errors.join('. ') }, { status: 400 });
-    }
-
-    const leadRef = `RI-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
+    assertBrowserOrigin(req);
+    localBurstLimit(req, 'lead', 10);
+    const body = await readJsonObject(req);
+    const name = textField(body, 'name', 100, true);
+    if (name.length < 2) throw new IntakeError(400, 'Name must be at least 2 characters.');
+    const email = emailField(body);
+    const phone = phoneField(body);
+    const county = textField(body, 'county', 80);
+    const monthly_bill = textField(body, 'monthly_bill', 40);
+    const estimate_data = boundedDetail(body, 'estimate_data');
+    const source = textField(body, 'source', 80) || 'website';
+    const leadRef = reference('RI');
 
     try {
       await captureHubSpotLead({
@@ -49,7 +39,6 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ success: true, message: 'Quote request received!', reference: leadRef });
   } catch (error) {
-    console.error('[Lead API Error]', error);
-    return NextResponse.json({ success: false, message: 'Something went wrong. Please try again.' }, { status: 500 });
+    return intakeFailure(error);
   }
 }

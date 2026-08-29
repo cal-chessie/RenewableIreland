@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { captureHubSpotLead, hubSpotFailureResponse } from '@/lib/hubspot';
+import { assertBrowserOrigin, emailField, intakeFailure, localBurstLimit, phoneField, readJsonObject, reference, textField } from '@/lib/intake';
 
 /* ------------------------------------------------------------------ */
 /*  Validation helpers                                                 */
@@ -42,7 +43,14 @@ function validateLead(data: Partial<LeadPayload>): string[] {
 
 export async function POST(req: NextRequest) {
   try {
-    const body: LeadPayload = await req.json();
+    assertBrowserOrigin(req);
+    localBurstLimit(req, 'chat-lead', 10);
+    const raw = await readJsonObject(req);
+    const body: LeadPayload = {
+      name: textField(raw, 'name', 100, true), phone: phoneField(raw), email: emailField(raw),
+      county: textField(raw, 'county', 80), systemSize: textField(raw, 'systemSize', 40),
+      billAmount: textField(raw, 'billAmount', 40), message: textField(raw, 'message', 1_000),
+    };
 
     const errors = validateLead(body);
     if (errors.length > 0) {
@@ -52,7 +60,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const leadRef = `RI-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
+    const leadRef = reference('RI');
 
     try {
       await captureHubSpotLead({
@@ -81,10 +89,6 @@ export async function POST(req: NextRequest) {
       reference: leadRef,
     });
   } catch (error) {
-    console.error('[Chat Lead API Error]', error);
-    return NextResponse.json(
-      { success: false, message: 'Something went wrong. Please try again.' },
-      { status: 500 },
-    );
+    return intakeFailure(error);
   }
 }

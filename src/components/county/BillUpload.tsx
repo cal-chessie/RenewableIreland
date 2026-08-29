@@ -61,10 +61,9 @@ export default function BillUpload({ countyName, countySlug }: BillUploadProps) 
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setFormStatus("submitting");
-
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    setFormStatus("success");
+    // No customer data is submitted while secure bill processing is being
+    // completed. Never show a false confirmation for a request we did not save.
+    setFormStatus("error");
   };
 
   return (
@@ -80,9 +79,8 @@ export default function BillUpload({ countyName, countySlug }: BillUploadProps) 
             Get a Personalised Solar Quote for {countyName}
           </h2>
           <p>
-            Upload your electricity bill and we&apos;ll calculate exactly how
-            much you could save with solar panels on your {countyName} home.
-            No obligation, no pressure.
+            Bill upload is being prepared with the right privacy controls. Use
+            the quote request form instead and we&apos;ll discuss your bill safely.
           </p>
         </div>
 
@@ -119,7 +117,7 @@ export default function BillUpload({ countyName, countySlug }: BillUploadProps) 
               )}
             </span>
             <span className={styles.uploadZoneHint}>
-              or click to browse — PDF, JPG or PNG (max 10MB)
+              Bill upload is temporarily unavailable
             </span>
             <input
               ref={fileInputRef}
@@ -196,7 +194,7 @@ export default function BillUpload({ countyName, countySlug }: BillUploadProps) 
 
             {formStatus === "success" ? (
               <div className={styles.formSuccess}>
-                Thank you! We&apos;ll be in touch within 60 minutes during business hours.
+                Your request has been received.
               </div>
             ) : (
               <button
@@ -205,13 +203,13 @@ export default function BillUpload({ countyName, countySlug }: BillUploadProps) 
                 disabled={formStatus === "submitting"}
                 style={{ width: "100%" }}
               >
-                {formStatus === "submitting" ? "Sending..." : "Show Me My Savings"}
+                Request a quote instead
               </button>
             )}
 
             {formStatus === "error" && (
               <span className={styles.formError} role="alert">
-                Please check your file (PDF, JPG or PNG, max 10MB) and try again.
+                Bill upload is not available yet. Please use the quote request form or contact us directly.
               </span>
             )}
           </form>

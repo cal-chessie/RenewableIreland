@@ -1,31 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { assertBrowserOrigin, intakeFailure, localBurstLimit, readJsonObject, textField } from '@/lib/intake';
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
-    const { variant, timestamp } = body as {
-      variant?: string;
-      timestamp?: number;
-    };
-
-    // ─── Log dismissal for analytics ────────────────────
-    console.log(`[Exit Intent] Popup dismissed:`, {
-      variant: variant || 'unknown',
-      timestamp: timestamp ? new Date(timestamp).toISOString() : new Date().toISOString(),
-      engagementTime: timestamp ? Date.now() - timestamp : null,
-    });
-
-    // ─── In production, this would: ─────────────────────
-    // 1. Store in analytics database
-    // 2. Track A/B test variant performance
-    // 3. Update conversion funnel metrics
-    // 4. Feed into ML model for optimal timing
-
-    return NextResponse.json({ success: true });
-  } catch {
-    return NextResponse.json(
-      { success: false, error: 'Invalid request body' },
-      { status: 400 }
-    );
+    assertBrowserOrigin(request);
+    localBurstLimit(request, 'dismiss', 30);
+    const body = await readJsonObject(request, 2_048);
+    textField(body, 'variant', 40);
+    // Deliberately no fake analytics acknowledgement: dismissal is a client-side
+    // preference until a real consent-aware analytics sink is configured.
+    return new NextResponse(null, { status: 204, headers: { 'Cache-Control': 'no-store' } });
+  } catch (error) {
+    return intakeFailure(error);
   }
 }

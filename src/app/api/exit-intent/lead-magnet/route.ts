@@ -1,31 +1,27 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { captureHubSpotLead, hubSpotFailureResponse } from '@/lib/hubspot';
+import { assertBrowserOrigin, emailField, intakeFailure, localBurstLimit, readJsonObject, reference, textField } from '@/lib/intake';
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
-    const { name, email } = body as { name?: string; email?: string };
+    assertBrowserOrigin(request);
+    localBurstLimit(request, 'guide', 6);
+    const body = await readJsonObject(request, 4_096);
+    const name = textField(body, 'name', 100, true);
+    const email = emailField(body);
 
     // ─── Validation ─────────────────────────────────────
-    if (!name || typeof name !== 'string' || name.trim().length < 2) {
+    if (name.length < 2) {
       return NextResponse.json(
         { success: false, error: 'Name is required (at least 2 characters)' },
         { status: 400 }
       );
     }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!email || typeof email !== 'string' || !emailRegex.test(email.trim())) {
-      return NextResponse.json(
-        { success: false, error: 'A valid email address is required' },
-        { status: 400 }
-      );
-    }
+    const sanitizedName = name;
+    const sanitisedEmail = email;
 
-    const sanitizedName = name.trim().slice(0, 100);
-    const sanitisedEmail = email.trim().slice(0, 254).toLowerCase();
-
-    const reference = `LM-${Date.now().toString(36).toUpperCase().slice(-6)}`;
+    const requestReference = reference('LM');
     try {
       await captureHubSpotLead({
         name: sanitizedName,
@@ -33,11 +29,11 @@ export async function POST(request: NextRequest) {
         createDeal: false,
         source: 'exit-intent-popup',
         submissionType: 'Guide request — delivery not yet automated',
-        reference,
+        reference: requestReference,
         details: { Request: 'Website guide' },
       });
     } catch (error) {
-      console.error('[Guide request] HubSpot capture failed', { reference });
+      console.error('[Guide request] HubSpot capture failed', { reference: requestReference });
       const failure = hubSpotFailureResponse(error);
       return NextResponse.json({ success: false, error: failure.message }, { status: failure.status });
     }
@@ -46,12 +42,9 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: true,
       message: 'Your guide request has been received. Our team will be in touch.',
-      reference,
+      reference: requestReference,
     });
-  } catch {
-    return NextResponse.json(
-      { success: false, error: 'Invalid request body' },
-      { status: 400 }
-    );
+  } catch (error) {
+    return intakeFailure(error);
   }
 }

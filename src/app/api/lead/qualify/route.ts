@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { captureHubSpotLead, hubSpotFailureResponse } from '@/lib/hubspot';
+import { assertBrowserOrigin, emailField, intakeFailure, localBurstLimit, phoneField, readJsonObject, reference, textField } from '@/lib/intake';
 
 // ─── Types ───
 interface LeadQualifyPayload {
@@ -21,13 +22,7 @@ interface LeadQualifyPayload {
 
 // ─── Generate unique reference number ───
 function generateReference(): string {
-  const year = new Date().getFullYear();
-  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-  let code = "";
-  for (let i = 0; i < 5; i++) {
-    code += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-  return `RI-${year}-${code}`;
+  return reference(`RI-${new Date().getFullYear()}`);
 }
 
 // ─── Validation ───
@@ -75,9 +70,11 @@ function validatePayload(data: LeadQualifyPayload): { valid: boolean; errors: st
     const minDate = new Date();
     minDate.setDate(minDate.getDate() + 2);
     minDate.setHours(0, 0, 0, 0);
-    const surveyDate = new Date(data.surveyDate);
-    if (surveyDate < minDate) {
-      errors.push("Survey date must be at least 2 days from today");
+    const surveyDate = new Date(`${data.surveyDate}T12:00:00Z`);
+    const maxDate = new Date(minDate);
+    maxDate.setFullYear(maxDate.getFullYear() + 1);
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(data.surveyDate) || Number.isNaN(surveyDate.getTime()) || surveyDate < minDate || surveyDate > maxDate) {
+      errors.push("Survey date must be valid, at least 2 days away, and within one year");
     }
   }
 
@@ -97,7 +94,22 @@ function validatePayload(data: LeadQualifyPayload): { valid: boolean; errors: st
 // ─── POST Handler ───
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json() as LeadQualifyPayload;
+    assertBrowserOrigin(request);
+    localBurstLimit(request, 'qualify', 8);
+    const raw = await readJsonObject(request);
+    const rawCost = raw.systemCost;
+    if (rawCost != null && (typeof rawCost !== 'number' || !Number.isFinite(rawCost) || rawCost < 0 || rawCost > 1_000_000)) {
+      return NextResponse.json({ success: false, message: 'Estimated system cost is invalid.' }, { status: 400 });
+    }
+    const body: LeadQualifyPayload = {
+      postcode: textField(raw, 'postcode', 16, true), county: textField(raw, 'county', 80, true),
+      country: textField(raw, 'country', 2, true) as 'IE' | 'GB', billAmount: textField(raw, 'billAmount', 40, true),
+      homeType: textField(raw, 'homeType', 60, true), recommendedSystem: textField(raw, 'recommendedSystem', 60),
+      systemCost: rawCost as number | undefined, fullName: textField(raw, 'fullName', 100, true),
+      phone: phoneField(raw), email: emailField(raw), address: textField(raw, 'address', 250, true),
+      surveyDate: textField(raw, 'surveyDate', 10, true), surveyTime: textField(raw, 'surveyTime', 20, true),
+      notes: textField(raw, 'notes', 1_000),
+    };
 
     // Validate payload
     const validation = validatePayload(body);
@@ -154,13 +166,6 @@ export async function POST(request: NextRequest) {
       { status: 200 }
     );
   } catch (error) {
-    console.error("[Lead Qualification] Error:", error);
-    return NextResponse.json(
-      {
-        success: false,
-        message: "An unexpected error occurred. Please try again.",
-      },
-      { status: 500 }
-    );
+    return intakeFailure(error);
   }
 }

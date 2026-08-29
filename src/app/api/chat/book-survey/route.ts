@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { captureHubSpotLead, hubSpotFailureResponse } from '@/lib/hubspot';
+import { assertBrowserOrigin, emailField, intakeFailure, localBurstLimit, phoneField, readJsonObject, reference, textField } from '@/lib/intake';
 
 /* ------------------------------------------------------------------ */
 /*  Validation helpers                                                 */
@@ -64,9 +65,21 @@ function validateSurvey(data: Partial<SurveyPayload>): string[] {
 
 export async function POST(req: NextRequest) {
   try {
-    const body: SurveyPayload = await req.json();
+    assertBrowserOrigin(req);
+    localBurstLimit(req, 'survey', 8);
+    const raw = await readJsonObject(req);
+    const body: SurveyPayload = {
+      name: textField(raw, 'name', 100, true), phone: phoneField(raw), email: emailField(raw),
+      address: textField(raw, 'address', 250, true), eircode: textField(raw, 'eircode', 12, true),
+      preferredDate: textField(raw, 'preferredDate', 10, true), preferredTime: textField(raw, 'preferredTime', 20, true),
+      notes: textField(raw, 'notes', 1_000),
+    };
 
     const errors = validateSurvey(body);
+    const requested = /^\d{4}-\d{2}-\d{2}$/.test(body.preferredDate) ? new Date(`${body.preferredDate}T12:00:00Z`) : null;
+    const today = new Date(); today.setUTCHours(0, 0, 0, 0);
+    const latest = new Date(today); latest.setUTCFullYear(latest.getUTCFullYear() + 1);
+    if (requested && (Number.isNaN(requested.getTime()) || requested < today || requested > latest)) errors.push('Preferred date must be a valid future date within one year.');
     if (errors.length > 0) {
       return NextResponse.json(
         { success: false, message: 'Validation failed.', errors },
@@ -74,7 +87,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const bookingRef = `SURV-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
+    const bookingRef = reference('SURV');
 
     try {
       await captureHubSpotLead({
@@ -106,10 +119,6 @@ export async function POST(req: NextRequest) {
       surveyTime: body.preferredTime,
     });
   } catch (error) {
-    console.error('[Survey Booking API Error]', error);
-    return NextResponse.json(
-      { success: false, message: 'Something went wrong. Please try again.' },
-      { status: 500 },
-    );
+    return intakeFailure(error);
   }
 }
