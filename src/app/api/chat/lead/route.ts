@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { captureHubSpotLead, hubSpotFailureResponse } from '@/lib/hubspot';
 
 /* ------------------------------------------------------------------ */
 /*  Validation helpers                                                 */
@@ -53,23 +54,30 @@ export async function POST(req: NextRequest) {
 
     const leadRef = `RI-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
 
-    // In production, this would save to a database (Prisma, etc.)
-    // For now, we log and return success.
-    console.log('[Chat Lead Captured]', {
-      ref: leadRef,
-      name: body.name.trim(),
-      phone: body.phone.trim(),
-      email: body.email.trim(),
-      county: body.county?.trim() ?? 'Not provided',
-      systemSize: body.systemSize?.trim() ?? 'Not specified',
-      billAmount: body.billAmount?.trim() ?? 'Not specified',
-      message: body.message?.trim() ?? 'No message',
-      capturedAt: new Date().toISOString(),
-    });
+    try {
+      await captureHubSpotLead({
+        name: body.name.trim(),
+        email: body.email.trim(),
+        phone: body.phone.trim(),
+        source: 'website-chat',
+        submissionType: 'Chat lead request',
+        reference: leadRef,
+        details: {
+          County: body.county?.trim(),
+          'Interested system size': body.systemSize?.trim(),
+          'Estimated monthly bill': body.billAmount?.trim(),
+          Message: body.message?.trim(),
+        },
+      });
+    } catch (error) {
+      console.error('[Chat lead] HubSpot capture failed', { reference: leadRef });
+      const failure = hubSpotFailureResponse(error);
+      return NextResponse.json({ success: false, message: failure.message }, { status: failure.status });
+    }
 
     return NextResponse.json({
       success: true,
-      message: 'Thank you! Your details have been submitted. Our team will contact you within 1 hour during business hours.',
+      message: 'Thank you. Your details have been received and our team will be in touch.',
       reference: leadRef,
     });
   } catch (error) {

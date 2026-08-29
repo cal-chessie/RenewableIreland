@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { captureHubSpotLead, hubSpotFailureResponse } from '@/lib/hubspot';
 
 /* ------------------------------------------------------------------ */
 /*  Validation helpers                                                 */
@@ -75,23 +76,31 @@ export async function POST(req: NextRequest) {
 
     const bookingRef = `SURV-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
 
-    // In production, this would save to a database (Prisma) and trigger a calendar event.
-    console.log('[Survey Booking]', {
-      ref: bookingRef,
-      name: body.name.trim(),
-      phone: body.phone.trim(),
-      email: body.email.trim(),
-      address: body.address.trim(),
-      eircode: body.eircode.trim(),
-      preferredDate: body.preferredDate,
-      preferredTime: body.preferredTime,
-      notes: body.notes?.trim() ?? 'No notes',
-      bookedAt: new Date().toISOString(),
-    });
+    try {
+      await captureHubSpotLead({
+        name: body.name.trim(),
+        email: body.email.trim(),
+        phone: body.phone.trim(),
+        source: 'website-chat',
+        submissionType: 'Roof survey request — awaiting confirmation',
+        reference: bookingRef,
+        details: {
+          Address: body.address.trim(),
+          Eircode: body.eircode.trim(),
+          'Preferred date': body.preferredDate,
+          'Preferred time': body.preferredTime,
+          Notes: body.notes?.trim(),
+        },
+      });
+    } catch (error) {
+      console.error('[Survey request] HubSpot capture failed', { reference: bookingRef });
+      const failure = hubSpotFailureResponse(error);
+      return NextResponse.json({ success: false, message: failure.message }, { status: failure.status });
+    }
 
     return NextResponse.json({
       success: true,
-      message: `Your roof survey has been booked for ${body.preferredDate} (${body.preferredTime}). Our engineer will confirm by phone within 2 hours.`,
+      message: `Your preferred survey slot for ${body.preferredDate} (${body.preferredTime}) has been received. Our team will confirm availability with you.`,
       reference: bookingRef,
       surveyDate: body.preferredDate,
       surveyTime: body.preferredTime,

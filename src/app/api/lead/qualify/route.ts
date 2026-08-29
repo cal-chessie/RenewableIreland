@@ -1,14 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-
-// Lazy-init Supabase to avoid crash during build (env vars not available at build time)
-function getSupabase() {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { createClient } = require('@supabase/supabase-js') as any;
-  return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-  );
-}
+import { captureHubSpotLead, hubSpotFailureResponse } from '@/lib/hubspot';
 
 // ─── Types ───
 interface LeadQualifyPayload {
@@ -123,37 +114,34 @@ export async function POST(request: NextRequest) {
     // Generate reference
     const reference = generateReference();
 
-    // ─── Save to Supabase ───
-    const address = `${body.postcode}, ${body.county}, ${body.country}`;
-    const billNum = body.billAmount ? Number(body.billAmount) : null;
-    const notes = [
-      `Home type: ${body.homeType}`,
-      body.recommendedSystem ? `Recommended system: ${body.recommendedSystem}` : null,
-      `Survey date: ${body.surveyDate}`,
-      `Survey time: ${body.surveyTime}`,
-      "Lead from renewableireland.ie intake form",
-    ]
-      .filter(Boolean)
-      .join("\n");
-
-    const supabase = getSupabase();
-    const { error: dbError } = await supabase.from("leads").insert({
-      name: body.fullName,
-      email: body.email,
-      phone: body.phone || null,
-      address,
-      monthly_bill: billNum,
-      workflow_stage: "new",
-      notes,
-      tenant_id: "b05a5672-822b-48f2-b0e4-be88f724dfd7",
-      brand: "renewable-ireland",
-    });
-
-    if (dbError) {
-      console.error("[Lead Qualification] Supabase insert failed:", dbError);
+    try {
+      await captureHubSpotLead({
+        name: body.fullName.trim(),
+        email: body.email.trim(),
+        phone: body.phone.trim(),
+        source: 'website-lead-qualification',
+        submissionType: 'Qualified survey request — awaiting confirmation',
+        reference,
+        details: {
+          Address: body.address.trim(),
+          Postcode: body.postcode.trim(),
+          County: body.county.trim(),
+          Country: body.country,
+          'Monthly electricity bill': body.billAmount,
+          'Home type': body.homeType,
+          'Recommended system': body.recommendedSystem,
+          'Estimated system cost': body.systemCost,
+          'Preferred survey date': body.surveyDate,
+          'Preferred survey time': body.surveyTime,
+          Notes: body.notes?.trim(),
+        },
+      });
+    } catch (error) {
+      console.error('[Lead qualification] HubSpot capture failed', { reference });
+      const failure = hubSpotFailureResponse(error);
       return NextResponse.json(
-        { success: false, message: "Failed to save lead. Please try again." },
-        { status: 500 }
+        { success: false, message: failure.message },
+        { status: failure.status }
       );
     }
 
@@ -161,7 +149,7 @@ export async function POST(request: NextRequest) {
       {
         success: true,
         reference,
-        message: "Your free roof survey has been booked successfully! Our team will contact you within 24 hours to confirm your appointment.",
+        message: "Your survey request has been received. Our team will confirm availability with you before anything is booked.",
       },
       { status: 200 }
     );

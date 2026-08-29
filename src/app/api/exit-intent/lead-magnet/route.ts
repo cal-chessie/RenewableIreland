@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { captureHubSpotLead, hubSpotFailureResponse } from '@/lib/hubspot';
 
 export async function POST(request: NextRequest) {
   try {
@@ -24,25 +25,28 @@ export async function POST(request: NextRequest) {
     const sanitizedName = name.trim().slice(0, 100);
     const sanitisedEmail = email.trim().slice(0, 254).toLowerCase();
 
-    // ─── Log lead magnet download ───────────────────────
-    console.log(`[Exit Intent] Lead magnet download requested:`, {
-      name: sanitizedName,
-      email: sanitisedEmail,
-      timestamp: new Date().toISOString(),
-      source: 'exit-intent-popup',
-    });
-
-    // ─── In production, this would: ─────────────────────
-    // 1. Save to database (Prisma)
-    // 2. Trigger email with PDF guide attached (SendGrid/Mailgun)
-    // 3. Add to CRM/marketing automation (HubSpot/Mailchimp)
-    // 4. Create/merge contact record
+    const reference = `LM-${Date.now().toString(36).toUpperCase().slice(-6)}`;
+    try {
+      await captureHubSpotLead({
+        name: sanitizedName,
+        email: sanitisedEmail,
+        createDeal: false,
+        source: 'exit-intent-popup',
+        submissionType: 'Guide request — delivery not yet automated',
+        reference,
+        details: { Request: 'Website guide' },
+      });
+    } catch (error) {
+      console.error('[Guide request] HubSpot capture failed', { reference });
+      const failure = hubSpotFailureResponse(error);
+      return NextResponse.json({ success: false, error: failure.message }, { status: failure.status });
+    }
 
     // ─── Response ───────────────────────────────────────
     return NextResponse.json({
       success: true,
-      message: `Guide sent to ${sanitisedEmail}`,
-      reference: `LM-${Date.now().toString(36).toUpperCase().slice(-6)}`,
+      message: 'Your guide request has been received. Our team will be in touch.',
+      reference,
     });
   } catch {
     return NextResponse.json(
