@@ -13,6 +13,7 @@ export class HubSpotCaptureError extends Error {
   constructor(
     message: string,
     public readonly kind: 'configuration' | 'provider',
+    public readonly status?: number,
   ) {
     super(message);
     this.name = 'HubSpotCaptureError';
@@ -31,6 +32,15 @@ export interface HubSpotLeadCapture {
 }
 
 interface HubSpotBatchResponse {
+  results?: Array<{ id?: string }>;
+}
+
+interface HubSpotRecordResponse {
+  id?: string;
+}
+
+interface HubSpotSearchResponse {
+  total?: number;
   results?: Array<{ id?: string }>;
 }
 
@@ -123,7 +133,7 @@ async function hubSpotRequest<T>(method: 'POST' | 'PUT', path: string, body?: un
 
   if (!response.ok) {
     console.error('[HubSpot] Provider rejected write', { status: response.status, path });
-    throw new HubSpotCaptureError('HubSpot rejected the lead capture.', 'provider');
+    throw new HubSpotCaptureError('HubSpot rejected the lead capture.', 'provider', response.status);
   }
 
   const responseBody = await response.text();
@@ -144,6 +154,83 @@ function requireRecordId(response: HubSpotBatchResponse | undefined, record: 'co
     throw new HubSpotCaptureError(`HubSpot did not confirm the ${record} record.`, 'provider');
   }
   return id;
+}
+
+function requireObjectId(response: HubSpotRecordResponse | undefined, record: 'deal'): string {
+  if (!response?.id) {
+    console.error(`[HubSpot] ${record} create returned no record ID`);
+    throw new HubSpotCaptureError(`HubSpot did not confirm the ${record} record.`, 'provider');
+  }
+  return response.id;
+}
+
+async function findDealByLeadKey(deterministicLeadKey: string): Promise<string | undefined> {
+  const response = await hubSpotRequest<HubSpotSearchResponse>(
+    'POST',
+    `/crm/objects/${HUBSPOT_API_VERSION}/deals/search`,
+    {
+      filterGroups: [
+        {
+          filters: [
+            {
+              propertyName: LEAD_KEY_PROPERTY,
+              operator: 'EQ',
+              value: deterministicLeadKey,
+            },
+          ],
+        },
+      ],
+      properties: [LEAD_KEY_PROPERTY],
+      limit: 2,
+    },
+  );
+
+  const ids = (response?.results ?? [])
+    .map((result) => result.id)
+    .filter((id): id is string => Boolean(id));
+
+  if (ids.length > 1 || (response?.total ?? ids.length) > 1) {
+    console.error('[HubSpot] Multiple deals share one Renewable Ireland lead key');
+    throw new HubSpotCaptureError('HubSpot returned duplicate deals for one lead.', 'provider');
+  }
+
+  return ids[0];
+}
+
+async function resolveDeal(
+  capture: HubSpotLeadCapture,
+  deterministicLeadKey: string,
+  config: HubSpotConfig,
+): Promise<string> {
+  const existingDealId = await findDealByLeadKey(deterministicLeadKey);
+  if (existingDealId) return existingDealId;
+
+  try {
+    const created = await hubSpotRequest<HubSpotRecordResponse>(
+      'POST',
+      `/crm/objects/${HUBSPOT_API_VERSION}/deals`,
+      {
+        properties: {
+          [LEAD_KEY_PROPERTY]: deterministicLeadKey,
+          dealname: `Website enquiry — ${capture.name.trim().slice(0, 150)}`,
+          pipeline: config.pipelineId,
+          dealstage: config.newEnquiryStageId,
+        },
+      },
+    );
+    return requireObjectId(created, 'deal');
+  } catch (error) {
+    if (!(error instanceof HubSpotCaptureError) || ![400, 409].includes(error.status ?? 0)) throw error;
+
+    // A concurrent request may have created the same unique lead while this
+    // request was in flight. Reconcile to that Deal instead of creating again.
+    for (const delayMs of [100, 250, 500]) {
+      await new Promise((resolve) => setTimeout(resolve, delayMs));
+      const racedDealId = await findDealByLeadKey(deterministicLeadKey);
+      if (racedDealId) return racedDealId;
+    }
+    throw error;
+  }
 }
 
 export async function captureHubSpotLead(capture: HubSpotLeadCapture): Promise<{ contactId: string; dealId?: string }> {
@@ -173,25 +260,7 @@ export async function captureHubSpotLead(capture: HubSpotLeadCapture): Promise<{
   const contactId = requireRecordId(contact, 'contact');
   let dealId: string | undefined;
   if (capture.createDeal !== false) {
-    const deal = await hubSpotRequest<HubSpotBatchResponse>(
-      'POST',
-      `/crm/objects/${HUBSPOT_API_VERSION}/deals/batch/upsert`,
-      {
-        inputs: [
-          {
-            id: deterministicLeadKey,
-            idProperty: LEAD_KEY_PROPERTY,
-            properties: {
-              [LEAD_KEY_PROPERTY]: deterministicLeadKey,
-              dealname: `Website enquiry — ${capture.name.trim().slice(0, 150)}`,
-              pipeline: config.pipelineId,
-              dealstage: config.newEnquiryStageId,
-            },
-          },
-        ],
-      },
-    );
-    dealId = requireRecordId(deal, 'deal');
+    dealId = await resolveDeal(capture, deterministicLeadKey, config);
 
     await hubSpotRequest(
       'PUT',
