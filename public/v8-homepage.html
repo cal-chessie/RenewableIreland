@@ -960,17 +960,28 @@ footer{background:var(--black);border-top:var(--bd);padding:48px 64px 26px}
   </div>
 </div>
 
+<style>
+/* One calm intake surface: no surprise overlays or fake submission states. */
+#contact-step{display:none;padding:20px 22px 24px}
+.wcard.intake-contact .whead,.wcard.intake-contact .wtabs,.wcard.intake-contact .wpane{display:none}
+.wcard.intake-contact #contact-step{display:block}
+.wstep-kicker{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--lime-dk);margin-bottom:7px}
+#contact-step h3{font-family:'Barlow Condensed',sans-serif;font-size:28px;line-height:1;text-transform:uppercase;margin:0 0 8px;color:var(--black)}
+#contact-step p{font-size:13px;line-height:1.5;color:var(--gray);margin:0 0 18px}
+.intake-back{display:block;margin:12px auto 0;border:0;background:none;color:var(--hint);font:600 12px 'Barlow',sans-serif;cursor:pointer;text-decoration:underline}
+#exit-overlay,#pmatch-modal,#pdf-email-modal,#em,#save-bar{display:none!important}
+</style>
 <!-- WIDGET -->
 <div class="wsec" id="get-started">
   <div class="wgrid">
     <div class="rev">
       <div class="stag" style="color:rgba(255,255,255,.4);margin-bottom:12px"><span style="background:rgba(255,255,255,.08);border-radius:var(--pill);padding:4px 12px;letter-spacing:.08em">★ Start your solar journey</span></div>
       <h2 style="font-size:clamp(32px,3.8vw,52px);font-weight:800;letter-spacing:-.02em;line-height:.95;color:var(--white);text-transform:uppercase;margin-bottom:16px">Two ways in.<br>One platform<br><span style="color:var(--lime)">all the way through.</span></h2>
-      <p style="font-size:15px;color:rgba(255,255,255,.55);max-width:420px;line-height:1.75;margin-bottom:24px">Upload your electricity bill and we'll read it instantly — or enter your details manually. Either way you get a real, personalised savings estimate.</p>
+      <p style="font-size:15px;color:rgba(255,255,255,.55);max-width:420px;line-height:1.75;margin-bottom:24px">Upload your electricity bill or enter the essentials manually. In two simple steps, we collect the right starting point for a proper review.</p>
       <div class="jrny">
-        <div class="ji"><div class="jdot jd-done">✓</div><div><div class="jtitle">Instant quote in 30 seconds</div><div class="jsub">Upload your bill — AI reads your actual usage</div></div><div class="jchk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4.5 12.75l6 6 9-13.5"/></svg></div></div>
-        <div class="ji"><div class="jdot jd-done">✓</div><div><div class="jtitle">Fixed price the next day</div><div class="jsub">SEAI grant deducted — no hidden costs, ever</div></div><div class="jchk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4.5 12.75l6 6 9-13.5"/></svg></div></div>
-        <div class="ji"><div class="jdot jd-act">3</div><div><div class="jtitle">Book your survey when it suits</div><div class="jsub">Choose a day that works for you — we come to you</div></div></div>
+        <div class="ji"><div class="jdot jd-done">1</div><div><div class="jtitle">Start with your bill or essentials</div><div class="jsub">We read the useful details you consent to share</div></div><div class="jchk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4.5 12.75l6 6 9-13.5"/></svg></div></div>
+        <div class="ji"><div class="jdot jd-done">2</div><div><div class="jtitle">Tell us how to contact you</div><div class="jsub">We fill in only what the bill cannot tell us</div></div><div class="jchk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4.5 12.75l6 6 9-13.5"/></svg></div></div>
+        <div class="ji"><div class="jdot jd-act">3</div><div><div class="jtitle">We review the fit</div><div class="jsub">A person checks the details before the next step</div></div></div>
         <div class="ji"><div class="jdot jd-pend">4</div><div><div class="jtitle">Installed in a single day</div><div class="jsub">Panels live — generating from day one</div></div></div>
         <div class="ji"><div class="jdot jd-pend">5</div><div><div class="jtitle">Track everything in your portal</div><div class="jsub">Live updates from quote to aftercare</div></div></div>
       </div>
@@ -1019,7 +1030,7 @@ footer{background:var(--black);border-top:var(--bd);padding:48px 64px 26px}
             <input type="file" accept=".pdf,.jpg,.jpeg,.png" onchange="handleFile(this.files[0])">
             <div class="upicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m6.75 12l-3-3m0 0l-3 3m3-3v6m-1.5-15H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/></svg></div>
             <div class="uptitle">Drop your electricity bill here</div>
-            <div class="upsub">We'll read your bill and show your exact savings</div>
+            <div class="upsub">We will read the useful details for your enquiry</div>
             <div class="uptypes"><span class="uptype">PDF</span><span class="uptype">JPG</span><span class="uptype">PNG</span></div>
           </div>
           <div class="fprev" id="fprev">
@@ -1031,8 +1042,8 @@ footer{background:var(--black);border-top:var(--bd);padding:48px 64px 26px}
           <div class="ffields" style="margin-top:14px">
             <div class="ff"><label class="fl">County</label><select class="fs" id="up-county"><option value="">Select county</option><option>Carlow</option><option>Cavan</option><option>Clare</option><option>Cork</option><option>Donegal</option><option>Dublin</option><option>Galway</option><option>Kerry</option><option>Kildare</option><option>Kilkenny</option><option>Laois</option><option>Leitrim</option><option>Limerick</option><option>Longford</option><option>Louth</option><option>Mayo</option><option>Meath</option><option>Monaghan</option><option>Offaly</option><option>Roscommon</option><option>Sligo</option><option>Tipperary</option><option>Waterford</option><option>Westmeath</option><option>Wexford</option><option>Wicklow</option></select></div>
           </div>
-          <label style="display:flex;gap:8px;align-items:flex-start;margin:12px 0;font-size:11px;line-height:1.45;color:var(--gray);cursor:pointer"><input id="bill-processing-consent" type="checkbox" style="margin-top:3px" onchange="if(this.checked&&window._pendingBillFile){var f=window._pendingBillFile;window._pendingBillFile=null;processFile(f)}"> <span>I agree that Renewable Ireland may analyse this bill to prepare an estimate. Only supplier, bill amount, usage and tariff information are used; we do not retain the uploaded bill.</span></label>
-          <button class="wsub-btn" id="up-submit-btn" disabled onclick="submitBillUpload(this)">Get my estimate <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
+          <label style="display:flex;gap:8px;align-items:flex-start;margin:12px 0;font-size:11px;line-height:1.45;color:var(--gray);cursor:pointer"><input id="bill-processing-consent" type="checkbox" style="margin-top:3px" onchange="if(this.checked&&window._pendingBillFile){var f=window._pendingBillFile;window._pendingBillFile=null;processFile(f)}"> <span>I agree that Renewable Ireland may analyse this bill to prepare my enquiry. This can include the name, address, account and meter details shown on it. We do not retain the uploaded file.</span></label>
+          <button class="wsub-btn" id="up-submit-btn" disabled onclick="submitBillUpload(this)">Continue <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
           <div class="wreas"><div class="wr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4.5 12.75l6 6 9-13.5"/></svg>No obligation</div><div class="wr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4.5 12.75l6 6 9-13.5"/></svg>GDPR secure</div><div class="wr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4.5 12.75l6 6 9-13.5"/></svg>Bill deleted after analysis</div></div>
         </div>
         <div class="wpane" id="wpane-manual">
@@ -1040,16 +1051,30 @@ footer{background:var(--black);border-top:var(--bd);padding:48px 64px 26px}
             <div class="ff"><label class="fl">Monthly electricity bill (€)</label><input class="fi" id="manual-bill" type="number" min="50" max="500" step="10" value="200" placeholder="e.g. 200"></div>
             <div class="ff"><label class="fl">County</label><select class="fs" id="manual-county"><option value="">Select county</option><option>Carlow</option><option>Cavan</option><option>Clare</option><option>Cork</option><option>Donegal</option><option>Dublin</option><option>Galway</option><option>Kerry</option><option>Kildare</option><option>Kilkenny</option><option>Laois</option><option>Leitrim</option><option>Limerick</option><option>Longford</option><option>Louth</option><option>Mayo</option><option>Meath</option><option>Monaghan</option><option>Offaly</option><option>Roscommon</option><option>Sligo</option><option>Tipperary</option><option>Waterford</option><option>Westmeath</option><option>Wexford</option><option>Wicklow</option></select></div>
           </div>
-          <button class="wsub-btn" onclick="submitManualEntry(this)">Get my estimate <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
+          <button class="wsub-btn" onclick="submitManualEntry(this)">Continue <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
           <div class="wreas"><div class="wr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4.5 12.75l6 6 9-13.5"/></svg>No obligation</div><div class="wr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4.5 12.75l6 6 9-13.5"/></svg>GDPR secure</div></div>
         </div>
+        <div id="contact-step" aria-live="polite">
+          <div class="wstep-kicker">Step 2 of 2</div>
+          <h3>Where should we send your next step?</h3>
+          <p id="contact-step-summary">We will use the details already read from your bill, then review your enquiry before contacting you.</p>
+          <div class="ffields">
+            <div class="ff"><label class="fl" for="intake-name">Full name</label><input class="fi" id="intake-name" type="text" autocomplete="name" placeholder="Your full name"></div>
+            <div class="ff"><label class="fl" for="intake-phone">Phone</label><input class="fi" id="intake-phone" type="tel" autocomplete="tel" placeholder="08X XXX XXXX"></div>
+            <div class="ff" style="grid-column:1/-1"><label class="fl" for="intake-email">Email</label><input class="fi" id="intake-email" type="email" autocomplete="email" placeholder="you@email.com"></div>
+          </div>
+          <div id="intake-error" role="alert" style="display:none;margin-top:12px;color:#b42318;font-size:12px;font-weight:600"></div>
+          <button class="wsub-btn" id="intake-submit" onclick="submitInlineEnquiry(this)">Send my enquiry <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
+          <button class="intake-back" type="button" onclick="returnToIntakeStart()">Back</button>
+          <div class="wreas"><div class="wr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4.5 12.75l6 6 9-13.5"/></svg>We review every enquiry</div><div class="wr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4.5 12.75l6 6 9-13.5"/></svg>No obligation</div></div>
+        </div>
       </div>
-      <!-- PRICE GUARANTEE BADGE -->
-      <div class="pguar" onclick="document.getElementById('pmatch-modal').classList.add('on')" role="button" tabindex="0" aria-label="Price match guarantee - click to submit a competitor quote" style="margin-top:12px">
+      <!-- Price comparison is handled by the same verified enquiry path. -->
+      <div class="pguar" style="margin-top:12px">
         <div class="pguar-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/></svg></div>
         <div>
-          <div class="pguar-title">Price match guarantee</div>
-          <div class="pguar-sub">Found a lower like-for-like quote? We'll match it — or beat it.</div>
+          <div class="pguar-title">Already have a quote?</div>
+          <div class="pguar-sub">Include it with your enquiry and we will compare it like for like.</div>
         </div>
         <div class="pguar-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 5l7 7-7 7"/></svg></div>
       </div>
@@ -2365,7 +2390,7 @@ function compressBillFile(file, maxDim, quality){
 }
 function processFile(f){
   var ALLOWED_TYPES = ['application/pdf','image/jpeg','image/jpg','image/png'];
-  var MAX_SIZE_MB = 10;
+  var MAX_SIZE_MB = 4;
   if(!f) return;
   var consent = document.getElementById('bill-processing-consent');
   if(!consent || !consent.checked){
@@ -2441,16 +2466,16 @@ function processFile(f){
           html += '<div class="upload-result-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4.5 12.75l6 6 9-13.5"/></svg></div>';
           html += '<div class="upload-result-body">';
           if(supplier){
-            html += '<div class="upload-result-supplier">' + supplier + '</div>';
+            html += '<div class="upload-result-supplier">' + escapeForHtml(supplier) + '</div>';
           }
           if(monthly){
             html += '<div class="upload-result-amount">&euro;' + monthly.toFixed(0) + '<span>/month</span></div>';
           }
           // Show extra details if found
           var details = [];
-          if(mprn) details.push('MPRN: ' + mprn);
-          if(period) details.push(period);
-          if(tariff) details.push(tariff);
+          if(mprn) details.push('Supply details read');
+          if(period) details.push(escapeForHtml(period));
+          if(tariff) details.push(escapeForHtml(tariff));
           if(usageKwh) details.push(usageKwh + ' kWh');
           if(details.length){
             html += '<div class="upload-result-msg">' + details.join(' &middot; ') + '</div>';
@@ -2500,6 +2525,11 @@ function processFile(f){
     });
   }); // end compressBillFile.then
 }
+function escapeForHtml(value){
+  return String(value == null ? '' : value).replace(/[&<>"']/g,function(character){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[character];
+  });
+}
 function retryUpload() {
   if(window._uploadedFile){
     document.getElementById('upload-result').style.display='none';
@@ -2517,17 +2547,78 @@ function removeFile(){
   document.getElementById('up-submit-btn').disabled = true;
 }
 
-// ── Widget → estimate modal integration ──────────────────────────────
-function submitBillUpload(btn){
-  var county = (document.getElementById('up-county')||{}).value||'';
-  var monthlyBill = window._billData && window._billData.monthly_amount ? window._billData.monthly_amount : undefined;
-  openEstimateModal(monthlyBill, county || undefined, !!monthlyBill);
+// ── Two-step intake: collect a useful starting point, then contact details. ──
+var _intakeSource = '';
+var _intakeCounty = '';
+var _intakeMonthlyBill = null;
+var _intakeData = null;
+function startContactStep(source, county, monthlyBill, billData){
+  _intakeSource = source;
+  _intakeCounty = county || '';
+  _intakeMonthlyBill = monthlyBill || null;
+  _intakeData = billData || null;
+  var card = document.querySelector('#get-started .wcard');
+  if(card) card.classList.add('intake-contact');
+  var summary = document.getElementById('contact-step-summary');
+  var found = [];
+  if(billData && billData.supplier) found.push(billData.supplier);
+  if(billData && billData.usage_kwh) found.push(billData.usage_kwh + ' kWh');
+  if(summary) summary.textContent = found.length
+    ? 'We found ' + found.join(' · ') + '. Check your contact details and we will review the full bill information with your enquiry.'
+    : 'Check your contact details and we will review your enquiry before contacting you.';
+  if(billData && billData.account_holder_name && !document.getElementById('intake-name').value) document.getElementById('intake-name').value = billData.account_holder_name;
+  setTimeout(function(){ document.getElementById('intake-name').focus(); }, 100);
 }
-function submitManualEntry(btn){
+function submitBillUpload(){
+  var county = (document.getElementById('up-county') || {}).value || '';
+  if(!window._billData) return;
+  startContactStep('bill-upload', county, window._billData.monthly_amount, window._billData);
+}
+function submitManualEntry(){
   var billInput = document.getElementById('manual-bill');
-  var county = (document.getElementById('manual-county')||{}).value||'';
-  var monthlyBill = billInput ? parseInt(billInput.value) : 0;
-  openEstimateModal(monthlyBill || undefined, county || undefined, true);
+  var county = (document.getElementById('manual-county') || {}).value || '';
+  var monthlyBill = billInput ? Number(billInput.value) : null;
+  startContactStep('manual-entry', county, Number.isFinite(monthlyBill) && monthlyBill > 0 ? monthlyBill : null, null);
+}
+function returnToIntakeStart(){
+  var card = document.querySelector('#get-started .wcard');
+  if(card) card.classList.remove('intake-contact');
+  var error = document.getElementById('intake-error');
+  if(error) error.style.display = 'none';
+}
+function submitInlineEnquiry(btn){
+  var name = (document.getElementById('intake-name').value || '').trim();
+  var email = (document.getElementById('intake-email').value || '').trim();
+  var phone = (document.getElementById('intake-phone').value || '').trim();
+  var error = document.getElementById('intake-error');
+  if(name.length < 2 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || phone.length < 7){
+    error.textContent = 'Please enter your name, a valid email and phone number.';
+    error.style.display = 'block';
+    return;
+  }
+  error.style.display = 'none';
+  btn.disabled = true;
+  btn.textContent = 'Recording your enquiry…';
+  fetch('/api/lead', {
+    method: 'POST', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({
+      name: name, email: email, phone: phone, county: _intakeCounty || undefined,
+      monthly_bill: _intakeMonthlyBill || undefined,
+      intake_data: _intakeData || undefined,
+      source: _intakeSource || 'website-intake'
+    })
+  }).then(function(response){ return response.json(); }).then(function(result){
+    if(!result.success) throw new Error(result.message || 'We could not record your enquiry.');
+    var safeFirstName = name.split(' ')[0].replace(/[&<>"']/g,'');
+    var safeReference = String(result.reference || '').replace(/[&<>"']/g,'');
+    var step = document.getElementById('contact-step');
+    step.innerHTML = '<div class="wstep-kicker">Enquiry received</div><h3>Thank you, ' + safeFirstName + '.</h3><p>We have recorded your enquiry and will review it before confirming the right next step.</p><div class="wreas"><div class="wr">Reference: ' + safeReference + '</div></div>';
+  }).catch(function(err){
+    error.textContent = err && err.message ? err.message : 'We could not record your enquiry. Please try again.';
+    error.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = 'Send my enquiry';
+  });
 }
 function updateManualBtn(){
   // Placeholder for any future validation
@@ -2537,20 +2628,7 @@ function updateManualBtn(){
 
 // ── Unified entry point for all CTAs ─────────────────────────────────
 function openPortal(){
-  var county = '';
-  var monthlyBill = undefined;
-  // Read from whichever tab is active
-  var uploadPane = document.getElementById('wpane-upload');
-  var manualPane = document.getElementById('wpane-manual');
-  if(uploadPane && uploadPane.classList.contains('on')){
-    county = (document.getElementById('up-county')||{}).value||'';
-    monthlyBill = window._billData && window._billData.monthly_amount ? window._billData.monthly_amount : undefined;
-  } else if(manualPane && manualPane.classList.contains('on')){
-    county = (document.getElementById('manual-county')||{}).value||'';
-    var billInput = document.getElementById('manual-bill');
-    monthlyBill = billInput ? parseInt(billInput.value) : undefined;
-  }
-  openEstimateModal(monthlyBill, county || undefined);
+  document.getElementById('get-started').scrollIntoView({behavior:'smooth',block:'start'});
 }
 
 function tf(el){
@@ -3254,27 +3332,8 @@ window.addEventListener('error', function(e){
   console.error('JS Error:', e.message, 'at', e.filename, e.lineno);
 });
 
-// ── EXIT INTENT ───────────────────────────────────────────────────────────────
-(function(){
-  if(sessionStorage.getItem('ri-exit-shown')) return;
-  var triggered = false;
-  document.addEventListener('mouseleave', function(e){
-    if(e.clientY <= 10 && !triggered){
-      triggered = true;
-      sessionStorage.setItem('ri-exit-shown','1');
-      document.getElementById('exit-overlay').classList.add('on');
-      document.body.style.overflow='hidden';
-    }
-  });
-  var idleTimer = setTimeout(function(){
-    if(!triggered){
-      triggered = true;
-      sessionStorage.setItem('ri-exit-shown','1');
-      document.getElementById('exit-overlay').classList.add('on');
-      document.body.style.overflow='hidden';
-    }
-  }, 40000);
-})();
+// Exit-intent capture is deliberately disabled: the site has one clear intake,
+// rather than interrupting a visitor with another competing form.
 function exitClose(e){
   if(e.target===document.getElementById('exit-overlay')) exitDismiss();
 }

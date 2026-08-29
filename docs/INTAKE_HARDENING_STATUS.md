@@ -15,11 +15,14 @@
 - The referral journey is deliberately unavailable. It did not have a durable,
   auditable implementation and the site must not claim a referral reward or
   generate a referral link until that service is built and acceptance-tested.
-- Bill upload is now an ephemeral analysis path: the customer must opt in,
-  uploads are limited and file signatures are verified, the response is not
-  cached, and only estimate-relevant fields are returned. The application does
-  not store the uploaded bill. It still needs a live production smoke test with
-  an approved test bill before public promotion.
+- Bill upload is now an ephemeral analysis path: the customer must explicitly
+  opt in; uploads are limited and file signatures are verified; and the response
+  is not cached. The consented analysis may read all useful bill fields (including
+  the account holder, supply address, account and meter identifiers, supplier,
+  amount, period, usage and tariff information). It never extracts card, bank or
+  direct-debit details, and it never stores the uploaded file. The selected bill
+  data is attached to the final, consented website enquiry only. It still needs a
+  live production smoke test with an approved test bill before public promotion.
 - The ROI page is deliberately unavailable. It was presented as a guarantee
   certificate despite being an unaudited estimate generated from generic
   assumptions. It must not return until its inputs, assumptions, disclaimer and
@@ -32,7 +35,8 @@
 1. Confirm the public privacy notice covers the purpose and the chosen
    no-storage processing design.
 2. Run an approved test PDF, JPG and PNG through the deployed route; prove that
-   only supplier, bill amount, period, usage and tariff are returned.
+   every clearly printed useful bill field is returned accurately, while payment
+   card, bank and direct-debit details are excluded.
 3. Confirm that an invalid file, oversized file, no-consent request and provider
    outage all fail honestly without displaying a successful estimate.
 4. Add malware scanning before any future change that stores bills or forwards

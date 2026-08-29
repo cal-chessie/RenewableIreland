@@ -12,13 +12,21 @@ const schema = {
   properties: {
     is_bill: { type: 'boolean' },
     supplier: { type: ['string', 'null'] },
+    account_holder_name: { type: ['string', 'null'] },
+    supply_address: { type: ['string', 'null'] },
+    account_number: { type: ['string', 'null'] },
+    mprn: { type: ['string', 'null'] },
+    mpan: { type: ['string', 'null'] },
     monthly_amount: { type: ['number', 'null'] },
     billing_period: { type: ['string', 'null'] },
     usage_kwh: { type: ['number', 'null'] },
     tariff: { type: ['string', 'null'] },
+    unit_rate: { type: ['string', 'null'] },
+    standing_charge: { type: ['string', 'null'] },
+    meter_type: { type: ['string', 'null'] },
     confidence: { type: 'string', enum: ['high', 'medium', 'low'] },
   },
-  required: ['is_bill', 'supplier', 'monthly_amount', 'billing_period', 'usage_kwh', 'tariff', 'confidence'],
+  required: ['is_bill', 'supplier', 'account_holder_name', 'supply_address', 'account_number', 'mprn', 'mpan', 'monthly_amount', 'billing_period', 'usage_kwh', 'tariff', 'unit_rate', 'standing_charge', 'meter_type', 'confidence'],
 } as const;
 
 function hasExpectedSignature(bytes: Uint8Array, type: string) {
@@ -28,7 +36,7 @@ function hasExpectedSignature(bytes: Uint8Array, type: string) {
 }
 
 function asNullableString(value: unknown) {
-  return typeof value === 'string' && value.trim() ? value.trim().slice(0, 160) : null;
+  return typeof value === 'string' && value.trim() ? value.trim().slice(0, 500) : null;
 }
 
 export async function POST(req: NextRequest) {
@@ -65,7 +73,7 @@ export async function POST(req: NextRequest) {
         role: 'user',
         content: [{
           type: 'input_text',
-          text: 'Check whether this is an electricity or gas bill. If it is, extract only the supplier, amount due for the billing period, billing period, consumption in kWh, and tariff name. Do not extract, infer or return a customer name, address, account number, meter identifier, MPRN, MPAN, payment card or bank details. Never guess. If an amount is not clearly shown, return null.',
+          text: 'Check whether this is an electricity or gas bill. If it is, extract every useful bill field in the supplied schema exactly as printed: supplier, account holder name, supply address, account number, MPRN or MPAN, amount due for the billing period, billing period, consumption in kWh, tariff name, unit rate, standing charge and meter type. Do not extract payment-card, bank or direct-debit details. Never guess, calculate, combine or normalise an uncertain value: return null for anything not clearly shown.',
         }, ...content],
       }],
       text: { format: { type: 'json_schema', name: 'bill_summary', strict: true, schema } },
@@ -76,14 +84,22 @@ export async function POST(req: NextRequest) {
     catch { throw new IntakeError(502, 'We could not read that bill. Please enter your bill manually.'); }
     if (parsed.is_bill !== true) throw new IntakeError(400, 'That does not appear to be an electricity or gas bill.');
     const amount = typeof parsed.monthly_amount === 'number' && Number.isFinite(parsed.monthly_amount) ? parsed.monthly_amount : null;
-    if (amount === null || amount <= 0 || amount > 10_000) throw new IntakeError(400, 'We could not find a usable bill amount. Please enter it manually.');
+    const usableAmount = amount !== null && amount > 0 && amount <= 10_000 ? amount : null;
 
     return NextResponse.json({ success: true, data: {
-      monthly_amount: Math.round(amount * 100) / 100,
+      monthly_amount: usableAmount === null ? null : Math.round(usableAmount * 100) / 100,
       supplier: asNullableString(parsed.supplier),
+      account_holder_name: asNullableString(parsed.account_holder_name),
+      supply_address: asNullableString(parsed.supply_address),
+      account_number: asNullableString(parsed.account_number),
+      mprn: asNullableString(parsed.mprn),
+      mpan: asNullableString(parsed.mpan),
       billing_period: asNullableString(parsed.billing_period),
       usage_kwh: typeof parsed.usage_kwh === 'number' && Number.isFinite(parsed.usage_kwh) ? parsed.usage_kwh : null,
       tariff: asNullableString(parsed.tariff),
+      unit_rate: asNullableString(parsed.unit_rate),
+      standing_charge: asNullableString(parsed.standing_charge),
+      meter_type: asNullableString(parsed.meter_type),
       confidence: parsed.confidence === 'high' || parsed.confidence === 'low' ? parsed.confidence : 'medium',
     } }, { headers: { 'Cache-Control': 'no-store' } });
   } catch (error) {

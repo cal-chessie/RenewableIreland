@@ -14,6 +14,7 @@ export async function POST(req: NextRequest) {
     const county = textField(body, 'county', 80);
     const monthly_bill = textField(body, 'monthly_bill', 40);
     const estimate_data = boundedDetail(body, 'estimate_data');
+    const intake_data = boundedDetail(body, 'intake_data');
     // Source is owned by this endpoint, not by an untrusted browser payload.
     const source = 'website';
     const leadRef = reference('RI');
@@ -30,6 +31,7 @@ export async function POST(req: NextRequest) {
           County: county,
           'Monthly electricity bill': monthly_bill,
           Estimate: estimate_data,
+          'Bill scan': intake_data,
         },
       });
     } catch (error) {
