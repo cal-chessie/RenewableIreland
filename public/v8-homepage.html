@@ -741,8 +741,8 @@ footer{background:var(--black);border-top:var(--bd);padding:48px 64px 26px}
 }
 .map-content-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;max-width:1000px;margin:0 auto}
 @media(max-width:600px){
-  .hero{padding-top:72px;background:linear-gradient(150deg,var(--white) 0%,var(--lime-lt) 100%)}
-  .hero-left{padding:18px 18px 24px;gap:11px;background:transparent;border-bottom:none}
+  .hero{position:relative;padding-top:72px;background:linear-gradient(150deg,var(--white) 0%,var(--lime-lt) 100%)}
+  .hero-left{position:relative;z-index:1;padding:18px 18px 24px;gap:11px;background:transparent;border-bottom:none}
   .hero-tag{font-size:10px;padding:4px 10px}
   .hero h1{font-size:clamp(38px,11vw,52px);line-height:.92;max-width:340px}
   .hero-sub{font-size:15px;line-height:1.4}
@@ -751,7 +751,10 @@ footer{background:var(--black);border-top:var(--bd);padding:48px 64px 26px}
   .hero-actions .btn-o{display:none}
   .hero-trust{gap:6px}
   .chip{font-size:9px;padding:4px 8px}
-  .hero-right{display:none}
+  .hero-right{display:block;position:absolute;right:-34px;bottom:-20px;width:180px;height:180px;max-height:none;padding:0;opacity:.12;pointer-events:none;background:transparent}
+  .hero-logo-wrap{display:flex;height:100%;max-height:none;overflow:visible}
+  .hero-logo-wrap img{display:block;width:190px;max-height:none}
+  .hero-stats{display:none}
 }
 .whycard:hover{transform:translateY(-3px);box-shadow:var(--shxl)}
 </style>
@@ -999,19 +1002,19 @@ footer{background:var(--black);border-top:var(--bd);padding:48px 64px 26px}
           <div class="wpill">Enquiry</div>
         </div>
         <div class="wtabs">
-          <button class="wtab" id="wtab-upload" onclick="switchMode('upload')" hidden>
+          <button class="wtab on" id="wtab-upload" onclick="switchMode('upload')">
             <div class="wrec">Fastest</div>
             <div class="wtab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/></svg></div>
             <div class="wtab-lbl">Upload my bill</div>
             <div class="wtab-sub">Upload for estimate</div>
           </button>
-          <button class="wtab on" id="wtab-manual" onclick="switchMode('manual')">
+          <button class="wtab" id="wtab-manual" onclick="switchMode('manual')">
             <div class="wtab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/></svg></div>
             <div class="wtab-lbl">Enter manually</div>
             <div class="wtab-sub">Quick form</div>
           </button>
         </div>
-        <div class="wpane" id="wpane-upload" hidden>
+        <div class="wpane on" id="wpane-upload">
           <div class="upzone" id="dropzone" ondrop="handleDrop(event)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
             <input type="file" accept=".pdf,.jpg,.jpeg,.png" onchange="handleFile(this.files[0])">
             <div class="upicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m6.75 12l-3-3m0 0l-3 3m3-3v6m-1.5-15H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/></svg></div>
@@ -1028,10 +1031,11 @@ footer{background:var(--black);border-top:var(--bd);padding:48px 64px 26px}
           <div class="ffields" style="margin-top:14px">
             <div class="ff"><label class="fl">County</label><select class="fs" id="up-county"><option value="">Select county</option><option>Carlow</option><option>Cavan</option><option>Clare</option><option>Cork</option><option>Donegal</option><option>Dublin</option><option>Galway</option><option>Kerry</option><option>Kildare</option><option>Kilkenny</option><option>Laois</option><option>Leitrim</option><option>Limerick</option><option>Longford</option><option>Louth</option><option>Mayo</option><option>Meath</option><option>Monaghan</option><option>Offaly</option><option>Roscommon</option><option>Sligo</option><option>Tipperary</option><option>Waterford</option><option>Westmeath</option><option>Wexford</option><option>Wicklow</option></select></div>
           </div>
+          <label style="display:flex;gap:8px;align-items:flex-start;margin:12px 0;font-size:11px;line-height:1.45;color:var(--gray);cursor:pointer"><input id="bill-processing-consent" type="checkbox" style="margin-top:3px" onchange="if(this.checked&&window._pendingBillFile){var f=window._pendingBillFile;window._pendingBillFile=null;processFile(f)}"> <span>I agree that Renewable Ireland may analyse this bill to prepare an estimate. Only supplier, bill amount, usage and tariff information are used; we do not retain the uploaded bill.</span></label>
           <button class="wsub-btn" id="up-submit-btn" disabled onclick="submitBillUpload(this)">Get my estimate <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
           <div class="wreas"><div class="wr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4.5 12.75l6 6 9-13.5"/></svg>No obligation</div><div class="wr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4.5 12.75l6 6 9-13.5"/></svg>GDPR secure</div><div class="wr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4.5 12.75l6 6 9-13.5"/></svg>Bill deleted after analysis</div></div>
         </div>
-        <div class="wpane on" id="wpane-manual">
+        <div class="wpane" id="wpane-manual">
           <div class="ffields">
             <div class="ff"><label class="fl">Monthly electricity bill (€)</label><input class="fi" id="manual-bill" type="number" min="50" max="500" step="10" value="200" placeholder="e.g. 200"></div>
             <div class="ff"><label class="fl">County</label><select class="fs" id="manual-county"><option value="">Select county</option><option>Carlow</option><option>Cavan</option><option>Clare</option><option>Cork</option><option>Donegal</option><option>Dublin</option><option>Galway</option><option>Kerry</option><option>Kildare</option><option>Kilkenny</option><option>Laois</option><option>Leitrim</option><option>Limerick</option><option>Longford</option><option>Louth</option><option>Mayo</option><option>Meath</option><option>Monaghan</option><option>Offaly</option><option>Roscommon</option><option>Sligo</option><option>Tipperary</option><option>Waterford</option><option>Westmeath</option><option>Wexford</option><option>Wicklow</option></select></div>
@@ -2363,6 +2367,13 @@ function processFile(f){
   var ALLOWED_TYPES = ['application/pdf','image/jpeg','image/jpg','image/png'];
   var MAX_SIZE_MB = 10;
   if(!f) return;
+  var consent = document.getElementById('bill-processing-consent');
+  if(!consent || !consent.checked){
+    window._pendingBillFile = f;
+    var pendingSub = document.getElementById('dropzone');
+    if(pendingSub){var pendingText=pendingSub.querySelector('.upsub');if(pendingText)pendingText.textContent='Please tick the consent box below before we analyse your bill.';}
+    return;
+  }
   if(ALLOWED_TYPES.indexOf(f.type) < 0){
     var dz = document.getElementById('dropzone');
     var sub = dz ? dz.querySelector('.upsub') : null;
@@ -2403,6 +2414,7 @@ function processFile(f){
     var timeoutId = setTimeout(function(){ controller.abort(); }, 25000);
     var fd = new FormData();
     fd.append('bill', uploadFile, uploadName);
+    fd.append('consent', document.getElementById('bill-processing-consent') && document.getElementById('bill-processing-consent').checked ? 'yes' : 'no');
     fetch('/api/bill-extract', { method: 'POST', body: fd, signal: controller.signal })
       .then(function(r){
         clearTimeout(timeoutId);
@@ -3787,7 +3799,7 @@ var origPmClassToggle = function(cls){ if(cls==='on') document.body.style.overfl
     <div class="em-step on" id="em-s1">
       <div class="em-tag">Step 1 of 4</div>
       <div class="em-title">What's your <em>monthly</em><br>electricity bill?</div>
-      <div class="em-sub">We'll calculate your savings based on real SEAI data and your county's solar yield.</div>
+      <div class="em-sub">Start with a quick indicative estimate. A survey and written proposal are needed before any price, grant or savings figure is confirmed.</div>
       <div class="em-bill-display">
         <div class="em-bill-amount" id="em-bill-val">&euro;150<span>/mo</span></div>
         <div class="em-bill-label">Monthly electricity spend</div>
@@ -3803,15 +3815,15 @@ var origPmClassToggle = function(cls){ if(cls==='on') document.body.style.overfl
           <option>Carlow</option><option>Cavan</option><option>Clare</option><option>Cork</option><option>Donegal</option><option>Dublin</option><option>Galway</option><option>Kerry</option><option>Kildare</option><option>Kilkenny</option><option>Laois</option><option>Leitrim</option><option>Limerick</option><option>Longford</option><option>Louth</option><option>Mayo</option><option>Meath</option><option>Monaghan</option><option>Offaly</option><option>Roscommon</option><option>Sligo</option><option>Tipperary</option><option>Waterford</option><option>Westmeath</option><option>Wexford</option><option>Wicklow</option>
         </select>
       </div>
-      <button class="em-btn" onclick="emGoStep(2)">See my savings <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
+      <button class="em-btn" onclick="emGoStep(2)">See an indicative estimate <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
       <div class="em-trust"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4.5 12.75l6 6 9-13.5"/></svg>Takes 10 seconds</span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4.5 12.75l6 6 9-13.5"/></svg>No obligation</span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4.5 12.75l6 6 9-13.5"/></svg>GDPR secure</span></div>
     </div>
 
     <!-- STEP 2: Results -->
     <div class="em-step" id="em-s2">
-      <div class="em-tag">Step 2 of 4 — Your Estimate</div>
-      <div class="em-title">Here's what <em>solar</em><br>can do for you</div>
-      <div class="em-sub">Based on a &euro;<span id="em-r-bill">150</span>/mo bill in <span id="em-r-county">Ireland</span>.</div>
+      <div class="em-tag">Step 2 of 4 — Indicative estimate</div>
+      <div class="em-title">A useful <em>starting</em><br>point</div>
+      <div class="em-sub">Based on a &euro;<span id="em-r-bill">150</span>/mo bill in <span id="em-r-county">Ireland</span>. These figures are estimates, not a quote or guarantee.</div>
       <div class="em-res-grid">
         <div class="em-res-item"><div class="em-res-val lime" id="em-r-save">&euro;0</div><div class="em-res-lbl">Annual savings</div></div>
         <div class="em-res-item"><div class="em-res-val" id="em-r-payback">0 yrs</div><div class="em-res-lbl">Payback period</div></div>
@@ -3827,15 +3839,15 @@ var origPmClassToggle = function(cls){ if(cls==='on') document.body.style.overfl
       </div>
       <div id="em-r-btns" style="display:flex;gap:10px;transition:opacity .3s ease">
         <button class="em-btn" style="margin-top:0;flex:1" onclick="emGoStep(1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:14px;height:14px"><path d="M19 12H5M12 19l-7-7 7-7"/></svg> Adjust</button>
-        <button class="em-btn" style="margin-top:0;flex:2" onclick="emGoStep(3)">Get your personalised quote <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:14px;height:14px"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
+        <button class="em-btn" style="margin-top:0;flex:2" onclick="emGoStep(3)">Request a survey conversation <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:14px;height:14px"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
       </div>
     </div>
 
     <!-- STEP 3: Lead capture -->
     <div class="em-step" id="em-s3">
-      <div class="em-tag">Step 3 of 4 — Almost there</div>
-      <div class="em-title">Get your <em>fixed-price</em><br>quote tomorrow</div>
-      <div class="em-sub">We'll email your full proposal with SEAI grant deducted. No hidden costs, ever.</div>
+      <div class="em-tag">Step 3 of 4 — Your details</div>
+      <div class="em-title">Request your <em>next</em><br>step</div>
+      <div class="em-sub">We will review your enquiry and contact you about a survey or the information needed for a written proposal.</div>
       <div class="em-error" id="em-err"></div>
       <div class="em-lead-grid">
         <div class="em-lead-full em-field"><label>Full name</label><input class="em-input" id="em-name" type="text" placeholder="Your full name" autocomplete="name"></div>
@@ -3843,15 +3855,15 @@ var origPmClassToggle = function(cls){ if(cls==='on') document.body.style.overfl
         <div class="em-field"><label>Phone</label><input class="em-input" id="em-phone" type="tel" placeholder="08X XXX XXXX" autocomplete="tel"></div>
       </div>
       <div class="em-trust" style="margin-bottom:0"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/></svg>Your data is encrypted</span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4.5 12.75l6 6 9-13.5"/></svg>We never spam</span></div>
-      <button class="em-btn" id="em-submit-btn" onclick="emSubmitLead()">Send my quote <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:14px;height:14px"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
+      <button class="em-btn" id="em-submit-btn" onclick="emSubmitLead()">Send my enquiry <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:14px;height:14px"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
     </div>
 
     <!-- STEP 4: Success + Book a Call -->
     <div class="em-step" id="em-s4">
       <div class="em-success">
         <div class="em-success-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4.5 12.75l6 6 9-13.5"/></svg></div>
-        <h3>You're in, <span id="em-success-name">there</span></h3>
-        <p class="em-sub">Here's your snapshot. Book a call and we'll lock this in.</p>
+        <h3>Thanks, <span id="em-success-name">there</span></h3>
+        <p class="em-sub">Your enquiry is recorded. We will review it before confirming the right next step.</p>
 
         <!-- Mini recap of their numbers -->
         <div class="em-recap">
@@ -3873,9 +3885,9 @@ var origPmClassToggle = function(cls){ if(cls==='on') document.body.style.overfl
 
         <!-- Next steps timeline -->
         <div class="em-timeline">
-          <div class="em-tl-item"><div class="em-tl-dot">1</div><div class="em-tl-text"><strong>Quote sent</strong>Email within 24hrs</div></div>
-          <div class="em-tl-item"><div class="em-tl-dot">2</div><div class="em-tl-text"><strong>Survey booked</strong>Roof assessment</div></div>
-          <div class="em-tl-item"><div class="em-tl-dot">3</div><div class="em-tl-text"><strong>Installed</strong>Panels in 4–5 weeks</div></div>
+          <div class="em-tl-item"><div class="em-tl-dot">1</div><div class="em-tl-text"><strong>Enquiry received</strong>Your details are recorded</div></div>
+          <div class="em-tl-item"><div class="em-tl-dot">2</div><div class="em-tl-text"><strong>Review</strong>We confirm the next step</div></div>
+          <div class="em-tl-item"><div class="em-tl-dot">3</div><div class="em-tl-text"><strong>Proposal</strong>Only after assessment</div></div>
         </div>
 
         <button class="em-btn" onclick="closeEstimateModal()" style="margin-top:0;background:transparent;border:2px solid rgba(255,255,255,.15);color:rgba(255,255,255,.5)">Close</button>
